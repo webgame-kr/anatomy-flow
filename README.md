@@ -1,106 +1,121 @@
-# FLOW ENGINE v0.1 — Core Engine & Sandbox
+# NURSE FLOW 3D
 
-간호학의 해부학 구조, 생리 기전, 병태생리 과정을 **타이핑**과 **시각적 이동**으로 학습하는 웹게임의 공통 엔진입니다.
-이번 버전은 실제 의료 콘텐츠가 아니라 원·사각형·곡선 같은 단순 도형으로 엔진을 시험하는 **Sandbox**입니다.
+실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-- 핵심 규칙(정답 판정, 진행, 상태, 검증, 기록)은 **Python**으로 작성하고 **Pyodide 0.26.4**로 브라우저에서 실행합니다.
-- 화면(SVG, 애니메이션, 카메라, 입력)은 **HTML, CSS, Vanilla JavaScript**로 처리합니다.
-- 서버, 데이터베이스, 유료 API가 필요 없는 정적 사이트라서 GitHub Pages에 그대로 올릴 수 있습니다.
-- 새 콘텐츠는 엔진 코드를 고치지 않고 `content/` 폴더에 JSON 파일만 추가하면 됩니다.
+**현재 단계: STEP 01 — Real-time 3D Engine Foundation v0.1**
+실제 인체 모델과 의료 콘텐츠는 아직 없습니다. 실시간 3D 렌더링과 Python 게임 로직 연결을 검증하는 개발자 Sandbox만 있습니다.
+
+배포 주소: https://webgame-kr.github.io/anatomy-flow/
+
+## 기술 스택과 버전
+
+| 구분 | 사용 기술 | 버전 |
+|---|---|---|
+| 3D | Three.js (WebGL) | **0.160.0** (r160), importmap으로 고정 |
+| 카메라 조작 | OrbitControls (three/addons) | 0.160.0 |
+| Python 실행 | Pyodide (Web Worker 안에서 실행) | **0.26.4** (Python 3.12.1) |
+| 화면 | Vanilla JavaScript (ES Modules), HTML, CSS | - |
+| 데이터 | JSON / CSV | - |
+| 배포 | GitHub Pages (정적 사이트) | - |
+
+라이브러리는 모두 jsDelivr CDN에서 버전을 고정해 불러옵니다. 빌드 도구와 npm 설치가 필요 없습니다.
+- Three.js: `index.html`의 importmap
+- Pyodide: `js/python/py-client.js`의 `PYODIDE_VERSION`
 
 ## 폴더 구조
 
 ```
-flow-engine/
-├─ index.html            Sandbox 화면
+anatomy-flow/
+├─ index.html              개발자 Sandbox (importmap에 Three.js 버전 고정)
 ├─ css/style.css
-├─ js/                   화면 담당 (JavaScript)
-│  ├─ main.js            UI 연결, Python 명령 실행
-│  ├─ py-bridge.js       Pyodide 로딩(버전 고정), Python 호출, 오류 안내
-│  ├─ render.js          Rendering Engine: SVG 노드·모델·경로
-│  ├─ animation.js       Animation Engine: 곡선 이동(requestAnimationFrame)
-│  ├─ camera.js          Camera Engine: 휠 확대·축소, 드래그, 두 손가락 확대, 추적
-│  ├─ typing-input.js    한글 IME 조합 처리, 제출
-│  └─ records.js         LocalStorage 저장, CSV 다운로드
-├─ py/                   규칙 담당 (Python)
-│  ├─ game.py            JavaScript가 부르는 API
-│  ├─ typing_engine.py   Typing Engine: 입력 정규화, 정답 비교
-│  ├─ flow_engine.py     Flow Engine: 후보, 조건, 이벤트, 완료
-│  ├─ state_engine.py    State Engine: 게임 상태
-│  ├─ content_loader.py  Content Loader: JSON 구조 검증
-│  └─ record_engine.py   Record Engine: 기록 계산, CSV 문자열
-├─ content/              테스트 콘텐츠 (JSON)
-│  ├─ index.json         선택 목록
-│  ├─ 01_sequential.json 순차형
-│  ├─ 02_branch.json     분기형 (입력 선택 + 변수 조건)
-│  ├─ 03_cycle.json      순환형 (3번째 방문에서 완료)
-│  ├─ 04_causal.json     인과관계형 (변수·여러 객체 변화)
-│  └─ 99_broken.json     검증 실패 예시
-├─ tests/test_engine.py  Python 단위 테스트
-├─ docs/DATA_SPEC.md     아키텍처와 데이터 명세
-└─ CLAUDE.md             개발 원칙
+├─ js/
+│  ├─ main.js              Sandbox UI 연결
+│  ├─ engine/              3D 렌더링 (Three.js는 여기서만)
+│  │  ├─ viewport.js       Scene, Renderer, Camera, Light, Grid/Axes, OrbitControls, 반응형, 루프, 클릭 선택
+│  │  ├─ object-manager.js 공통 객체 관리: ID로 생성·변경·제거, 보간
+│  │  └─ command-runner.js Python 명령 해석·적용
+│  ├─ python/
+│  │  ├─ py-client.js      Worker 시작, 메시지 기반 Promise 호출, 오류 안내
+│  │  └─ py-worker.js      Web Worker 안에서 Pyodide 실행
+│  └─ shared/              다음 단계에서 다시 쓸 모듈 (v0.1에서 보존)
+│     ├─ typing-input.js   한글 IME 조합 처리
+│     └─ records.js        LocalStorage 기록, CSV 다운로드
+├─ py/                     Python 게임 로직 (Three.js에 의존하지 않음)
+│  ├─ sandbox3d.py         STEP 01: 3D 객체 상태와 명령 생성
+│  ├─ typing_engine.py     ┐
+│  ├─ flow_engine.py       │ v0.1에서 보존한 진행 규칙 엔진
+│  ├─ state_engine.py      │ (타이핑 판정, 노드·Edge 진행, 상태, 검증, 기록)
+│  ├─ content_loader.py    │ STEP 02 이후 3D 콘텐츠에 연결
+│  ├─ record_engine.py     │
+│  └─ game.py              ┘
+├─ content/                학습 콘텐츠 JSON (STEP 02부터)
+├─ models/                 GLB 모델 (STEP 02부터)
+├─ tools/                  모델 변환 도구 (STEP 02부터)
+├─ tests/
+│  ├─ test_sandbox3d.py    STEP 01 Python 테스트 (38개)
+│  └─ test_engine.py       진행 규칙 엔진 테스트 (70개)
+├─ docs/
+│  ├─ ARCHITECTURE.md      구조, Worker 메시지, 명령 형식
+│  └─ FLOW_SPEC_v0.1.md    진행 규칙 데이터 명세 (2D 시절, 3D로 확장 예정)
+├─ references/             수업 강의자료 (로컬 전용, .gitignore로 커밋 제외)
+└─ CLAUDE.md               개발 원칙
 ```
+
+2D SVG 버전(v0.1)은 태그 `v0.1-svg`에 남아 있습니다. 렌더러와 무관한 Python 규칙 엔진과 입력·기록 모듈은 보존했습니다.
 
 ## 로컬 실행
 
-브라우저 보안 때문에 `index.html`을 더블클릭(`file://`)하면 동작하지 않습니다. 로컬 서버로 여세요.
+ES 모듈과 Web Worker를 쓰기 때문에 `index.html`을 더블클릭(`file://`)하면 동작하지 않습니다. 로컬 서버로 여세요.
 
 ```powershell
-cd flow-engine
+cd anatomy-flow
 python -m http.server 8000
 ```
 
 그다음 브라우저에서 `http://localhost:8000`을 엽니다.
+- 인터넷 연결이 필요합니다. Three.js와 Pyodide(약 10MB)를 CDN에서 받습니다.
+- 파일을 고쳤는데 그대로면 강력 새로고침(Ctrl+Shift+R)을 하세요.
 
-- 처음 열 때는 Pyodide(약 10MB)를 CDN에서 내려받으므로 시간이 걸립니다. 인터넷 연결이 필요합니다.
-- 파일을 고쳤는데 화면이 그대로면 강력 새로고침(Ctrl+Shift+R)을 하세요.
-- 주소 뒤에 `?c=03_cycle.json`처럼 붙이면 해당 콘텐츠로 바로 시작합니다.
+### 조작
+- 왼쪽 드래그: 회전
+- 휠 또는 두 손가락: 확대·축소
+- 오른쪽 드래그: 화면 이동
+- 클릭: 객체 선택
+- 패널 버튼: Python 명령으로 생성, 이동, 회전, 크기, 색상, 표시, 제거, 원형 배치, 전체 초기화
+
+### 개발용 오류 시뮬레이션
+- `?simulate=nopython`: Pyodide 로딩 실패 상황 (3D는 동작하고 Python 명령 버튼은 비활성화)
+- `?simulate=nowebgl`: WebGL 미지원 상황 (안내 화면 표시)
 
 ## 테스트
 
-### Python 단위 테스트
+```powershell
+python tests/test_sandbox3d.py
+```
 
 ```powershell
-cd flow-engine
 python tests/test_engine.py
 ```
 
-70개 항목을 검사합니다. 실패가 하나라도 있으면 종료 코드 1을 돌려줍니다.
-- 정규화와 복수 정답
-- 잘못된 ID·연결 검출
-- 오답일 때 상태 유지
-- 이동 중 중복 제출·중복 도착 방지
-- 분기, 순환, 무한 반복 방지
-- 인과관계 이벤트, 초기화, 기록·CSV
+둘 다 프로젝트 폴더에서 실행합니다. 실패가 있으면 종료 코드 1을 돌려줍니다.
 
-### 브라우저 확인 순서
-
-1. **순차형:** 출발 → 펌프 → 통로 → 도착을 입력합니다. 영어(start, pump…)나 대문자로 입력해도 됩니다.
-2. **분기형:** 분기점에서 `위쪽` 또는 `아래쪽`을 입력해 갈래를 고릅니다. 위쪽으로 왔을 때만 합류 뒤에 `보너스` 길이 열립니다.
-3. **순환형:** 출발점 → 오른쪽 → 아래 → 왼쪽 → 출발점을 두 바퀴 돌면 3번째 방문에서 완료됩니다.
-4. **인과관계형:** 자극 → 증가 → 확인을 반복합니다. 압력이 3이 되면 경고등이 켜지고 `조절`로 가는 길이 열립니다.
-5. **검증 실패 예시:** 패널의 "콘텐츠 검증"에 오류 8개가 표시되고 게임은 시작되지 않습니다.
-6. 이동 중에 초기화를 누르면 애니메이션이 멈추고 처음 상태로 돌아가는지 확인합니다.
-7. 한글 입력에서 조합 중에 Enter를 눌러도 한 번만 판정되는지 확인합니다.
+브라우저에서 확인할 것:
+1. 격자, 축, 객체 3개가 보이는지
+2. 드래그하면 회전하고 휠로 확대되는지
+3. 객체를 클릭하면 선택 상자와 좌표가 표시되는지
+4. 버튼을 누르면 해당 객체만 부드럽게 이동하거나 색이 바뀌는지
+5. 전체 초기화 후 기본 객체 3개로 돌아오는지
+6. 로그에 "상태 불일치" 오류가 없는지
+7. 위의 두 시뮬레이션 주소에서 안내가 나오는지
 
 ## GitHub Pages 배포
 
-1. `flow-engine` 폴더의 내용을 저장소에 올립니다. 저장소 루트나 하위 폴더 어디에 두어도 됩니다.
-2. 저장소 **Settings → Pages**에서 Source를 `Deploy from a branch`로 고릅니다.
-3. 브랜치와 폴더를 지정합니다(예: `main` / `/ (root)`).
-4. 몇 분 뒤 `https://<사용자>.github.io/<저장소>/`에서 열립니다.
+1. 저장소의 `main` 브랜치에 푸시합니다.
+2. 처음 한 번만 **Settings → Pages**에서 `Deploy from a branch`, `main`, `/ (root)`를 고릅니다.
+3. 1~2분 뒤 `https://<계정>.github.io/<저장소>/`에 반영됩니다.
 
-모든 경로가 상대 경로(`py/`, `content/`, `js/`)라서 `/<저장소>/` 같은 하위 경로에서도 동작합니다.
-`.nojekyll` 파일은 Jekyll 처리를 끄기 위해 넣어 두었습니다.
+모든 경로가 상대 경로라서 `/anatomy-flow/` 같은 하위 경로에서도 동작합니다. Worker와 Python 파일 경로는 `import.meta.url` 기준으로 계산합니다. `.nojekyll`은 Jekyll 처리를 끄기 위해 둡니다.
 
-## 새 콘텐츠 추가
+## 저작권 자료
 
-1. `content/`에 JSON 파일을 만듭니다. 형식은 `docs/DATA_SPEC.md`를 따릅니다.
-2. `content/index.json` 목록에 `{ "file": "파일이름.json", "title": "제목" }`을 추가합니다.
-3. 화면에서 고르면 Python 검증을 거친 뒤 실행됩니다. 오류가 있으면 패널에 표시됩니다.
-
-## 학습 기록
-
-- 시나리오가 끝날 때마다 기록이 브라우저 LocalStorage(`flowengine.records.v1`)에 저장됩니다. 기록 항목은 날짜, 정답·오답 수, 정답률, 이동 수, 시간입니다.
-- 패널의 **CSV 내보내기**로 엑셀에서 열 수 있는 CSV(UTF-8 BOM)를 받습니다.
-- 기록은 그 브라우저에만 저장되며 서버로 보내지 않습니다.
+수업 강의자료와 전공 교재는 로컬 `references/` 폴더에만 둡니다. 이 폴더는 `.gitignore`에 있어 커밋되지 않습니다.
