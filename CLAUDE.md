@@ -49,6 +49,24 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - 수업 강의자료와 전공 교재는 `references/`(gitignore)에만 둔다. 절대 커밋하지 않는다.
 - 3D 모델은 라이선스를 확인한 것만 커밋한다.
 
+## 자료·자산 관리 (2026-11-27 추가)
+- **폴더 역할**
+  - `assets/`: 배포용 최적화 자산
+  - `raw-models/`: 원본 모델(Git 제외)
+  - `references/`: 강의·교재(Git 제외)
+  - `content/<계통>/`: 콘텐츠 JSON
+  - `tools/blender/`: 모델 처리
+  - 자세한 내용은 `docs/development/MATERIALS_INVENTORY.md`에 있다.
+- **기존 경로 유지:** 엔진 경로(`py/`, `js/`, `css/`, `index.html`)는 바꾸지 않는다. `py/`가 목표 구조의 `python/` 역할을 한다.
+- **원본 보존:** `raw-models/` 원본은 수정하지 않는다. 처리 결과는 `tools/out/`에서 검수한 뒤 `assets/anatomy/<계통>/`에 새 파일로 둔다.
+- **자산 등록:** 외부 자산은 쓰기 전에 `docs/references/asset_registry.csv`에 등록한다. 모르는 값은 `UNKNOWN` 또는 `PENDING`으로 적고 추측하지 않는다.
+- **공개 배포 조건:** 라이선스를 확인해 `verification_status`가 확인되었고, `assets/licenses/`에 출처 표기를 남긴 자산만 커밋하고 배포한다.
+  - NC(비상업) 조건 자산(DamagedHelmet 등)은 공개 배포하지 않는다.
+  - SA(Z-Anatomy) 조건 자산은 쓰기 전에 사용자와 상의한다.
+- **Git 조작:** 커밋, 푸시, Git 기록 삭제는 사용자 확인 없이 하지 않는다.
+- **배포 전 점검:** Pages 배포본에 `references/`, `raw-models/`, `assets/test-models/`가 들어가지 않았는지 `git ls-files`로 확인한다.
+- **Blender:** 5.3.0이 `C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`에 있다. 스크립트는 `--background --factory-startup --python`으로 실행한다.
+
 ## 범위 밖 (STEP 01)
 실제 인체 모델, 의료 콘텐츠, 복잡한 경로 애니메이션, 로그인, 멀티플레이, 콘텐츠 에디터, 데이터 분석.
 

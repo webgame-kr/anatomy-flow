@@ -1,8 +1,42 @@
+# Python cache
 __pycache__/
 *.pyc
 
+# Python virtual environments
+.venv/
+venv/
+
+# Private reference materials
 # 수업 강의자료·전공 교재 등 저작권 자료 (로컬 전용, 커밋 금지)
-references/
+# (앞의 /는 프로젝트 루트 폴더만 뜻한다. docs/references/는 공개 문서라 추적한다.)
+/references/
+
+# Original anatomy model archives (원본 대용량 모델, 로컬 전용)
+/raw-models/
+
+# 라이선스 확인 전 외부 테스트 모델 (DamagedHelmet: CC-BY-4.0 + CC-BY-NC-4.0 혼합)
+# 공개 배포가 확정되면 이 줄을 지우고 assets/licenses/에 출처를 기록한 뒤 커밋한다.
+assets/test-models/
 
 # 모델 변환 중간 파일
 tools/out/
+
+# Node.js dependencies
+node_modules/
+
+# Blender backups
+*.blend1
+*.blend2
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db

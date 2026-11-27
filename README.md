@@ -5,6 +5,13 @@
 **현재 단계: STEP 01 — Real-time 3D Engine Foundation v0.1**
 실제 인체 모델과 의료 콘텐츠는 아직 없습니다. 실시간 3D 렌더링과 Python 게임 로직 연결을 검증하는 개발자 Sandbox만 있습니다.
 
+- **2026-11-27 개발 자료 정리:** 해부학 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트를 정리했습니다. 엔진 코드는 바꾸지 않았습니다. 자세한 내용은 아래 "개발 자료와 자산 관리"에 있습니다.
+- **다음 단계 (STEP 02): 3D 객체 및 카메라 시스템**
+  - GLB 모델 불러오기(테스트 모델 → BodyParts3D 변환 모델)
+  - 3D 경로 위 이동
+  - 대상 추적 카메라
+  - 보존한 진행 규칙 엔진 연결
+
 배포 주소: https://webgame-kr.github.io/anatomy-flow/
 
 ## 기술 스택과 버전
@@ -119,3 +126,52 @@ python tests/test_engine.py
 ## 저작권 자료
 
 수업 강의자료와 전공 교재는 로컬 `references/` 폴더에만 둡니다. 이 폴더는 `.gitignore`에 있어 커밋되지 않습니다.
+
+## 개발 자료와 자산 관리
+
+### 개발 원칙 요약
+- **실시간 3D 기반:** Three.js(WebGL)로만 그립니다. 2D SVG 엔진은 쓰지 않습니다.
+- **역할 분리:**
+  - Python(Pyodide, Web Worker)은 게임 규칙과 상태만 맡고 명령을 돌려줍니다.
+  - JavaScript(Three.js)는 렌더링, 보간, 카메라, 입력을 맡습니다.
+  - Python은 Three.js를 모르고, 프레임마다 호출되지 않습니다.
+- **무료·정적 배포:** 무료 오픈소스만 씁니다. 서버, DB, 유료 API 없이 GitHub Pages로 배포합니다.
+- **원본과 배포 모델 분리:**
+  - 원본: `raw-models/`(로컬, Git 제외)
+  - 배포: Blender로 최적화한 GLB만 `assets/`에 둡니다.
+
+### 추가된 폴더
+```
+assets/            배포용 최적화 자산
+  anatomy/<계통>/  cardiovascular, respiratory, digestive, urinary, lymphatic,
+                   nervous, endocrine, integumentary, musculoskeletal
+  test-models/     로더 테스트용 (DamagedHelmet, 라이선스 확인 전 Git 제외)
+  cells/ particles/ textures/ animations/
+  licenses/        배포 자산의 라이선스·출처 표기
+raw-models/        원본 대용량 모델 (Git 제외)
+  bodyparts3d/archives|metadata|extracted, z-anatomy/, blender-projects/
+references/        비공개 참고자료 (Git 제외)
+  programming/, nursing/{anatomy,physiology,fundamentals,adult-health}, design/, technical/
+content/<계통>/    sandbox, cardiovascular, digestive, respiratory, urinary, lymphatic
+tools/             blender/, asset-processing/, validation/
+docs/              development/, references/ (기존 ARCHITECTURE.md는 그대로 둠)
+```
+기존 엔진 경로(`py/`, `js/`, `css/`, `index.html`)는 바꾸지 않았습니다.
+- 목표 구조의 `python/`은 기존 `py/`가 같은 역할을 합니다.
+- `docs/architecture/`는 기존 `docs/ARCHITECTURE.md`가 같은 역할을 합니다.
+- 빈 폴더는 Git에 올라가지 않으므로, 자료를 넣을 때 함께 커밋됩니다.
+
+### 저작권·라이선스 관리 원칙
+- 강의자료와 전공 교재는 공개 GitHub에 올리지 않습니다(`references/` 제외).
+- 모든 외부 모델은 `docs/references/asset_registry.csv`에 출처, 라이선스, 처리 상태를 기록합니다. 확인되지 않은 값은 `UNKNOWN` 또는 `PENDING`으로 적습니다.
+- 라이선스를 확인하기 전에는 외부 모델을 공개 배포하지 않습니다.
+  - BodyParts3D는 CC BY 4.0이라 출처 표기가 필요합니다.
+  - Z-Anatomy는 CC BY-SA 4.0입니다.
+  - DamagedHelmet에는 NC(비상업) 조건이 섞여 있습니다.
+- 참고 사이트(BioDigital 등)의 상업용 모델과 콘텐츠는 추출하지 않습니다(`docs/references/REFERENCES.md`).
+
+관련 문서:
+- `docs/development/MATERIALS_INVENTORY.md`: 수집 현황, 누락 목록, 폴더 역할
+- `docs/references/REFERENCES.md`: 참고 사이트
+- `docs/references/asset_registry.csv`: 모델 대장
+- `tools/blender/README.md`: 모델 처리 계획
