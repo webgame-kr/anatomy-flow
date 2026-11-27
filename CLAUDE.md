@@ -3,16 +3,26 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 01(3D 엔진 기반)이다. 구조는 `docs/ARCHITECTURE.md`에 있다.
+현재 단계는 STEP 02(3D 객체·카메라 시스템)이다. 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진"에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
 - **역할 분리**
   - Python(`py/`)은 게임 로직과 상태를 맡는다. Three.js와 DOM에 의존하지 않는다.
   - JavaScript(`js/`)는 렌더링, 입력, 저장을 맡는다. 게임 규칙을 JS에 복제하지 않는다.
-- **Three.js 객체:** Mesh는 `js/engine/object-manager.js`만 만들고 지운다. 모든 객체는 고유 문자열 ID로 다룬다.
+- **Three.js 객체 (STEP 02):** 조작할 수 있는 모든 객체는 `object-registry.js`에 고유 ID로 등록한다.
+  - 기본 도형과 그룹은 `object-manager.js`가 만든다. GLB는 `scene-manager.addModel` → `registry.registerModel`로 등록한다.
+  - 객체를 지울 때는 `registry.unregister`를 쓴다. 이때 `resource-tracker`가 참조 수가 0인 리소스만 dispose한다.
+  - 재질 변경은 반드시 `material-controller`로 한다. Mesh의 material을 직접 바꾸면 공유 재질이 오염된다.
+  - 층(상태 색·투명도 / 강조 / 격리·고스트 / 단면)을 섞지 않는다.
+- **상태의 기준:** 렌더링 상태의 기준은 JS 레지스트리다. Python에는 `registry.snapshot()`(id, type, visible, parent)만 보낸다. 예외는 STEP 01 `step01` 장면의 `sandbox3d.py`다.
+- **같은 역할 모듈 확장:** 같은 역할의 모듈이 이미 있으면 새로 만들지 말고 확장한다. 요구서의 `renderer.js`는 `viewport.js`가, `python-bridge`는 `py-client` + `python-bridge.js`가 맡는다.
 - **Python 호출:** Pyodide는 Web Worker에서 돈다. 호출은 메시지 + Promise(`py-client.js`)로 하고 이벤트 때만 부른다. 렌더링 프레임마다 부르지 않는다.
-- **명령 형식:** Python은 `{ok, commands, objects, message}`를 돌려준다. 명령은 `clear` / `create` / `update` / `remove`이고 고유 `id`가 있다.
+- **명령 형식:**
+  - STEP 01(`sandbox3d`): `{id, op: clear|create|update|remove}`
+  - STEP 02(`scene_commands`): `{action, target, value, duration}`. action은 set_position, set_rotation, set_scale, set_color, set_visibility, set_opacity, highlight, camera_focus, camera_overview, scene_change.
+  - 반환값은 `{ok, commands, errors, message}`다.
+  - Python과 JS가 각각 검증한다. 잘못된 명령은 로그만 남기고 다음 명령을 계속 실행한다.
   - 이동처럼 시간이 걸리는 변화는 목표값과 `duration`만 보내고, 프레임 보간은 JS가 한다.
 - **좌표·단위:** 좌표는 `[x, y, z]`이고 Y가 위쪽이다. 회전은 도, 시간은 ms다.
 - **콘텐츠 분리:** 그래픽 엔진에 의료 콘텐츠를 하드코딩하지 않는다. 콘텐츠는 `content/`(JSON), 모델은 `models/`(GLB)에 둔다.
@@ -35,7 +45,9 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - Python 파일을 추가하면 `py-client.js`의 `PY_FILES`와 `py-worker.js`의 `ALLOWED`를 함께 고친다.
 
 ## 테스트
-- Python을 바꾸면 `python tests/test_sandbox3d.py`와 `python tests/test_engine.py`가 모두 통과해야 한다.
+- Python을 바꾸면 `tests/test_sandbox3d.py`, `tests/test_scene_commands.py`, `tests/test_engine.py`가 모두 통과해야 한다.
+- STEP 02 화면 검증은 README "STEP 02 엔진"의 장면 A~D로 한다. 장면을 오가며 Debug 오버레이와 Status Bar의 GPU geo/tex 수가 늘어나지 않는지 본다.
+- 테스트 결과는 실제로 실행한 것만 PASS로 적는다. FPS와 로딩 시간은 측정값만 적는다.
 - 화면을 바꾸면 로컬 서버에서 Sandbox를 확인한다. 확인할 것:
   - 회전과 확대
   - Python 명령 적용
@@ -67,12 +79,12 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **배포 전 점검:** Pages 배포본에 `references/`, `raw-models/`, `assets/test-models/`가 들어가지 않았는지 `git ls-files`로 확인한다.
 - **Blender:** 5.3.0이 `C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`에 있다. 스크립트는 `--background --factory-startup --python`으로 실행한다.
 
-## 범위 밖 (STEP 01)
-실제 인체 모델, 의료 콘텐츠, 복잡한 경로 애니메이션, 로그인, 멀티플레이, 콘텐츠 에디터, 데이터 분석.
+## 범위 밖 (STEP 02까지)
+실제 혈액순환·소화 과정, 3D 곡선 경로 이동, 타이핑 게임 진행, 심장 수축·판막, 대규모 의료 모델 변환, FLOW Studio 에디터, 학습 기록 분석, 로그인, 멀티플레이.
+단면(clipping)은 표면 Mesh를 자를 뿐이다. 원본에 없는 내부 구조(판막, 심방, 심실 등)를 만들어 내지 않는다. 그런 구조가 필요하면 검증된 모델을 쓴다.
 
-## STEP 02 후보
-1. 3차원 경로: CatmullRomCurve3로 경로를 그리고, 그 위를 객체가 이동한다. Python은 경로 ID와 시간만 보낸다.
-2. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 `[x, y, z]`로 확장한다.
-3. 타이핑 입력(`js/shared/typing-input.js`)과 정답에 따른 3D 이동을 연결한다.
-4. 카메라 추적: 이동 객체를 부드럽게 따라간다.
-5. 무료 라이선스 GLB 모델을 하나 시범으로 불러와 부위 ID를 연결한다.
+## STEP 03 방향
+1. BodyParts3D 부위 명칭표(`isa/partof_parts_list_e.txt`)를 확보한다. 그다음 심혈관계 몇 개 부위만 Blender 스크립트로 GLB로 바꾸고(Z-up → Y-up, mm → m) 자산 대장에 등록한다.
+2. 3차원 경로: CatmullRomCurve3로 경로를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다.
+3. `camera-controller.setFollowTarget`으로 이동 객체를 추적한다.
+4. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 `[x, y, z]`로 확장한다. 타이핑 입력(`js/shared/typing-input.js`)과 연결한다.

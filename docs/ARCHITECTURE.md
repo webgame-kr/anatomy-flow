@@ -58,3 +58,35 @@ Python 함수의 반환값은 항상 `{ ok, commands, objects, message }` 형식
 - **카메라 추적:** `viewport.controls.target`을 보간한다.
 - **단면 관찰:** `renderer.localClippingEnabled`를 켜고 재질에 clippingPlanes를 준다.
 - **타이핑·진행 규칙:** 보존한 `py/flow_engine.py` 등을 Worker에 함께 싣는다.
+
+---
+
+# STEP 02 — 3D Object Management & Camera System
+
+```
+main.js (조립)
+ ├ viewport.js ─────────── renderer · scene · camera · OrbitControls · 루프(onFrame) · 컨텍스트 손실
+ ├ resource-tracker.js ─── Geometry/Material/Texture 참조 수 (0일 때만 dispose)
+ ├ object-registry.js ──── ID ↔ Object3D, 부모/자식, info(), snapshot(), resolvePick()
+ │   ├ object-manager.js ─ 기본 도형·그룹 생성, 변환 보간, whenSettled()
+ │   └ model-loader.js ─── GLTFLoader(+Draco/Meshopt), 진행률, 구조 분석, 로컬 파일 세트
+ ├ material-controller.js  상태 색·투명도 | 강조 | 격리·고스트 | 단면  (Mesh별 복제 재질)
+ ├ selection-controller.js Hover · 클릭(드래그 구분) · 선택 상자
+ ├ camera-controller.js ── focus · overview · preset · animateTo · setFollowTarget
+ ├ clipping-controller.js  X/Y/Z 평면, 전체/선택 범위, 반전
+ ├ scene-manager.js ────── scenes.json → 생성/전환/초기화/이전 장면 (토큰으로 늦은 로딩 무시)
+ ├ command-runner.js ───── op(STEP 01) + action(STEP 02) 검증·실행
+ └ python-bridge.js ────── py-client(Worker) 호출 → command-runner
+```
+
+## 프레임 루프 (렌더링마다)
+`objects.tick(dt)` 보간 → `camera.tick(dt)` 카메라 이동·추적 → `selection.tick()` 선택 상자 → `controls.update()` → `render`
+Python은 루프에서 부르지 않는다.
+
+## Worker 호출 이름
+`"모듈.함수"` 형식이다(예: `scene_commands.demo`). 모듈 없이 부르면 STEP 01의 `sandbox3d`로 본다.
+배열과 객체 인자는 Worker에서 `py.toPy`로 Python list/dict로 바꾼다.
+
+## 장면 정의 (content/sandbox/scenes.json)
+`scene_id, scene_name, coordinate_system{up, front, unit}, camera_defaults{position, target, fov}, lighting(studio|soft), background, materials{공유 재질}, groups[], objects[], assets[{asset_id, position, fit{size}, optional}], default_visible_objects, python(step01|commands)`
+자산 URL과 공개 여부는 상위 `assets{}`에 둔다. 공개하지 않는 자산(`public: false`)은 배포본에 없으므로 `optional: true`로 둔다.

@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "default_scene": "scene_a",
+  "assets": {
+    "nf-test-rig": {
+      "url": "assets/sandbox/nf-test-rig.glb",
+      "license": "project-made (tools/blender/make_test_rig.py)",
+      "public": true
+    },
+    "test-damaged-helmet": {
+      "url": "assets/test-models/DamagedHelmet.glb",
+      "license": "CC-BY-4.0 + CC-BY-NC-4.0 (local only, not deployed)",
+      "public": false
+    }
+  },
+  "scenes": [
+    {
+      "scene_id": "step01",
+      "scene_name": "STEP 01 — Python Sandbox",
+      "description": "STEP 01 기능 유지 확인: Python(sandbox3d)이 객체를 만들고 움직인다.",
+      "python": "step01",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [7, 6, 9], "target": [0, 0.5, 0], "fov": 50 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [],
+      "objects": []
+    },
+    {
+      "scene_id": "scene_a",
+      "scene_name": "A — Primitive Test",
+      "description": "객체 등록, 선택, 카메라 이동, 투명도, 단면",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [6, 5, 8], "target": [0, 1, 0], "fov": 50 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "materials": {},
+      "assets": [],
+      "objects": [
+        { "id": "cube_a", "kind": "box", "name": "Cube", "position": [-2.6, 0.5, 0], "color": "#e5484d" },
+        { "id": "sphere_a", "kind": "sphere", "name": "Sphere (큰 구)", "position": [0, 1, 0], "scale": 2, "color": "#f5a00a" },
+        { "id": "cylinder_a", "kind": "cylinder", "name": "Cylinder (긴 원통)", "position": [2.6, 1.25, 0], "scale": [0.7, 2.5, 0.7], "color": "#46a758" },
+        { "id": "cube_small", "kind": "box", "name": "Small Cube", "position": [1.2, 0.15, 2.2], "scale": 0.3, "color": "#8e4ec6" },
+        { "id": "torus_a", "kind": "torus", "name": "Torus", "position": [-1.2, 0.6, 2.4], "rotation": [90, 0, 0], "color": "#12a594" }
+      ]
+    },
+    {
+      "scene_id": "scene_b",
+      "scene_name": "B — GLB Import Test",
+      "description": "외부 모델 로딩, 계층·재질 분석, Bounding Box 기반 카메라",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [5, 3.5, 6], "target": [0, 0.8, 0], "fov": 45 },
+      "lighting": "soft",
+      "background": "#eef1f5",
+      "assets": [
+        { "asset_id": "nf-test-rig", "display_name": "NF Test Rig", "position": [-1.6, 0, 0] },
+        { "asset_id": "test-damaged-helmet", "display_name": "Damaged Helmet", "optional": true,
+          "fit": { "size": 1.6 }, "position": [1.8, 0.8, 0] }
+      ],
+      "objects": []
+    },
+    {
+      "scene_id": "scene_c",
+      "scene_name": "C — Multi-object Test",
+      "description": "부모·자식 관계, 공유 Material, 다중 Material, 같은 표시 이름",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [6, 5, 7], "target": [0, 1, 0], "fov": 50 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "materials": {
+        "mat_shared_blue": { "color": "#2f6fde" },
+        "mat_shared_gray": { "color": "#9aa4b2" }
+      },
+      "groups": [
+        { "id": "assembly", "name": "Assembly (최상위 그룹)", "position": [0, 0, 0] },
+        { "id": "column", "name": "Column (기둥 그룹)", "parent": "assembly", "position": [-1.5, 0, 0] },
+        { "id": "orbit", "name": "Orbit (위성 그룹)", "parent": "assembly", "position": [1.5, 1, 0] }
+      ],
+      "assets": [],
+      "objects": [
+        { "id": "column_block_1", "kind": "box", "name": "Part", "parent": "column", "position": [0, 0.5, 0], "material": "mat_shared_blue" },
+        { "id": "column_block_2", "kind": "box", "name": "Part", "parent": "column", "position": [0, 1.5, 0], "scale": 0.8, "material": "mat_shared_blue" },
+        { "id": "column_block_3", "kind": "box", "name": "Part", "parent": "column", "position": [0, 2.3, 0], "scale": 0.6, "material": "mat_shared_blue" },
+        { "id": "orbit_core", "kind": "sphere", "name": "Core", "parent": "orbit", "position": [0, 0, 0], "material": "mat_shared_gray" },
+        { "id": "orbit_moon_1", "kind": "sphere", "name": "Moon", "parent": "orbit", "position": [1, 0.3, 0], "scale": 0.35, "material": "mat_shared_gray" },
+        { "id": "orbit_moon_2", "kind": "sphere", "name": "Moon", "parent": "orbit", "position": [-0.6, 0.6, 0.8], "scale": 0.35, "material": "mat_shared_gray" },
+        { "id": "dice_multi", "kind": "box", "name": "Dice (다중 Material 6면)", "position": [0, 0.4, 2.2], "scale": 0.8,
+          "materials": ["#e5484d", "#f5a00a", "#46a758", "#2f6fde", "#8e4ec6", "#f3f5f8"] }
+      ]
+    },
+    {
+      "scene_id": "scene_d",
+      "scene_name": "D — Python Command Test",
+      "description": "Python이 보낸 위치·색상·투명도·카메라 명령과 오류 처리",
+      "python": "commands",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [6, 4.5, 7], "target": [0, 0.7, 0], "fov": 50 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [],
+      "objects": [
+        { "id": "sphere_01", "kind": "sphere", "name": "sphere_01", "position": [0, 0.6, 0], "scale": 1.2, "color": "#2f6fde" },
+        { "id": "cube_01", "kind": "box", "name": "cube_01", "position": [-2.2, 0.5, 0], "color": "#9aa4b2" },
+        { "id": "cylinder_01", "kind": "cylinder", "name": "cylinder_01", "position": [2.2, 0.75, 0], "scale": [0.8, 1.5, 0.8], "color": "#f5a00a" }
+      ]
+    }
+  ]
+}

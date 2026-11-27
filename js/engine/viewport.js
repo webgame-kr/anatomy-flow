@@ -123,5 +123,17 @@ export function createViewport(container, { onFrame, onStats, onContextLost } = 
     controls.update();
   }
 
-  return { THREE, scene, renderer, camera, controls, onPick, resetCamera };
+  // STEP 02: 장면별 조명·배경 (studio: STEP 01 기본값, soft: 그림자 대비가 약한 관찰용)
+  function setLighting(name, background) {
+    if (name === 'soft') {
+      ambient.intensity = 1.8;
+      sun.intensity = 1.2;
+    } else {
+      ambient.intensity = 1.2;
+      sun.intensity = 2.2;
+    }
+    if (background) scene.background = new THREE.Color(background);
+  }
+
+  return { THREE, scene, renderer, camera, controls, grid, axes, onPick, resetCamera, setLighting };
 }

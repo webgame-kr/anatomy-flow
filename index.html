@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Nurse Flow 3D Sandbox</title>
+  <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
   <!-- 라이브러리 버전 고정: three@0.160.0 -->
   <script type="importmap">
@@ -16,91 +17,126 @@
   </script>
 </head>
 <body>
-  <header class="topbar">
-    <h1>NURSE FLOW 3D <span class="ver">STEP 01 · Engine Sandbox</span></h1>
-    <div class="top-actions">
-      <button id="btn-camera" type="button">카메라 원위치</button>
-      <button id="btn-reset" type="button" class="primary" disabled>전체 초기화</button>
+  <header class="toolbar">
+    <h1>NURSE FLOW 3D <span class="ver">STEP 02 · Sandbox</span></h1>
+    <div class="tool-group">
+      <button id="toggle-left" type="button" class="only-mobile" title="계층 패널">계층</button>
+      <label class="btn file-btn" title="로컬 GLB 또는 glTF(+bin, 텍스처) 파일 선택 — 브라우저 안에서만 읽습니다">
+        Import GLB
+        <input id="import-file" type="file" multiple accept=".glb,.gltf,.bin,.png,.jpg,.jpeg,.webp,.ktx2">
+      </label>
+      <select id="scene-select" aria-label="장면 선택" disabled></select>
+      <button id="btn-back" type="button" disabled title="이전 장면으로">◀ 이전</button>
+      <button id="btn-reset" type="button" disabled title="현재 장면 초기화">Reset</button>
+    </div>
+    <div class="tool-group">
+      <span class="label">카메라</span>
+      <button type="button" data-preset="front">정면</button>
+      <button type="button" data-preset="back">후면</button>
+      <button type="button" data-preset="left">좌측</button>
+      <button type="button" data-preset="right">우측</button>
+      <button type="button" data-preset="top">상단</button>
+      <button type="button" data-preset="iso">사선</button>
+      <button type="button" id="btn-overview" title="장면 전체 보기">전체</button>
+      <button type="button" id="btn-home" title="장면 기본 카메라">기본</button>
+    </div>
+    <div class="tool-group">
+      <select id="pick-level" aria-label="선택 단위">
+        <option value="part">선택: 부분</option>
+        <option value="model">선택: 모델 전체</option>
+      </select>
+      <label class="chk"><input id="opt-grid" type="checkbox" checked> 격자</label>
+      <label class="chk"><input id="opt-axes" type="checkbox" checked> 축</label>
+      <button id="btn-debug" type="button" aria-pressed="false">Debug</button>
+      <button id="toggle-right" type="button" class="only-mobile" title="속성 패널">속성</button>
     </div>
   </header>
 
-  <main class="layout">
+  <main class="workspace">
+    <aside id="panel-left" class="side left" aria-label="Scene Hierarchy">
+      <div class="side-head"><h2>Scene Hierarchy</h2><span id="hier-count" class="muted"></span></div>
+      <ul id="hierarchy" class="tree" role="tree"></ul>
+      <div class="side-head"><h2>불러온 모델</h2></div>
+      <ul id="model-list" class="model-list"></ul>
+    </aside>
+
     <section id="viewport" class="viewport" aria-label="3D 화면">
-      <div id="hud" class="hud">드래그: 회전 · 휠: 확대/축소 · 오른쪽 드래그: 이동 · 클릭: 선택</div>
+      <div id="hud" class="hud">드래그: 회전 · 휠/두 손가락: 확대 · 오른쪽 드래그: 이동 · 클릭: 선택 · F: 초점 · Esc: 해제</div>
+      <div id="hover-tip" class="hover-tip" hidden></div>
+      <div id="debug-box" class="debug-box" hidden></div>
       <div id="fatal" class="fatal" hidden></div>
     </section>
 
-    <aside class="panel" aria-label="개발자 패널">
-      <section>
-        <h2>엔진 상태</h2>
+    <aside id="panel-right" class="side right" aria-label="Object Inspector">
+      <section class="insp">
+        <h2>Object Inspector</h2>
         <dl class="kv">
-          <dt>Python</dt><dd><span id="py-dot" class="dot loading"></span><span id="py-status">대기</span></dd>
-          <dt>렌더러</dt><dd id="gl-info">-</dd>
-          <dt>FPS</dt><dd id="fps">-</dd>
-          <dt>그리기</dt><dd id="render-info">-</dd>
-          <dt>객체 수</dt><dd id="obj-count">-</dd>
+          <dt>Object ID</dt><dd id="i-id">(선택 없음)</dd>
+          <dt>이름</dt><dd id="i-name">-</dd>
+          <dt>종류</dt><dd id="i-type">-</dd>
+          <dt>원본 자산</dt><dd id="i-asset">-</dd>
+          <dt>부모 / 자식</dt><dd id="i-family">-</dd>
+          <dt>재질</dt><dd id="i-mat">-</dd>
+          <dt>크기(BBox)</dt><dd id="i-bbox">-</dd>
+          <dt>애니메이션</dt><dd id="i-anim">-</dd>
         </dl>
       </section>
 
-      <section>
-        <h2>Scene 객체</h2>
-        <ul id="obj-list" class="obj-list"></ul>
+      <section class="insp" id="sec-transform">
+        <h2>Transform</h2>
+        <div class="xyz"><span>Position</span><input data-t="position" data-a="0" type="number" step="0.1"><input data-t="position" data-a="1" type="number" step="0.1"><input data-t="position" data-a="2" type="number" step="0.1"></div>
+        <div class="xyz"><span>Rotation°</span><input data-t="rotation" data-a="0" type="number" step="5"><input data-t="rotation" data-a="1" type="number" step="5"><input data-t="rotation" data-a="2" type="number" step="5"></div>
+        <div class="xyz"><span>Scale</span><input data-t="scale" data-a="0" type="number" step="0.1" min="0.01"><input data-t="scale" data-a="1" type="number" step="0.1" min="0.01"><input data-t="scale" data-a="2" type="number" step="0.1" min="0.01"></div>
       </section>
 
-      <section>
-        <h2>선택한 객체</h2>
-        <dl class="kv" id="sel-info">
-          <dt>ID</dt><dd id="sel-id">(없음)</dd>
-          <dt>위치 x,y,z</dt><dd id="sel-pos">-</dd>
-          <dt>회전(도)</dt><dd id="sel-rot">-</dd>
-          <dt>크기·색</dt><dd id="sel-look">-</dd>
-        </dl>
-      </section>
-
-      <section class="controls">
-        <h2>Python 명령 테스트</h2>
-        <div class="row">
-          <span class="label">생성</span>
-          <button type="button" data-create="box" class="py">정육면체</button>
-          <button type="button" data-create="sphere" class="py">구체</button>
-          <button type="button" data-create="cylinder" class="py">원통</button>
-        </div>
-        <div class="row">
-          <span class="label">이동</span>
-          <button type="button" data-move="-1,0,0" class="py sel">X−</button>
-          <button type="button" data-move="1,0,0" class="py sel">X+</button>
-          <button type="button" data-move="0,1,0" class="py sel">Y+</button>
-          <button type="button" data-move="0,-1,0" class="py sel">Y−</button>
-          <button type="button" data-move="0,0,-1" class="py sel">Z−</button>
-          <button type="button" data-move="0,0,1" class="py sel">Z+</button>
-        </div>
-        <div class="row">
-          <span class="label">모양</span>
-          <button type="button" id="btn-rotate" class="py sel">회전 45°</button>
-          <button type="button" id="btn-bigger" class="py sel">크게</button>
-          <button type="button" id="btn-smaller" class="py sel">작게</button>
-          <button type="button" id="btn-visible" class="py sel">보이기/숨기기</button>
-        </div>
-        <div class="row">
-          <span class="label">색상</span>
-          <input id="color-input" type="color" value="#2f6fde" aria-label="색상 선택">
-          <button type="button" id="btn-color" class="py sel">적용</button>
-          <button type="button" id="btn-next-color" class="py sel">다음 색</button>
-        </div>
-        <div class="row">
-          <span class="label">기타</span>
-          <button type="button" id="btn-remove" class="py sel danger">선택 제거</button>
-          <button type="button" id="btn-circle" class="py">원형 배치</button>
-          <button type="button" id="btn-ping" class="py">Python 핑</button>
+      <section class="insp" id="sec-look">
+        <h2>Material · Visibility</h2>
+        <div class="row"><label for="i-opacity">Opacity</label><input id="i-opacity" type="range" min="0" max="1" step="0.05" value="1"><span id="i-opacity-val">1</span></div>
+        <div class="row"><label class="chk"><input id="i-visible" type="checkbox" checked> Visible</label>
+          <label for="i-color">Color</label><input id="i-color" type="color" value="#9aa4b2"></div>
+        <div class="row btns">
+          <button id="b-focus" type="button">Focus</button>
+          <button id="b-isolate" type="button">Isolate</button>
+          <button id="b-ghost" type="button">나머지 투명</button>
+          <button id="b-showall" type="button">전체 표시</button>
+          <button id="b-restore" type="button">Restore Material</button>
         </div>
       </section>
 
-      <section>
-        <h2>이벤트 로그</h2>
-        <ol id="log" class="log" reversed></ol>
+      <section class="insp" id="sec-clip">
+        <h2>Clipping (단면)</h2>
+        <div class="row"><label class="chk"><input id="c-on" type="checkbox"> 단면 켜기</label>
+          <label class="chk"><input id="c-flip" type="checkbox"> 방향 반전</label></div>
+        <div class="row">
+          <span class="muted">축</span>
+          <label class="chk"><input type="radio" name="c-axis" value="x" checked> X</label>
+          <label class="chk"><input type="radio" name="c-axis" value="y"> Y</label>
+          <label class="chk"><input type="radio" name="c-axis" value="z"> Z</label>
+          <select id="c-scope" aria-label="단면 적용 범위"><option value="all">전체 객체</option><option value="selected">선택 객체만</option></select>
+        </div>
+        <div class="row"><label for="c-pos">위치</label><input id="c-pos" type="range" min="0" max="100" value="50"><span id="c-val">-</span></div>
+        <div class="row btns"><button id="c-reset" type="button">단면 초기화</button></div>
+      </section>
+
+      <section class="insp" id="sec-python">
+        <h2>Python <span id="py-scene-tag" class="muted"></span></h2>
+        <div id="py-panel" class="py-panel"></div>
       </section>
     </aside>
   </main>
+
+  <footer class="statusbar">
+    <span><b id="s-fps">-</b> FPS</span>
+    <span>객체 <b id="s-objects">0</b></span>
+    <span id="s-render">-</span>
+    <span id="s-memory">-</span>
+    <span><span id="py-dot" class="dot loading"></span><span id="py-status">Python 대기</span></span>
+    <span class="load"><span id="s-load">모델: 대기</span><progress id="s-progress" max="100" hidden></progress></span>
+    <button id="btn-log" type="button" class="log-btn" aria-expanded="false"><span id="s-last">로그</span></button>
+  </footer>
+  <div id="log-drawer" class="log-drawer" hidden>
+    <ol id="log" class="log" reversed></ol>
+  </div>
 
   <!-- 모듈(Three.js)을 불러오지 못하면 안내한다 -->
   <script>

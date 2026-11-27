@@ -2,15 +2,12 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 01 — Real-time 3D Engine Foundation v0.1**
-실제 인체 모델과 의료 콘텐츠는 아직 없습니다. 실시간 3D 렌더링과 Python 게임 로직 연결을 검증하는 개발자 Sandbox만 있습니다.
+**현재 단계: STEP 02 — 3D Object Management & Camera System v0.2**
+실제 인체 모델과 의료 콘텐츠는 아직 없습니다. 외부 3D 모델을 불러와 조작하고 관찰하는 범용 엔진과 개발자 Sandbox를 만들었습니다(아래 "STEP 02 엔진").
 
-- **2026-11-27 개발 자료 정리:** 해부학 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트를 정리했습니다. 엔진 코드는 바꾸지 않았습니다. 자세한 내용은 아래 "개발 자료와 자산 관리"에 있습니다.
-- **다음 단계 (STEP 02): 3D 객체 및 카메라 시스템**
-  - GLB 모델 불러오기(테스트 모델 → BodyParts3D 변환 모델)
-  - 3D 경로 위 이동
-  - 대상 추적 카메라
-  - 보존한 진행 규칙 엔진 연결
+- STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
+- 2026-11-27 개발 자료 정리: 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트 ("개발 자료와 자산 관리")
+- **다음 단계 (STEP 03):** BodyParts3D 장기 모델 시범 변환(GLB), 3D 곡선 경로 위 물질 이동, 이동 객체 추적 카메라, 보존한 진행 규칙 엔진과 타이핑 입력 연결
 
 배포 주소: https://webgame-kr.github.io/anatomy-flow/
 
@@ -36,30 +33,46 @@ anatomy-flow/
 ├─ index.html              개발자 Sandbox (importmap에 Three.js 버전 고정)
 ├─ css/style.css
 ├─ js/
-│  ├─ main.js              Sandbox UI 연결
-│  ├─ engine/              3D 렌더링 (Three.js는 여기서만)
-│  │  ├─ viewport.js       Scene, Renderer, Camera, Light, Grid/Axes, OrbitControls, 반응형, 루프, 클릭 선택
-│  │  ├─ object-manager.js 공통 객체 관리: ID로 생성·변경·제거, 보간
-│  │  └─ command-runner.js Python 명령 해석·적용
+│  ├─ main.js              Sandbox UI 연결 (엔진 모듈 조립)
+│  ├─ engine/              3D 엔진 (Three.js는 여기서만)
+│  │  ├─ viewport.js       Renderer: Scene, Camera, Light, Grid/Axes, OrbitControls, 반응형, 루프, 컨텍스트 손실
+│  │  ├─ object-registry.js   Object Registry: 모든 객체를 고유 ID·부모/자식으로 관리, 스냅샷
+│  │  ├─ object-manager.js    기본 도형·그룹 생성, 위치·회전·크기 보간 (STEP 01 API 유지)
+│  │  ├─ resource-tracker.js  Geometry·Material·Texture 참조 수 관리 (0일 때만 dispose)
+│  │  ├─ model-loader.js      GLB/glTF 로딩, 진행률, 구조 분석, 로컬 파일 세트
+│  │  ├─ camera-controller.js Focus · Overview · Presets · 부드러운 이동 · 추적 확장 자리
+│  │  ├─ selection-controller.js Hover · 클릭 선택(드래그 구분) · 선택 상자
+│  │  ├─ material-controller.js  객체별 색·투명도·표시·강조·격리·고스트 (공유 재질 보호)
+│  │  ├─ clipping-controller.js  X/Y/Z 단면
+│  │  ├─ scene-manager.js     장면 정의 → 생성·전환·초기화·이전 장면 복귀
+│  │  └─ command-runner.js    Python 명령 검증·실행 (STEP 01 op + STEP 02 action)
 │  ├─ python/
 │  │  ├─ py-client.js      Worker 시작, 메시지 기반 Promise 호출, 오류 안내
-│  │  └─ py-worker.js      Web Worker 안에서 Pyodide 실행
+│  │  ├─ py-worker.js      Web Worker 안에서 Pyodide 실행 (허용 함수 목록)
+│  │  └─ python-bridge.js  Python 호출 → 명령 실행 → 로그
+│  ├─ ui/
+│  │  ├─ hierarchy-panel.js   Scene Hierarchy
+│  │  ├─ inspector-panel.js   Object Inspector
+│  │  └─ debug-panel.js       Status Bar · 로그 · Debug 오버레이
 │  └─ shared/              다음 단계에서 다시 쓸 모듈 (v0.1에서 보존)
 │     ├─ typing-input.js   한글 IME 조합 처리
 │     └─ records.js        LocalStorage 기록, CSV 다운로드
 ├─ py/                     Python 게임 로직 (Three.js에 의존하지 않음)
-│  ├─ sandbox3d.py         STEP 01: 3D 객체 상태와 명령 생성
+│  ├─ sandbox3d.py         STEP 01: 3D 객체 상태와 명령 생성 (step01 장면)
+│  ├─ scene_commands.py    STEP 02: 스냅샷 기반 명령 생성·검증
 │  ├─ typing_engine.py     ┐
 │  ├─ flow_engine.py       │ v0.1에서 보존한 진행 규칙 엔진
 │  ├─ state_engine.py      │ (타이핑 판정, 노드·Edge 진행, 상태, 검증, 기록)
 │  ├─ content_loader.py    │ STEP 02 이후 3D 콘텐츠에 연결
 │  ├─ record_engine.py     │
 │  └─ game.py              ┘
-├─ content/                학습 콘텐츠 JSON (STEP 02부터)
-├─ models/                 GLB 모델 (STEP 02부터)
-├─ tools/                  모델 변환 도구 (STEP 02부터)
+├─ content/sandbox/scenes.json  테스트 장면 정의 (step01, A~D)
+├─ assets/sandbox/nf-test-rig.glb  자체 제작 테스트 모델 (공개)
+├─ models/                 (STEP 01 자리, assets/로 통합 예정)
+├─ tools/blender/make_test_rig.py  테스트 GLB 생성 스크립트
 ├─ tests/
 │  ├─ test_sandbox3d.py    STEP 01 Python 테스트 (38개)
+│  ├─ test_scene_commands.py STEP 02 명령 테스트 (30개)
 │  └─ test_engine.py       진행 규칙 엔진 테스트 (70개)
 ├─ docs/
 │  ├─ ARCHITECTURE.md      구조, Worker 메시지, 명령 형식
@@ -101,6 +114,10 @@ python tests/test_sandbox3d.py
 ```
 
 ```powershell
+python tests/test_scene_commands.py
+```
+
+```powershell
 python tests/test_engine.py
 ```
 
@@ -126,6 +143,73 @@ python tests/test_engine.py
 ## 저작권 자료
 
 수업 강의자료와 전공 교재는 로컬 `references/` 폴더에만 둡니다. 이 폴더는 `.gitignore`에 있어 커밋되지 않습니다.
+
+## STEP 02 엔진
+
+### 개발자 Sandbox 사용법
+| 영역 | 기능 |
+|---|---|
+| 상단 Toolbar | Import GLB(로컬 `.glb` 또는 `.gltf`+`.bin`+텍스처 세트), 장면 선택, 이전 장면, Reset, 카메라 프리셋(정면·후면·좌측·우측·상단·사선·전체·기본), 선택 단위(부분/모델 전체), 격자·축 표시, Debug |
+| 왼쪽 Scene Hierarchy | 부모·자식 트리, ●/○ 표시 전환, 클릭 선택, 더블클릭 Focus, 불러온 모델 목록(Focus·제거) |
+| 중앙 Viewport | 드래그 회전, 휠/두 손가락 확대, 오른쪽 드래그 이동, Hover 강조, 클릭 선택, 빈 곳 클릭 해제, `F` 초점, `Esc` 해제 |
+| 오른쪽 Inspector | ID·이름·종류·원본 자산·부모/자식·재질·BBox·애니메이션, Position/Rotation/Scale 입력, Opacity, Visible, Color, Focus, Isolate, 나머지 투명, 전체 표시, Restore Material, 단면, Python 명령 |
+| 하단 Status Bar | FPS, 등록 객체 수, draw call·삼각형, GPU geometry·texture 수, Python 상태, 모델 로딩(진행률/진행률 모름), 마지막 로그(누르면 전체 로그) |
+
+모바일(폭 900px 이하)에서는 좌우 패널이 접히고 툴바의 `계층`, `속성` 버튼으로 엽니다. 툴바는 한 줄로 가로 스크롤됩니다.
+주소 뒤에 `?scene=scene_b`를 붙이면 해당 장면으로 시작합니다.
+
+### 테스트 장면 (`content/sandbox/scenes.json`)
+| 장면 | 내용 |
+|---|---|
+| `step01` | STEP 01 기능. Python(`sandbox3d`)이 객체를 만들고 움직입니다. |
+| `scene_a` Primitive | 크기·위치가 다른 정육면체, 구, 원통, 작은 정육면체, 토러스: 선택, 카메라, 투명도, 단면 |
+| `scene_b` GLB Import | 자체 제작 `nf-test-rig.glb` + (로컬에만) DamagedHelmet: 계층·재질 분석, BBox 카메라, 리소스 해제 |
+| `scene_c` Multi-object | 그룹 3단계, 공유 Material, 6면 다중 Material, 같은 표시 이름(Part): 개별 조작, Isolation, 재질 충돌 방지 |
+| `scene_d` Python Command | Python이 위치·회전·크기·색·투명도·강조·카메라 명령을 보내고, 일부러 만든 잘못된 명령의 처리를 확인합니다. |
+
+### 객체 관리 구조
+- **Object Registry (JavaScript)가 렌더링 상태의 기준**입니다. 객체마다 `object_id`, `display_name`, `object_type`(primitive/group/model/mesh), `source_asset_id`, `parent_id`, `children`, 변환, 표시, 투명도, 재질 요약, `bounding_box`, `selectable`, `animation_names`를 갖습니다.
+- **Python에는 스냅샷만** (`id`, `type`, `visible`, `parent`) 보냅니다. Python은 그걸 보고 명령을 만들 뿐, 위치·재질을 따로 들고 있지 않아 상태가 어긋나지 않습니다. 예외인 STEP 01 `step01` 장면은 기존 방식을 유지합니다.
+- **GLB 모델 등록:** 모델 루트를 `type: model`로 등록하고, 내부 Group·Mesh를 원래 계층 그대로 `모델ID/이름` 형식의 ID로 등록합니다. 이름이 겹치면 `_2`, `_3`을 붙입니다(이름만으로 ID를 정하지 않음). 원본의 상대 위치는 그대로 둡니다.
+- **선택:** Raycaster가 맞힌 Mesh에서 위로 올라가며 가장 가까운 등록 객체를 찾습니다. "선택: 모델 전체"면 최상위 객체를 고릅니다. 숨김, 선택 불가, 투명도 0, 단면으로 잘린 부분은 제외합니다.
+- **재질 층 분리:**
+  - 상태 색·투명도(`set_color`/`set_opacity`, 이후 생리 상태 변화용) → `color`/`opacity`
+  - 강조(선택 > 이벤트 `highlight` > Hover) → `emissive`
+  - 격리·고스트 → 표시·투명도 곱
+  - 단면 → `clippingPlanes`
+
+  바꿔야 하는 Mesh만 재질을 복제하고, 상태가 없어지면 원본으로 되돌립니다. 그래서 공유 재질을 쓰는 다른 객체에 영향이 없습니다.
+- **리소스 해제:** `resource-tracker`가 Geometry, Material, Texture의 참조 수를 세고, 0이 될 때만 dispose합니다. 장면 전환이나 모델 제거 때 사용합니다.
+
+### 카메라 시스템
+- **Orbit:** OrbitControls에 감속 효과를 줍니다. 최소·최대 거리와 near/far는 초점 대상 크기에 맞춰 자동으로 조정됩니다.
+- **Focus:** Bounding Sphere 반지름과 화면 비율(세로·가로 FOV)로 거리를 계산하고 0.7초 동안 부드럽게 이동합니다. 이동은 한 번에 하나만 하며, 사용자가 조작하면 멈춥니다.
+- **Overview / 기본:** 장면 전체 보기, 장면 정의의 `camera_defaults`로 복귀
+- **Presets:** 장면의 `coordinate_system`(`up`, `front`)을 기준으로 합니다. 좌측·우측은 **모델의 해부학적 좌·우측 면을 보는 시점**입니다(`+Z`를 보는 모델이면 좌측 = `+X`).
+- **확장 자리:** `setFollowTarget(id)` 추적 인터페이스(STEP 03에서 이동 객체 추적에 사용)
+
+### Python 명령 (STEP 02)
+```python
+commands = [
+    {"action": "set_visibility", "target": "sphere_01", "value": True},
+    {"action": "set_opacity", "target": "sphere_01", "value": 0.5},
+    {"action": "camera_focus", "target": "sphere_01"},
+]
+```
+| action | value | 비고 |
+|---|---|---|
+| `set_position` / `set_rotation` | `[x, y, z]` (회전은 도) | `duration`(ms)이 있으면 보간 |
+| `set_scale` | 숫자 또는 `[x, y, z]` (0보다 큼) | |
+| `set_color` | `"#rrggbb"` | 상태 색 층 |
+| `set_visibility` | `True` / `False` | |
+| `set_opacity` | 0 ~ 1 | |
+| `highlight` | `True` / `False` | 이벤트 강조 층 (선택 강조와 별개) |
+| `camera_focus` | - | 대상이 이동 중이면 도착한 뒤 초점 |
+| `camera_overview` | - | target 불필요 |
+| `scene_change` | 장면 ID | target 불필요 |
+
+- 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
+- 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
 
 ## 개발 자료와 자산 관리
 

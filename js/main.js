@@ -1,37 +1,31 @@
-// 개발자 Sandbox: 3D Viewport + Python Worker + 객체 관리 연결
+// 개발자 Sandbox (STEP 02): 엔진 모듈 연결과 UI
+// 렌더링·객체 상태 = JavaScript(Three.js) / 게임 판단·명령 = Python(Pyodide Worker)
 
 import * as THREE from 'three';
 import { checkWebGL, createViewport } from './engine/viewport.js';
+import { createResourceTracker } from './engine/resource-tracker.js';
+import { createRegistry } from './engine/object-registry.js';
 import { createObjectManager } from './engine/object-manager.js';
+import { createMaterialController } from './engine/material-controller.js';
+import { createCameraController } from './engine/camera-controller.js';
+import { createSelectionController } from './engine/selection-controller.js';
+import { createClippingController } from './engine/clipping-controller.js';
+import { createModelLoader } from './engine/model-loader.js';
+import { createSceneManager } from './engine/scene-manager.js';
 import { createCommandRunner } from './engine/command-runner.js';
 import { createPythonClient } from './python/py-client.js';
+import { createPythonBridge } from './python/python-bridge.js';
+import { createHierarchyPanel } from './ui/hierarchy-panel.js';
+import { createInspectorPanel } from './ui/inspector-panel.js';
+import { createDebugPanel } from './ui/debug-panel.js';
 
 window.__nf3dBooted = true;
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
-const simulate = params.get('simulate') || '';   // 개발용: nowebgl, nopython
-
-const ui = {
-  viewport: $('viewport'), fatal: $('fatal'), reset: $('btn-reset'), camera: $('btn-camera'),
-  pyDot: $('py-dot'), pyStatus: $('py-status'), glInfo: $('gl-info'), fps: $('fps'),
-  renderInfo: $('render-info'), objCount: $('obj-count'), list: $('obj-list'),
-  selId: $('sel-id'), selPos: $('sel-pos'), selRot: $('sel-rot'), selLook: $('sel-look'),
-  color: $('color-input'), log: $('log'),
-};
-
-let logCount = 0;
-function log(text, level = '') {
-  logCount += 1;
-  const li = document.createElement('li');
-  li.value = logCount;
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, '0');
-  li.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} ${text}`;
-  if (level) li.className = level;
-  ui.log.prepend(li);
-  while (ui.log.children.length > 200) ui.log.lastChild.remove();
-}
+const simulate = params.get('simulate') || '';     // 개발용: nowebgl, nopython
+const dbg = createDebugPanel();
+const log = dbg.log;
 
 window.addEventListener('unhandledrejection', (e) => {
   log(`처리되지 않은 오류: ${e.reason && e.reason.message ? e.reason.message : e.reason}`, 'error');
@@ -39,35 +33,28 @@ window.addEventListener('unhandledrejection', (e) => {
 });
 
 function showFatal(title, body) {
-  ui.fatal.hidden = false;
-  ui.fatal.innerHTML = `<h2>${title}</h2><p>${body}</p>`;
+  const box = $('fatal');
+  box.hidden = false;
+  box.innerHTML = `<h2>${title}</h2><p>${body}</p>`;
 }
 
-// ---------- 1. WebGL 확인과 3D 화면 ----------
+// ---------- 1. Python Worker (3D와 별개로 시작) ----------
+const client = createPythonClient({
+  simulateFailure: simulate === 'nopython',
+  onStatus: (state, text) => { dbg.python(state, text); renderPythonPanel(); },
+});
+
+// ---------- 2. WebGL과 엔진 ----------
 const gl = simulate === 'nowebgl' ? { ok: false, reason: '(개발용 시뮬레이션) WebGL을 사용할 수 없는 환경입니다.' } : checkWebGL();
-let viewport = null;
-let manager = null;
-let runner = null;
+let engine = null;
 
 if (!gl.ok) {
   showFatal('이 환경에서는 3D 화면을 표시할 수 없습니다',
     `${gl.reason}<br>최신 Chrome, Edge, Safari, Firefox를 사용하고 브라우저 설정에서 하드웨어 가속을 켜 주세요.`);
-  ui.glInfo.textContent = 'WebGL 미지원';
   log('WebGL 미지원: 3D 화면을 시작하지 않음', 'error');
 } else {
   try {
-    viewport = createViewport(ui.viewport, {
-      onFrame: (dt) => manager && manager.tick(dt),
-      onStats: renderStats,
-      onContextLost: () => {
-        showFatal('그래픽 컨텍스트를 잃었습니다', '그래픽 드라이버가 재설정되었습니다. 페이지를 새로고침하세요.');
-        log('WebGL 컨텍스트 손실', 'error');
-      },
-    });
-    manager = createObjectManager(viewport.scene);
-    runner = createCommandRunner(manager, { onLog: log });
-    viewport.onPick((mesh) => select(mesh ? mesh.userData.id : null), () => manager.meshes());
-    ui.glInfo.textContent = `${gl.version} · three.js r${THREE.REVISION}`;
+    engine = buildEngine();
     log(`3D 화면 시작 (${gl.version}, three.js r${THREE.REVISION})`);
   } catch (err) {
     showFatal('3D 엔진을 시작하지 못했습니다', String(err.message || err));
@@ -75,184 +62,421 @@ if (!gl.ok) {
   }
 }
 
-function renderStats(s) {
-  ui.fps.textContent = `${s.fps}`;
-  ui.renderInfo.textContent = `draw ${s.calls} · 삼각형 ${s.triangles} · ${s.size}`;
-  if (manager && manager.selectedId) showSelected();
-}
-
-// ---------- 2. Python Worker ----------
-const python = createPythonClient({
-  simulateFailure: simulate === 'nopython',
-  onStatus: (state, text) => {
-    ui.pyDot.className = `dot ${state}`;
-    ui.pyStatus.textContent = text;
-    refreshButtons();
-  },
-});
-
-let queue = Promise.resolve();
-
-// Python 함수를 순서대로 호출하고, 돌려받은 명령을 3D에 적용한다
-function act(fn, ...args) {
-  queue = queue.then(async () => {
-    if (!runner) return null;
-    let result;
-    try {
-      result = await python.call(fn, ...args);
-    } catch (err) {
-      log(`Python 호출 실패 (${fn}): ${err.message}`, 'error');
-      return null;
-    }
-    if (!result.ok) {
-      log(`Python: ${result.message}`, 'warn');
-      return result;
-    }
-    const sum = runner.run(result.commands);
-    log(`Python ${fn} → 명령 ${result.commands.length}개 적용${sum.failed ? `, 실패 ${sum.failed}` : ''} · ${result.message}`);
-    checkSync(result.objects);
-    return result;
+function buildEngine() {
+  const e = {};
+  e.viewport = createViewport($('viewport'), {
+    onFrame: (dt) => {
+      e.objects.tick(dt);
+      e.camera.tick(dt);
+      e.selection.tick();
+    },
+    onStats: (s) => {
+      dbg.stats(s);
+      dbg.objects(e.registry.size);
+      if (e.selection.selectedId) e.inspector.show(e.registry.info(e.selection.selectedId));
+      if (dbg.debugOn) dbg.debug(debugText(e, s));
+    },
+    onContextLost: () => {
+      showFatal('그래픽 컨텍스트를 잃었습니다', '그래픽 드라이버가 재설정되었거나 GPU 메모리가 부족합니다. 페이지를 새로고침하세요.');
+      log('WebGL 컨텍스트 손실', 'error');
+    },
   });
-  return queue;
+  const { scene, renderer, camera, controls } = e.viewport;
+  const world = new THREE.Group();
+  world.name = 'world';
+  scene.add(world);
+
+  e.tracker = createResourceTracker();
+  e.registry = createRegistry(world, e.tracker);
+  e.objects = createObjectManager({ registry: e.registry, tracker: e.tracker });
+  e.materials = createMaterialController({ registry: e.registry });
+  e.objects.setMaterialController(e.materials);
+  e.camera = createCameraController({ camera, controls, registry: e.registry });
+  e.clipping = createClippingController({ renderer, scene, registry: e.registry, materials: e.materials });
+  e.selection = createSelectionController({
+    renderer, camera, registry: e.registry, materials: e.materials, getClipPlanes: () => e.clipping.planes(),
+  });
+  scene.add(e.selection.helper);
+  e.loader = createModelLoader({ onStatus: (state, d) => {
+    dbg.loading(state, d);
+    if (state === 'warn') log(`모델 경고: ${d.message}`, 'warn');
+  } });
+  e.scenes = createSceneManager({
+    viewport: e.viewport, registry: e.registry, tracker: e.tracker, objects: e.objects, materials: e.materials,
+    selection: e.selection, clipping: e.clipping, camera: e.camera, loader: e.loader, log,
+  });
+  e.runner = createCommandRunner(e.objects, {
+    registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
+  });
+  e.bridge = createPythonBridge({ client, runner: e.runner, log });
+
+  e.hierarchy = createHierarchyPanel($('hierarchy'), $('hier-count'), {
+    registry: e.registry,
+    onSelect: (id) => e.selection.select(id),
+    onToggleVisible: (id, v) => { e.materials.setVisible(id, v); e.hierarchy.render(); },
+    onFocus: (id) => e.camera.focus(id),
+  });
+  e.inspector = createInspectorPanel({
+    onTransform: (id, kind, values) => e.objects.update(id, { [kind]: values }, 0),
+    onOpacity: (id, v) => e.materials.setOpacity(id, v),
+    onVisible: (id, v) => { e.materials.setVisible(id, v); e.hierarchy.render(); },
+    onColor: (id, c) => e.materials.setColor(id, c),
+    onFocus: (id) => e.camera.focus(id),
+    onIsolate: (id) => { e.materials.isolate(id); log(`Isolation: ${id}만 표시`); },
+    onGhost: (id) => { e.materials.ghostOthers(id); log(`${id} 외 객체 투명화`); },
+    onShowAll: () => { e.materials.showAll(); e.hierarchy.render(); log('전체 표시 (격리·투명화 해제)'); },
+    onRestore: (id) => { e.materials.restore(id); log(`${id} 원래 재질 복원`); },
+  });
+  return e;
 }
 
-// Python 상태와 3D 장면의 객체 ID가 같은지 확인
-function checkSync(pyObjects) {
-  const pyIds = pyObjects.map((o) => o.id).join(',');
-  const jsIds = manager.ids().join(',');
-  if (pyIds !== jsIds) log(`상태 불일치! Python [${pyIds}] / 3D [${jsIds}]`, 'error');
-  renderList();
-  if (manager.selectedId && !manager.has(manager.selectedId)) select(null);
-  else showSelected();
+function debugText(e, s) {
+  const t = e.tracker.stats();
+  const cam = e.camera.state();
+  const r = (a) => a.map((n) => n.toFixed(2)).join(', ');
+  const c = e.clipping.state;
+  return [
+    `scene      ${e.scenes.current ? e.scenes.current.scene_id : '-'} (history ${e.scenes.historySize})`,
+    `registry   ${e.registry.size} · roots ${e.registry.roots().length}`,
+    `tracked    geo ${t.geometries} · mat ${t.materials} · tex ${t.textures}`,
+    `gpu memory geo ${s.geometries} · tex ${s.textures}`,
+    `owned mats ${e.materials.ownedCount()} · tweens ${e.objects.tweenCount}`,
+    `camera     pos ${r(cam.position)}`,
+    `           target ${r(cam.target)}${e.camera.animating ? ' (이동 중)' : ''}`,
+    `selected   ${e.selection.selectedId || '-'} · hover ${e.selection.hoverId || '-'} · level ${e.selection.level}`,
+    `isolate    ${e.materials.isolatedId || '-'} · ghost ${e.materials.ghostId || '-'}`,
+    `clipping   ${c.enabled ? `${c.axis} ${Math.round(c.t * 100)}%${c.flip ? ' flip' : ''} · ${c.scope}` : 'off'}`,
+    `canvas     ${s.size} · pixelRatio ${e.viewport.renderer.getPixelRatio()}`,
+  ].join('\n');
 }
 
-// ---------- 3. 화면 패널 ----------
-function select(id) {
-  if (!manager) return;
-  manager.select(id);
-  renderList();
-  showSelected();
-  refreshButtons();
-}
+// ---------- 3. 화면 연결 ----------
+if (engine) wireUi(engine);
 
-function renderList() {
-  if (!manager) return;
-  const objs = manager.list();
-  ui.objCount.textContent = `${objs.length}`;
-  ui.list.innerHTML = '';
-  for (const o of objs) {
-    const li = document.createElement('li');
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = o.id === manager.selectedId ? 'active' : '';
-    btn.innerHTML = `<span class="swatch" style="background:${o.color}"></span><span>${o.id}</span><span class="muted">${o.name}</span>${o.visible ? '' : '<span class="hidden-tag">숨김</span>'}`;
-    btn.addEventListener('click', () => select(o.id));
-    li.appendChild(btn);
-    ui.list.appendChild(li);
+function wireUi(e) {
+  let renderQueued = false;
+  e.registry.onChange((kind) => {
+    if (kind !== 'structure' || renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => {
+      renderQueued = false;
+      e.hierarchy.render();
+      renderModelList();
+      dbg.objects(e.registry.size);
+    });
+  });
+
+  e.selection.onSelect((id) => {
+    e.hierarchy.setSelected(id);
+    e.inspector.show(id ? e.registry.info(id) : null);
+    if (e.clipping.state.scope === 'selected') applyClip({ targetId: id });
+  });
+  const tip = $('hover-tip');
+  e.selection.onHover((id) => {
+    e.hierarchy.setHover(id);
+    tip.hidden = !id;
+    if (id) tip.textContent = `${e.registry.get(id).displayName} · ${id}`;
+  });
+
+  // 장면
+  const sceneSelect = $('scene-select');
+  sceneSelect.addEventListener('change', () => switchScene(sceneSelect.value));
+  $('btn-back').addEventListener('click', async () => {
+    const d = await e.scenes.back();
+    if (d) log(`이전 장면으로 복귀: ${d.scene_id}`);
+  });
+  $('btn-reset').addEventListener('click', async () => {
+    await e.scenes.reset();
+    log('장면 초기화 (객체·카메라 복원)');
+  });
+  e.scenes.onChange((kind, data) => {
+    if (kind === 'loading') {
+      $('btn-reset').disabled = true;
+      sceneSelect.disabled = true;
+    }
+    if (kind === 'ready') {
+      sceneSelect.value = data.scene.scene_id;
+      sceneSelect.disabled = false;
+      $('btn-reset').disabled = false;
+      $('btn-back').disabled = e.scenes.historySize === 0;
+      clipUi.sync();
+      log(`장면 준비: ${data.scene.scene_name} · 객체 ${e.registry.size}개`);
+      onSceneReady(data.scene);
+    }
+    if (kind === 'model') {
+      if (data.report.meshes > 12) e.hierarchy.collapseDeep(data.id, 1);
+      if (data.report.duplicateNames.length) log(`같은 이름 노드: ${data.report.duplicateNames.join(', ')} (ID는 고유하게 부여)`, 'warn');
+    }
+  });
+
+  // 카메라
+  document.querySelectorAll('[data-preset]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!e.camera.preset(btn.dataset.preset, e.selection.selectedId)) log('카메라 프리셋: 볼 객체가 없습니다', 'warn');
+    });
+  });
+  $('btn-overview').addEventListener('click', () => e.camera.overview());
+  $('btn-home').addEventListener('click', () => e.camera.resetHome(600));
+
+  $('pick-level').addEventListener('change', (ev) => e.selection.setLevel(ev.target.value));
+  $('opt-grid').addEventListener('change', (ev) => { e.viewport.grid.visible = ev.target.checked; });
+  $('opt-axes').addEventListener('change', (ev) => { e.viewport.axes.visible = ev.target.checked; });
+
+  // 키보드: F 초점, Esc 선택 해제
+  window.addEventListener('keydown', (ev) => {
+    if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    if (ev.key === 'f' || ev.key === 'F') { if (e.selection.selectedId) e.camera.focus(e.selection.selectedId); }
+    if (ev.key === 'Escape') e.selection.select(null);
+  });
+
+  // 모바일 패널 접기
+  const left = $('panel-left');
+  const right = $('panel-right');
+  $('toggle-left').addEventListener('click', () => { left.classList.toggle('open'); right.classList.remove('open'); });
+  $('toggle-right').addEventListener('click', () => { right.classList.toggle('open'); left.classList.remove('open'); });
+
+  // 로컬 GLB / glTF 불러오기 (브라우저 안에서만 읽음)
+  $('import-file').addEventListener('change', async (ev) => {
+    // FileList는 input 값과 연결되어 있으므로, 값을 비우기 전에 배열로 복사한다
+    const files = [...(ev.target.files || [])];
+    ev.target.value = '';
+    if (files.length === 0) return;
+    const main = files.find((f) => /\.(glb|gltf)$/i.test(f.name));
+    const assetId = `local_${main ? main.name.replace(/\.(glb|gltf)$/i, '') : 'model'}`;
+    const existing = e.registry.ids().find((id) => e.registry.get(id).sourceAssetId === assetId && e.registry.get(id).type === 'model');
+    if (existing) {
+      log(`이미 불러온 모델입니다: ${existing} (중복 로딩 안 함)`, 'warn');
+      e.selection.select(existing);
+      e.camera.focus(existing);
+      return;
+    }
+    try {
+      const result = await e.loader.loadFiles(files);
+      const id = e.scenes.addModel(result, assetId, { display_name: result.label });
+      e.selection.select(id);
+      e.camera.focus(id);
+    } catch (err) {
+      log(`Import 실패: ${err.message}`, 'error');
+    }
+  });
+
+  // 불러온 모델 목록 (Focus / 제거)
+  function renderModelList() {
+    const ul = $('model-list');
+    ul.innerHTML = '';
+    const models = e.registry.roots().filter((id) => e.registry.get(id).type === 'model');
+    if (models.length === 0) ul.innerHTML = '<li class="muted">(불러온 모델 없음)</li>';
+    for (const id of models) {
+      const entry = e.registry.get(id);
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="row"><b></b><span class="muted"></span></div><div class="row"></div>`;
+      li.querySelector('b').textContent = entry.displayName;
+      li.querySelector('.muted').textContent = entry.sourceAssetId;
+      const btns = li.querySelectorAll('.row')[1];
+      const focusBtn = document.createElement('button');
+      focusBtn.textContent = 'Focus';
+      focusBtn.addEventListener('click', () => { e.selection.select(id); e.camera.focus(id); });
+      const rm = document.createElement('button');
+      rm.textContent = '제거';
+      rm.className = 'danger';
+      rm.addEventListener('click', () => removeModel(id));
+      btns.append(focusBtn, rm);
+      ul.appendChild(li);
+    }
   }
-  if (objs.length === 0) ui.list.innerHTML = '<li class="muted">(객체 없음)</li>';
+
+  function removeModel(id) {
+    const before = e.viewport.renderer.info.memory;
+    const b = { geo: before.geometries, tex: before.textures };
+    e.registry.unregister(id);
+    // GPU 메모리 수치는 다음 렌더링 후 갱신된다
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const after = e.viewport.renderer.info.memory;
+      log(`모델 제거: ${id} · GPU geo ${b.geo}→${after.geometries}, tex ${b.tex}→${after.textures}`);
+    }));
+  }
+
+  // 단면 UI
+  const clipUi = setupClipUi(e);
+  function applyClip(changes) { clipUi.apply(changes); }
+
+  // 시작: 장면 정의 불러오기
+  e.scenes.loadCatalog('content/sandbox/scenes.json').then((catalog) => {
+    sceneSelect.innerHTML = '';
+    for (const s of catalog.scenes) {
+      const opt = document.createElement('option');
+      opt.value = s.scene_id;
+      opt.textContent = s.scene_name;
+      sceneSelect.appendChild(opt);
+    }
+    const first = params.get('scene') && e.scenes.has(params.get('scene')) ? params.get('scene') : catalog.default_scene;
+    return switchScene(first);
+  }).catch((err) => log(`장면 정의 오류: ${err.message}`, 'error'));
+
+  async function switchScene(id) {
+    try {
+      await e.scenes.load(id);
+    } catch (err) {
+      log(`장면 전환 실패: ${err.message}`, 'error');
+    }
+  }
 }
 
-function showSelected() {
-  const o = manager && manager.selectedId ? manager.info(manager.selectedId) : null;
-  if (!o) {
-    ui.selId.textContent = '(없음 — 3D 화면이나 목록에서 클릭)';
-    ui.selPos.textContent = '-';
-    ui.selRot.textContent = '-';
-    ui.selLook.textContent = '-';
+function setupClipUi(e) {
+  const on = $('c-on');
+  const flip = $('c-flip');
+  const scope = $('c-scope');
+  const pos = $('c-pos');
+  const val = $('c-val');
+  const axes = [...document.querySelectorAll('input[name="c-axis"]')];
+
+  function apply(changes = {}) {
+    const res = e.clipping.set({
+      enabled: on.checked,
+      flip: flip.checked,
+      scope: scope.value,
+      axis: axes.find((a) => a.checked).value,
+      t: Number(pos.value) / 100,
+      targetId: e.selection.selectedId,
+      ...changes,
+    });
+    if (res.active) val.textContent = `${res.position} (${res.meshes} Mesh)`;
+    else val.textContent = res.reason || '꺼짐';
+    if (res.reason && on.checked) log(`단면: ${res.reason}`, 'warn');
+  }
+  for (const el of [on, flip, scope, ...axes]) el.addEventListener('change', () => apply());
+  pos.addEventListener('input', () => apply());
+  $('c-reset').addEventListener('click', () => {
+    e.clipping.reset();
+    sync();
+    log('단면 초기화');
+  });
+  function sync() {
+    const s = e.clipping.state;
+    on.checked = s.enabled;
+    flip.checked = s.flip;
+    scope.value = s.scope;
+    pos.value = Math.round(s.t * 100);
+    axes.forEach((a) => { a.checked = a.value === s.axis; });
+    val.textContent = s.enabled ? val.textContent : '꺼짐';
+  }
+  return { apply, sync };
+}
+
+// ---------- 4. Python 패널 (장면마다 다름) ----------
+function pyReady() {
+  return client.state === 'ready' && !!engine;
+}
+
+function onSceneReady(sceneDef) {
+  renderPythonPanel();
+  if (!pyReady()) return;
+  if (sceneDef.python === 'step01') {
+    engine.bridge.run('reset').then(({ result }) => step01Sync(result));
+  } else {
+    sendSnapshot(false);
+  }
+}
+
+async function sendSnapshot(verbose = true) {
+  if (!pyReady()) return null;
+  const e = engine;
+  const scenes = e.scenes.list().map((s) => s.id);
+  try {
+    const r = await e.bridge.call('scene_commands.set_snapshot', e.registry.snapshot(), scenes, e.scenes.current.scene_id);
+    if (verbose) log(`Python 스냅샷: ${r.count}개 · 종류 ${JSON.stringify(r.types)}`);
+    return r;
+  } catch (err) {
+    log(`스냅샷 전송 실패: ${err.message}`, 'error');
+    return null;
+  }
+}
+
+// STEP 01: Python(sandbox3d)의 객체 목록과 3D 장면이 같은지 확인
+function step01Sync(result) {
+  if (!result || !result.objects) return;
+  const pyIds = result.objects.map((o) => o.id).join(',');
+  const jsIds = engine.registry.roots().filter((id) => engine.registry.get(id).sourceAssetId === 'step01').join(',');
+  if (pyIds !== jsIds) log(`STEP 01 상태 불일치! Python [${pyIds}] / 3D [${jsIds}]`, 'error');
+}
+
+function button(label, onClick, cls = '') {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = label;
+  if (cls) b.className = cls;
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+function renderPythonPanel() {
+  const panel = $('py-panel');
+  const tag = $('py-scene-tag');
+  if (!panel) return;
+  panel.innerHTML = '';
+  if (client.state === 'error') {
+    panel.innerHTML = '<p>Python 엔진을 불러오지 못했습니다. 3D 조작은 계속 쓸 수 있습니다.</p>';
     return;
   }
-  ui.selId.textContent = `${o.id} (${o.name})`;
-  ui.selPos.textContent = o.position.join(', ');
-  ui.selRot.textContent = o.rotation.join(', ');
-  ui.selLook.textContent = `×${o.scale} · ${o.color}${o.visible ? '' : ' · 숨김'}`;
-}
-
-function refreshButtons() {
-  const pyReady = python.state === 'ready' && !!runner;
-  const hasSel = !!(manager && manager.selectedId);
-  for (const btn of document.querySelectorAll('button.py')) {
-    btn.disabled = !pyReady || (btn.classList.contains('sel') && !hasSel);
+  if (!pyReady() || !engine.scenes.current) {
+    panel.innerHTML = '<p>Python 준비 중…</p>';
+    return;
   }
-  ui.reset.disabled = !pyReady;
-}
+  const e = engine;
+  const sceneDef = e.scenes.current;
+  tag.textContent = sceneDef.python === 'step01' ? '· STEP 01 sandbox3d' : '· scene_commands';
+  const sel = () => e.selection.selectedId;
 
-// ---------- 4. 버튼 ----------
-document.querySelectorAll('[data-create]').forEach((btn) => {
-  btn.addEventListener('click', async () => {
-    const x = Math.round((Math.random() * 8 - 4) * 10) / 10;
-    const z = Math.round((Math.random() * 8 - 4) * 10) / 10;
-    const r = await act('create', btn.dataset.create, x, 0.5, z);
-    if (r && r.ok) select(r.commands[0].target);
-  });
-});
-
-document.querySelectorAll('[data-move]').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const [dx, dy, dz] = btn.dataset.move.split(',').map(Number);
-    act('move', manager.selectedId, dx, dy, dz);
-  });
-});
-
-$('btn-rotate').addEventListener('click', () => act('rotate', manager.selectedId, 0, 45, 0));
-$('btn-bigger').addEventListener('click', () => act('resize', manager.selectedId, 1.25));
-$('btn-smaller').addEventListener('click', () => act('resize', manager.selectedId, 0.8));
-$('btn-visible').addEventListener('click', () => act('toggle_visible', manager.selectedId));
-$('btn-color').addEventListener('click', () => act('set_color', manager.selectedId, ui.color.value));
-$('btn-next-color').addEventListener('click', () => act('next_color', manager.selectedId));
-$('btn-remove').addEventListener('click', async () => {
-  const r = await act('remove', manager.selectedId);
-  if (r && r.ok) select(null);
-});
-$('btn-circle').addEventListener('click', () => act('arrange_circle', 3));
-$('btn-ping').addEventListener('click', async () => {
-  try {
-    const t0 = performance.now();
-    const info = await python.call('ping');
-    log(`Python 핑 ${Math.round(performance.now() - t0)}ms · dict ${JSON.stringify(info)}`);
-  } catch (err) {
-    log(`Python 핑 실패: ${err.message}`, 'error');
+  if (sceneDef.python === 'step01') {
+    panel.append(
+      ...['box', 'sphere', 'cylinder'].map((k) => button(`+ ${k}`, async () => {
+        const x = Math.round((Math.random() * 8 - 4) * 10) / 10;
+        const z = Math.round((Math.random() * 8 - 4) * 10) / 10;
+        const { result } = await e.bridge.run('create', k, x, 0.5, z);
+        step01Sync(result);
+        if (result && result.ok) e.selection.select(result.commands[0].target);
+      })),
+      button('X+', () => sel() && e.bridge.run('move', sel(), 1, 0, 0)),
+      button('Y+', () => sel() && e.bridge.run('move', sel(), 0, 1, 0)),
+      button('다음 색', () => sel() && e.bridge.run('next_color', sel())),
+      button('원형 배치', () => e.bridge.run('arrange_circle', 3)),
+      button('선택 제거', async () => { if (!sel()) return; const { result } = await e.bridge.run('remove', sel()); step01Sync(result); }, 'danger'),
+      button('Python 초기화', async () => { const { result } = await e.bridge.run('reset'); step01Sync(result); }),
+    );
+    const p = document.createElement('p');
+    p.textContent = 'STEP 01 기능: Python이 객체 상태를 갖고 명령을 보냅니다. 이동·색 버튼은 sandbox3d 객체(box-1 등)를 선택하고 누르세요.';
+    panel.prepend(p);
+    return;
   }
-});
 
-ui.reset.addEventListener('click', async () => {
-  select(null);
-  if (viewport) viewport.resetCamera();
-  await act('reset');
-  log('전체 초기화 완료');
-});
-ui.camera.addEventListener('click', () => { if (viewport) viewport.resetCamera(); });
+  const p = document.createElement('p');
+  p.textContent = sceneDef.python === 'commands'
+    ? 'Scene D: Python이 스냅샷을 보고 명령을 만들고, JavaScript가 실행합니다.'
+    : 'Python에는 객체 ID·종류 스냅샷만 보냅니다.';
+  panel.append(p, button('스냅샷 보내기', () => sendSnapshot(true)));
+  if (sceneDef.python === 'commands') {
+    panel.append(
+      button('데모 명령 실행', async () => { await sendSnapshot(false); e.bridge.run('scene_commands.demo'); }, 'primary'),
+      button('되돌리기', async () => { await sendSnapshot(false); e.bridge.run('scene_commands.restore_demo'); }),
+      button('오류 명령 테스트', async () => { await sendSnapshot(false); e.bridge.run('scene_commands.error_test'); }, 'danger'),
+      button('Python으로 장면 A 전환', async () => { await sendSnapshot(false); e.bridge.run('scene_commands.change_scene', 'scene_a'); }),
+    );
+  }
+}
 
 // ---------- 5. 시작 ----------
-refreshButtons();
-renderList();
-showSelected();
-
-python.start().then(async (info) => {
-  log(`Python 준비 완료 (Python ${info.python}, Pyodide ${info.pyodide}) · ping 리스트 ${JSON.stringify(info.ping.kinds)}`);
-  if (runner) await act('reset');
+renderPythonPanel();
+client.start().then((info) => {
+  log(`Python 준비 완료 (Python ${info.python}, Pyodide ${info.pyodide})`);
+  if (engine && engine.scenes.current) onSceneReady(engine.scenes.current);
 }).catch(() => {
-  log(`Python 로딩 실패: ${ui.pyStatus.textContent}`, 'error');
-  if (manager) {
-    showFatalPython();
-  }
+  log(`Python 로딩 실패: ${$('py-status').textContent}`, 'error');
+  renderPythonPanel();
 });
-
-function showFatalPython() {
-  const note = document.createElement('div');
-  note.className = 'hud';
-  note.style.top = '10px';
-  note.style.bottom = 'auto';
-  note.style.color = 'var(--bad)';
-  note.textContent = 'Python 엔진을 불러오지 못해 객체 명령을 쓸 수 없습니다. 패널의 Python 상태를 확인하세요.';
-  ui.viewport.appendChild(note);
-}
 
 // 개발·자동 검증용
 window.__nf3d = {
-  get manager() { return manager; },
-  get viewport() { return viewport; },
-  python,
-  act,
-  select,
+  get engine() { return engine; },
+  client,
+  sendSnapshot,
 };

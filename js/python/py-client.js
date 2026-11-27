@@ -2,7 +2,7 @@
 
 export const PYODIDE_VERSION = '0.26.4';
 const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
-const PY_FILES = ['sandbox3d.py'];
+const PY_FILES = ['sandbox3d.py', 'scene_commands.py'];
 const INIT_TIMEOUT_MS = 90000;
 const CALL_TIMEOUT_MS = 10000;
 
