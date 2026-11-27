@@ -1,0 +1,54 @@
+{
+  "id": "branch",
+  "title": "2. 여러 방향 분기",
+  "start": "b1",
+  "max_steps": 30,
+  "variables": { "route": "" },
+  "models": [
+    { "id": "m_up", "shape": "ellipse", "x": 430, "y": 110, "rx": 70, "ry": 40, "color": "#dfe6f0", "label": "위 구역" },
+    { "id": "m_down", "shape": "ellipse", "x": 430, "y": 490, "rx": 70, "ry": 40, "color": "#dfe6f0", "label": "아래 구역" },
+    { "id": "m_bonus", "shape": "rect", "x": 760, "y": 40, "w": 120, "h": 60, "color": "#f5d90a", "visible": false, "label": "보너스 길" }
+  ],
+  "paths": [
+    { "id": "p_up", "d": "M 120 300 C 200 120, 300 110, 430 110" },
+    { "id": "p_down", "d": "M 120 300 C 200 480, 300 490, 430 490" },
+    { "id": "p_up_m", "d": "M 430 110 C 560 110, 600 300, 680 300" },
+    { "id": "p_down_m", "d": "M 430 490 C 560 490, 600 300, 680 300" },
+    { "id": "p_m_exit", "d": "M 680 300 L 920 300" },
+    { "id": "p_m_bonus", "d": "M 680 300 C 700 180, 740 130, 820 130" },
+    { "id": "p_bonus_exit", "d": "M 820 130 C 900 130, 920 220, 920 300" }
+  ],
+  "nodes": [
+    { "id": "b1", "ko": "분기점", "en": "junction", "answers": ["분기점", "junction"],
+      "desc": "길이 여러 갈래로 나뉘는 곳", "x": 120, "y": 300 },
+    { "id": "b2", "ko": "위쪽", "en": "upper", "answers": ["위쪽", "upper"],
+      "desc": "위로 가는 갈래 (보너스 길이 열린다)", "x": 430, "y": 110, "model": "m_up",
+      "events": [ { "type": "set", "var": "route", "value": "upper" },
+                  { "type": "color", "model": "m_up", "color": "#8ec5ff" },
+                  { "type": "show", "model": "m_bonus" } ] },
+    { "id": "b3", "ko": "아래쪽", "en": "lower", "answers": ["아래쪽", "lower"],
+      "desc": "아래로 가는 갈래", "x": 430, "y": 490, "model": "m_down",
+      "events": [ { "type": "set", "var": "route", "value": "lower" },
+                  { "type": "color", "model": "m_down", "color": "#8ec5ff" } ] },
+    { "id": "b4", "ko": "합류", "en": "merge", "answers": ["합류", "merge"],
+      "desc": "갈래가 다시 만나는 곳", "x": 680, "y": 300 },
+    { "id": "b5", "ko": "보너스", "en": "bonus", "answers": ["보너스", "bonus"],
+      "desc": "위쪽 길을 지나온 경우에만 열리는 곳", "x": 820, "y": 130,
+      "events": [ { "type": "pulse", "model": "m_bonus" },
+                  { "type": "log", "text": "조건부 분기(route == upper)를 통과했습니다." } ] },
+    { "id": "b6", "ko": "출구", "en": "exit", "answers": ["출구", "exit"],
+      "desc": "분기 시나리오의 끝", "x": 920, "y": 300 }
+  ],
+  "edges": [
+    { "id": "e_up", "from": "b1", "to": "b2", "path": "p_up", "duration": 1200 },
+    { "id": "e_down", "from": "b1", "to": "b3", "path": "p_down", "duration": 1200 },
+    { "id": "e_up_m", "from": "b2", "to": "b4", "path": "p_up_m", "duration": 1200 },
+    { "id": "e_down_m", "from": "b3", "to": "b4", "path": "p_down_m", "duration": 1200 },
+    { "id": "e_exit", "from": "b4", "to": "b6", "path": "p_m_exit", "duration": 1000 },
+    { "id": "e_bonus", "from": "b4", "to": "b5", "path": "p_m_bonus", "duration": 1000,
+      "condition": { "var": "route", "op": "==", "value": "upper" },
+      "mover": { "shape": "circle", "color": "#f5a00a", "size": 10 } },
+    { "id": "e_bonus_exit", "from": "b5", "to": "b6", "path": "p_bonus_exit", "duration": 1000 }
+  ],
+  "complete": { "node": "b6" }
+}

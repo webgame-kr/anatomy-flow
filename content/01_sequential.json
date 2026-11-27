@@ -1,0 +1,35 @@
+{
+  "id": "sequential",
+  "title": "1. 순차적 노드 이동",
+  "start": "s1",
+  "max_steps": 20,
+  "models": [
+    { "id": "m_pump", "shape": "rect", "x": 300, "y": 60, "w": 100, "h": 50, "color": "#c9d3e0", "label": "펌프" },
+    { "id": "m_goal", "shape": "circle", "x": 900, "y": 300, "r": 52, "color": "#e6ebf2", "label": "" }
+  ],
+  "paths": [
+    { "id": "p12", "d": "M 100 300 C 160 120, 260 120, 350 150" },
+    { "id": "p23", "d": "M 350 150 C 500 190, 500 450, 650 450" },
+    { "id": "p34", "d": "M 650 450 C 780 450, 800 300, 900 300" }
+  ],
+  "nodes": [
+    { "id": "s1", "ko": "출발", "en": "start", "answers": ["출발", "start"],
+      "desc": "흐름이 시작되는 곳", "x": 100, "y": 300 },
+    { "id": "s2", "ko": "펌프", "en": "pump", "answers": ["펌프", "pump"],
+      "desc": "흐름을 밀어 보내는 장치", "x": 350, "y": 150, "model": "m_pump",
+      "events": [ { "type": "color", "model": "m_pump", "color": "#e5484d" },
+                  { "type": "pulse", "model": "m_pump" } ] },
+    { "id": "s3", "ko": "통로", "en": "channel", "answers": ["통로", "channel"],
+      "desc": "흐름이 지나가는 길", "x": 650, "y": 450 },
+    { "id": "s4", "ko": "도착", "en": "goal", "answers": ["도착", "goal"],
+      "desc": "흐름이 끝나는 곳", "x": 900, "y": 300, "model": "m_goal",
+      "events": [ { "type": "color", "model": "m_goal", "color": "#46a758" },
+                  { "type": "log", "text": "순차 경로를 모두 지났습니다." } ] }
+  ],
+  "edges": [
+    { "id": "e12", "from": "s1", "to": "s2", "path": "p12", "duration": 1200 },
+    { "id": "e23", "from": "s2", "to": "s3", "path": "p23", "duration": 1500 },
+    { "id": "e34", "from": "s3", "to": "s4", "path": "p34", "duration": 1200 }
+  ],
+  "complete": { "node": "s4" }
+}

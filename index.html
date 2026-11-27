@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flow Engine Sandbox</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>FLOW ENGINE <span class="ver">v0.1 Sandbox</span></h1>
+    <div class="top-controls">
+      <label class="sr" for="content-select">테스트 콘텐츠</label>
+      <select id="content-select" disabled></select>
+      <button id="reset-btn" type="button" disabled>초기화</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage" aria-label="기전 화면">
+      <svg id="scene" role="img" aria-label="노드와 경로"></svg>
+      <div class="stage-tools">
+        <button id="zoom-in" type="button" title="확대">＋</button>
+        <button id="zoom-out" type="button" title="축소">－</button>
+        <button id="zoom-fit" type="button" title="전체 보기">⤢</button>
+      </div>
+      <div id="banner" class="banner" hidden></div>
+
+      <div class="typing">
+        <p id="prompt" class="prompt">엔진을 준비하는 중…</p>
+        <form id="typing-form" class="typing-row" autocomplete="off" onsubmit="return false">
+          <input id="answer" type="text" inputmode="text" autocomplete="off" autocapitalize="off"
+                 spellcheck="false" placeholder="다음 용어를 입력하고 Enter" disabled>
+          <button id="submit-btn" type="button" disabled>입력</button>
+        </form>
+        <p id="feedback" class="feedback" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="개발자 패널">
+      <details open>
+        <summary>상태</summary>
+        <dl class="kv">
+          <dt>단계</dt><dd id="d-phase">-</dd>
+          <dt>현재 노드</dt><dd id="d-current">-</dd>
+          <dt>완료 노드</dt><dd id="d-completed">-</dd>
+          <dt>이동 경로</dt><dd id="d-path">-</dd>
+          <dt>정답 / 오답</dt><dd id="d-score">-</dd>
+          <dt>이동 횟수</dt><dd id="d-steps">-</dd>
+        </dl>
+      </details>
+      <details open>
+        <summary>상태 변수</summary>
+        <table class="vars"><tbody id="d-vars"></tbody></table>
+      </details>
+      <details open>
+        <summary>입력 후보 (개발자용)</summary>
+        <ul id="d-candidates" class="list"></ul>
+      </details>
+      <details open>
+        <summary>이벤트 로그</summary>
+        <ol id="d-log" class="log" reversed></ol>
+      </details>
+      <details>
+        <summary>콘텐츠 검증</summary>
+        <ul id="d-validate" class="list"></ul>
+      </details>
+      <details>
+        <summary>옵션</summary>
+        <label class="opt"><input id="opt-auto" type="checkbox"> 정답이면 자동 이동 (Enter 없이)</label>
+        <label class="opt"><input id="opt-follow" type="checkbox" checked> 카메라 자동 추적</label>
+        <label class="opt"><input id="opt-labels" type="checkbox"> 아직 안 간 노드 이름 보기</label>
+      </details>
+      <details>
+        <summary>학습 기록</summary>
+        <p id="d-records" class="small">-</p>
+        <div class="btn-row">
+          <button id="csv-btn" type="button" disabled>CSV 내보내기</button>
+          <button id="clear-rec-btn" type="button">기록 지우기</button>
+        </div>
+      </details>
+      <p id="d-engine" class="small muted">-</p>
+    </aside>
+  </main>
+
+  <div id="loading" class="loading">
+    <div class="loading-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <p id="loading-text">Python 엔진(Pyodide)을 불러오는 중…</p>
+      <div id="loading-error" class="loading-error" hidden></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

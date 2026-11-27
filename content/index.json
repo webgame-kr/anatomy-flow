@@ -1,0 +1,7 @@
+[
+  { "file": "01_sequential.json", "title": "1. 순차적 노드 이동" },
+  { "file": "02_branch.json", "title": "2. 여러 방향 분기" },
+  { "file": "03_cycle.json", "title": "3. 출발점으로 돌아오는 순환" },
+  { "file": "04_causal.json", "title": "4. 정답에 따른 인과관계" },
+  { "file": "99_broken.json", "title": "검증 실패 예시 (잘못된 데이터)" }
+]
