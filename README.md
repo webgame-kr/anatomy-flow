@@ -2,8 +2,8 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 03-C — 3D Path, Actor & Motion Engine**
-3차원 경로, Checkpoint, 이동 객체(Actor), 추적 카메라, 개발자 경로 편집기를 만들었습니다. 혈액·림프액·음식물·신경 신호가 같은 엔진으로 움직입니다. 타이핑 게임 연결은 아직 없습니다(STEP 03-D).
+**현재 단계: STEP 03-D — Gameplay Integration & Python Learning Engine**
+첫 번째로 플레이할 수 있는 학습 게임(`play.html`)을 만들었습니다. 용어를 입력하면 Python 규칙 엔진이 판정하고, 적혈구가 3D 심장 안의 다음 학습 지점으로 이동합니다. 가이드·암기·기전 추론 모드와 학습 기록이 있습니다.
 
 - STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
 - STEP 02: 객체·카메라·선택·재질·단면·장면 관리 엔진 (아래 "STEP 02 엔진")
@@ -11,7 +11,8 @@
 - **STEP 03-A:** BodyParts3D 검색·선택 추출·Blender 변환 파이프라인. 심장, 대동맥, 대정맥, 폐혈관, 기관지 가지 GLB 6개를 원본 상대 위치 그대로 만들었습니다(`docs/development/bp3d/ANATOMY_PIPELINE.md`).
 - **STEP 03-B:** Anatomy Explorer. 심혈관 구조 41개 레지스트리, 레이어, 3D 라벨, 검색, 해부학 Anchor(object-local) 편집, 피부·흉곽 맥락 모델 (`docs/development/STEP_03B_REPORT.md`)
 - **STEP 03-C:** 경로 엔진(호 길이 기반 이동), Checkpoint(건너뛰기 없는 감지), Actor(적혈구 교육용 모델 등), 추적 카메라, 경로 편집기, Python 이동 명령 (`docs/development/STEP_03C_REPORT.md`, `docs/development/MOTION_DATA_SPEC.md`)
-- **다음 단계 (STEP 03-D):** 타이핑 입력 → 규칙 엔진(`game.py`) → `motion_link.py` → Checkpoint 이동 연결
+- **STEP 03-D:** Play 화면, Gameplay Controller(상태 머신, 세션 검증), Python 학습 API(`lesson.py`), 3D 콘텐츠 형식(version 2), 심혈관 혈액순환 콘텐츠, 학습 기록 v2 (`docs/development/STEP_03D_REPORT.md`, `docs/FLOW_SPEC_v0.1.md` 6장)
+- **다음 단계 (STEP 04):** 생리적 형태 변화(박동·판막), 내강 중심선 경로 검증, 다른 계통 콘텐츠
 
 3D 해부학 모델 출처: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형 내역은 `assets/licenses/bodyparts3d.md`)
 
@@ -99,6 +100,7 @@ python -m http.server 8000
 ```
 
 그다음 브라우저에서 엽니다.
+- 학습 게임 (Play): `http://localhost:8000/play.html`
 - 사용자용 Anatomy Explorer: `http://localhost:8000/explorer.html`
 - 개발자 Sandbox (STEP 02): `http://localhost:8000/`
 - 인터넷 연결이 필요합니다. Three.js와 Pyodide(약 10MB)를 CDN에서 받습니다.
@@ -218,6 +220,27 @@ commands = [
 
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
+
+## STEP 03-D Play (학습 게임)
+
+`play.html`이 학습자용 게임 화면입니다. Explorer와 Sandbox는 그대로 있습니다.
+
+- **콘텐츠:** `content/lessons/index.json`에 목록이 있습니다.
+  - 심혈관 「혈액순환: 정맥 환류에서 체순환까지」: 실제 BodyParts3D 모델을 씁니다. 3D 경로는 근사(APPROXIMATE) 경로이고, 폐 모세혈관·폐정맥·대동맥 이후는 PENDING이라 이동 없이 개념으로만 진행합니다.
+  - 테스트 콘텐츠 2개: 교육용 개념 장면에서 기본 진행과 분기·순환을 확인합니다.
+- **진행:** 질문에 맞는 용어(한글·영문·등록된 약어)를 입력합니다.
+  - 정답이면 Python이 다음 노드를 정하고 적혈구가 다음 Checkpoint로 이동합니다.
+  - 오답이면 위치가 그대로입니다.
+  - 갈림길에서는 입력한 이름으로 경로를 고릅니다.
+- **모드:**
+  - 가이드: 정답과 설명을 보여 줍니다.
+  - 암기: 정답을 숨기고 3D 위치와 힌트를 줍니다.
+  - 기전 추론: 원인과 결과를 묻는 질문을 보여 주고, 맞힌 뒤 설명합니다.
+  - 암기·추론 모드에서는 라벨, 진행 목록, Hover에서 아직 배우지 않은 구조 이름을 숨깁니다.
+- **설정:** 자동 추적·자유 탐색, 애니메이션 줄이기, 카메라·이동 속도, 경로 표시, 라벨, 투명도, 단면, 정답이면 자동 제출(한글 조합 중 제외)
+- **기록:** 완료하거나 학습을 종료하면 이 브라우저(LocalStorage)에 저장합니다. 설정에서 CSV로 내보낼 수 있습니다. 정답률의 정의는 `docs/FLOW_SPEC_v0.1.md` 6장에 있습니다.
+- **주소 옵션 (개발·검증용):** `play.html?lesson=cv.blood_circulation&mode=memory&autostart=1`
+- **Python 테스트:** `python tests/test_lesson.py`
 
 ## STEP 03-C 이동 엔진
 

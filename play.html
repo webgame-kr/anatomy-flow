@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>NURSE FLOW · Play</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/explorer.css">
+  <link rel="stylesheet" href="css/play.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="play">
+  <header class="pl-top">
+    <button id="tg-flow" type="button" class="only-mobile" aria-label="진행 패널">진행</button>
+    <div class="brand"><b>NURSE FLOW</b><span id="pl-system">-</span></div>
+    <div class="pl-title"><span id="pl-lesson">-</span><span id="pl-mode" class="pill">-</span></div>
+    <div class="pl-actions">
+      <button id="btn-pause" type="button" disabled>일시정지</button>
+      <button id="btn-settings" type="button" aria-expanded="false">설정</button>
+      <button id="btn-end" type="button" disabled>학습 종료</button>
+      <button id="tg-stats" type="button" class="only-mobile" aria-label="학습 정보">정보</button>
+    </div>
+    <div id="settings" class="settings pl-settings" hidden>
+      <label>카메라
+        <select id="opt-camera"><option value="auto">자동 추적</option><option value="free">자유 탐색</option></select>
+      </label>
+      <label class="chk"><input id="opt-reduced" type="checkbox"> 애니메이션 줄이기</label>
+      <label>카메라 속도 <input id="opt-camspeed" type="range" min="0.5" max="2" step="0.25" value="1"></label>
+      <label>이동 속도 <input id="opt-actorspeed" type="range" min="0.5" max="2" step="0.25" value="1"></label>
+      <label class="chk"><input id="opt-path" type="checkbox"> 경로 표시</label>
+      <label class="chk"><input id="opt-labels" type="checkbox" checked> 구조 라벨</label>
+      <label>심장·혈관 투명도 <input id="opt-opacity" type="range" min="0.1" max="1" step="0.05" value="1"></label>
+      <label class="chk"><input id="opt-clip" type="checkbox"> 단면 (좌우)</label>
+      <input id="opt-clip-pos" type="range" min="0" max="100" value="50" aria-label="단면 위치" disabled>
+      <div class="row btns"><button id="btn-view-all" type="button">전체 보기</button><button id="btn-view-actor" type="button">물질 위치로</button></div>
+      <div class="row btns"><button id="btn-csv" type="button">학습 기록 CSV</button></div>
+      <p class="note"><a href="explorer.html">Anatomy Explorer</a> · <a href="index.html">개발자 Sandbox</a></p>
+    </div>
+  </header>
+
+  <main class="pl-work">
+    <aside id="pl-flow" class="pl-side left" aria-label="기전 진행">
+      <h2>기전 흐름</h2>
+      <ol id="flow-list" class="flow-list"></ol>
+      <p class="note" id="flow-note"></p>
+    </aside>
+
+    <section id="viewport" class="viewport ex-view pl-view" aria-label="3D 화면">
+      <div id="label-layer" class="label-layer"></div>
+      <div id="hover-tip" class="hover-tip" hidden></div>
+      <div id="credits" class="credits" hidden></div>
+      <div id="pl-status" class="pl-status" hidden></div>
+      <div id="fatal" class="fatal" hidden></div>
+    </section>
+
+    <aside id="pl-stats" class="pl-side right" aria-label="학습 정보">
+      <h2>학습 정보</h2>
+      <div class="meter"><div id="st-progress-bar"></div></div>
+      <dl class="kv" id="stats-kv"></dl>
+      <h2>생리 상태 <span class="muted">(교육용 표시)</span></h2>
+      <dl class="kv" id="vars-kv"></dl>
+      <section id="explain" class="explain" hidden></section>
+    </aside>
+
+    <section class="pl-typing" aria-label="입력">
+      <div id="q-title" class="q-title"></div>
+      <ul id="q-lines" class="q-lines"></ul>
+      <div class="q-row">
+        <input id="answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="용어 입력 (한글 또는 영문)" aria-label="용어 입력" disabled>
+        <button id="btn-submit" type="button" class="primary" disabled>제출</button>
+        <button id="btn-hint" type="button" disabled>힌트</button>
+        <button id="btn-reveal" type="button" disabled hidden>정답 보기</button>
+        <button id="btn-clear" type="button" disabled>지우기</button>
+      </div>
+      <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <!-- 시작 화면 -->
+  <div id="ov-start" class="overlay">
+    <div class="card">
+      <h1>NURSE FLOW 3D <span class="muted">Play</span></h1>
+      <label class="field">학습 콘텐츠 <select id="sel-lesson"></select></label>
+      <fieldset class="modes" id="sel-mode"></fieldset>
+      <p class="note" id="start-note">콘텐츠를 불러오는 중…</p>
+      <div class="row btns"><button id="btn-start" type="button" class="primary" disabled>학습 시작</button></div>
+    </div>
+  </div>
+
+  <!-- 일시정지 -->
+  <div id="ov-pause" class="overlay" hidden>
+    <div class="card small">
+      <h2>일시정지</h2>
+      <p class="note">학습 시간과 이동이 멈췄습니다. 3D 화면은 계속 돌려 볼 수 있습니다.</p>
+      <div class="row btns"><button id="btn-resume" type="button" class="primary">계속하기</button><button id="btn-restart" type="button">처음부터 다시</button></div>
+    </div>
+  </div>
+
+  <!-- 이동 실패 -->
+  <div id="ov-error" class="overlay" hidden>
+    <div class="card small">
+      <h2>진행할 수 없습니다</h2>
+      <p id="err-text"></p>
+      <div class="row btns" id="err-btns"><button id="btn-retry" type="button" class="primary">이동 다시 시도</button><button id="btn-recover" type="button">마지막 정상 위치로</button><button id="btn-err-restart" type="button">처음부터</button></div>
+    </div>
+  </div>
+
+  <!-- 완료 -->
+  <div id="ov-done" class="overlay" hidden>
+    <div class="card wide">
+      <h2 id="done-title">학습 완료</h2>
+      <dl class="kv" id="done-kv"></dl>
+      <h3>오답이 난 개념</h3>
+      <p id="done-wrong" class="note"></p>
+      <h3>전체 기전 복습</h3>
+      <ol id="done-review" class="review"></ol>
+      <p class="note" id="done-save"></p>
+      <div class="row btns" id="done-btns"></div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      if (window.__nf3dBooted) return;
+      var box = document.getElementById('fatal');
+      box.hidden = false;
+      box.innerHTML = '<h2>3D 화면을 불러오지 못했습니다</h2><p>인터넷 연결을 확인하고 최신 브라우저에서 열어 주세요. <code>file://</code>로 열었다면 로컬 서버(<code>python -m http.server</code>)를 사용하세요.</p>';
+    }, 20000);
+  </script>
+  <script type="module" src="js/play/play-main.js"></script>
+</body>
+</html>

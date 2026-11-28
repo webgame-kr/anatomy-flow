@@ -213,6 +213,37 @@ export function createMotionController({ paths, actors, log = () => {} }) {
     return move(actorId, { ...opts, until: checkpointId });
   }
 
+  // 이동 없이 Checkpoint 위치에 놓기 (transition 'jump', 마지막 정상 위치 복구)
+  function placeAtCheckpoint(actorId, checkpointId) {
+    const a = actors.get(actorId);
+    if (!a) return fail(actorId, 'actor_place_at_checkpoint', `없는 Actor: ${actorId}`);
+    const found = paths.findCheckpoint(checkpointId);
+    if (!found || !found.cp.valid) return fail(actorId, 'actor_place_at_checkpoint', `없는 Checkpoint: ${checkpointId}`);
+    const r = setPath(actorId, found.pathId, { distance: found.cp.distance });
+    if (!r.ok) return fail(actorId, 'actor_place_at_checkpoint', r.error);
+    // 그 Checkpoint 이벤트는 이미 처리한 것으로 본다 (다음 이동에서 다시 내지 않음)
+    mstate(a).fired.add(`${checkpointId}|0|${a.direction > 0 ? 'forward' : 'backward'}`);
+    mstate(a).fresh = false;
+    setState(a, 'waiting_at_checkpoint');
+    cmdSeq += 1;
+    const result = { status: 'arrived', actor_id: actorId, cmd_id: cmdSeq, action: 'actor_place_at_checkpoint', session, path_id: found.pathId, progress: round(a.progress), checkpoint_id: checkpointId };
+    emit('command_done', result);
+    return { id: cmdSeq, promise: Promise.resolve(result), result };
+  }
+
+  // 전체 일시정지·재개 (게임 일시정지): 이동 중인 Actor만
+  const pausedByGame = new Set();
+  function pauseAll() {
+    for (const a of actors.list()) if (a.movement_state === 'moving') { setState(a, 'paused'); pausedByGame.add(a.actor_id); }
+    return pausedByGame.size;
+  }
+  function resumeAll() {
+    for (const id of pausedByGame) { const a = actors.get(id); if (a && a.movement_state === 'paused') setState(a, 'moving'); }
+    const n = pausedByGame.size;
+    pausedByGame.clear();
+    return n;
+  }
+
   // 개발자 Next: 정지 지점에서 다음 정지 지점까지
   function next(actorId, opts = {}) {
     const a = actors.get(actorId);
@@ -290,6 +321,7 @@ export function createMotionController({ paths, actors, log = () => {} }) {
       if (a.movement_state === 'moving' || a.movement_state === 'paused') setState(a, 'cancelled');
     }
     session += 1;
+    pausedByGame.clear();
     emit('session', { reason });
     return session;
   }
@@ -420,6 +452,9 @@ export function createMotionController({ paths, actors, log = () => {} }) {
     setPath,
     move,
     moveToCheckpoint,
+    placeAtCheckpoint,
+    pauseAll,
+    resumeAll,
     next,
     pause,
     resume,

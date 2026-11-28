@@ -154,3 +154,114 @@ shape: `circle`(x, y, r), `rect`(x, y, w, h), `ellipse`(x, y, rx, ry), `path`(d)
 { "id": 12, "type": "log", "text": "..." }
 { "id": 13, "type": "complete", "reason": "goal" }
 ```
+
+---
+
+## 6. 3D 학습 콘텐츠 (version 2, STEP 03-D)
+
+v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이면 3D 필드를 쓰고, 노드의 2D 좌표 `x`, `y`를 요구하지 않는다. 공간 위치는 콘텐츠에 좌표로 적지 않는다. Anchor Manager와 Path Engine이 ID로 찾는다.
+
+파일 위치는 `content/lessons/<계통>/*.json`이고, 목록은 `content/lessons/index.json`에 있다.
+
+### 최상위
+| 키 | 설명 |
+|---|---|
+| version | `2` |
+| id, title, content_version, system | 식별자, 제목, 콘텐츠 버전(기록에 남음), 계통 |
+| scene | `{type: "anatomy", url}` 해부학 scene.json, 또는 `{type: "sandbox", catalog, scene_id}` 교육용 개념 장면 |
+| actor_id | 기본으로 움직일 Actor |
+| start, nodes, edges, complete, variables, max_steps, options | v0.1과 같음 |
+| verification_note, source | 검증 상태와 출처 안내 (화면에 표시) |
+
+### 별칭 (요구서 필드 이름)
+`content_loader.upgrade()`가 아래 이름을 v0.1 이름으로 바꾼다. 원본 dict는 바꾸지 않는다.
+
+| 3D 이름 | v0.1 이름 |
+|---|---|
+| node_id | id |
+| name_ko, name_en | ko, en |
+| accepted_answers | answers |
+| prerequisites | requires |
+| edge_id | id |
+| source_node, target_node | from, to |
+| conditions | condition |
+| path_id | path |
+| 이벤트 `set_variable` | `set` |
+
+### Node (추가 필드)
+| 키 | 설명 |
+|---|---|
+| prompt | 가이드·암기 모드 질문 |
+| reason_prompt | 기전 추론 모드 질문 (없으면 prompt) |
+| explanation | 도착 후 설명 |
+| hint | 힌트 (힌트 횟수로 기록) |
+| anatomical_id | 해부학 레지스트리 구조 (초점, 강조, 라벨 숨김에 씀) |
+| anchor_id | 관련 Anchor |
+| checkpoint_id | 이 노드에 도착했을 때 Actor가 있을 Checkpoint (복구 위치) |
+| scene_id, source | 장면, 출처 |
+| verification_status | `VERIFIED`, `APPROXIMATE`, `PENDING`, `CONCEPT`, `TEST` 중 하나 |
+| revisit | 순환으로 다시 온 노드 처리. `relearn`(기본)은 새 학습 시점으로 첫 시도 통계에 넣고, `review`는 복습으로 첫 시도 통계에서 뺀다. 어느 쪽이든 다시 입력해야 한다. |
+
+### Edge (추가 필드)
+| 키 | 설명 |
+|---|---|
+| path_id | 이동 경로 |
+| checkpoint_id | 도착 Checkpoint. 없으면 도착 노드의 checkpoint_id를 쓴다. 같은 노드에 여러 경로로 들어올 때 쓴다(예: 하대정맥 → 우심방). |
+| actor_id | 이 Edge에서 움직일 Actor (없으면 콘텐츠 actor_id) |
+| transition_type | `move`(기본)는 경로를 따라 이동한다. `jump`는 이동 없이 바로 도착한다. jump는 Checkpoint가 있으면 그 위치에 놓고, 없으면 그대로 둔다. 3D 경로가 없는 PENDING 구간에 쓴다. |
+| events | 도착할 때 노드 이벤트보다 먼저 실행 |
+
+### 3D 이벤트
+```json
+{ "type": "scene", "command": { "action": "actor_set_state", "target": "rbc_01", "value": { "oxygenation": "oxygenated" } },
+  "mode": "parallel", "required": false }
+```
+- `command`: STEP 02·03-C 명령(`set_color`, `highlight`, `camera_focus`, `actor_*` 등). Python이 이름을 검사한다.
+- `mode`:
+  - `sequential`: 끝날 때까지 기다린다. 최대 8초를 기다리고, 넘으면 기다리지 않고 진행한다.
+  - `parallel`(기본): 기다리지 않는다.
+- `required: true`: 실패하면 진행을 멈춘다. false면 장식용으로 보고 실패를 기록만 한다.
+- 반복 박동이나 입자처럼 끝나지 않는 연출은 parallel로 둔다.
+
+### 진행과 이동 (lesson.py)
+1. JS가 `lesson.submit(text)`를 부르면 Python이 판정한다.
+   - 오답이면 현재 노드와 Actor 위치를 그대로 둔다.
+   - 정답이면 이동 명령(`actor_move_to_checkpoint` 또는 `actor_place_at_checkpoint`, `wait: true`)을 돌려준다. 이때 규칙 엔진은 `moving` 상태다.
+2. JS가 이동을 실행한다. 끝나면 `lesson.arrived(status)`를 부른다.
+   - `arrived` 또는 `completed`: `game.arrive()` → Edge 이벤트 → 노드 이벤트 → 완료 검사
+   - `failed` 또는 `cancelled`: 규칙 엔진은 `moving` 상태로 남는다.
+     - `lesson.retry()`: 같은 이동을 다시 한다.
+     - `lesson.recover()`: 마지막 정상 노드와 그 Checkpoint로 되돌린다.
+   - 시각적 이동이 실패하면 학습을 진행 처리하지 않는다.
+3. 순환
+   - `laps`: 이미 지난 Edge를 다시 지난 횟수(순환 이동 횟수)
+   - `visits`: 노드 방문 횟수
+   - 둘을 따로 센다.
+4. 진행률
+   - 진행률 = 완료한 노드 수 / (완료한 노드 수 + 현재 노드에서 완료 노드까지 최소 Edge 수)
+   - 고르지 않은 분기 경로는 분모에 들어가지 않는다.
+
+### 기록 (record_engine.make_record_v2)
+- 필드: session_id, content_id, content_version, learning_mode, start_time, end_time, active_learning_time, correct_count, wrong_count, first_attempt_correct_count, question_count, hint_count, completed_nodes, attempted_answers, completion_status, wrong_nodes
+- 정답률 정의
+  - **전체 시도 정답률** = 정답 제출 수 / (정답 제출 수 + 오답 제출 수). 빈 입력은 세지 않는다.
+  - **첫 시도 정답률** = 오답 없이 맞힌 문제 수 / 맞힌 문제 수
+    - `revisit: review` 노드를 다시 맞힌 것은 분모와 분자에서 뺀다.
+    - 힌트를 봤어도 오답이 없으면 첫 시도로 센다. 힌트 사용은 따로 기록한다.
+    - 이동 실패를 복구한 뒤 같은 문제를 다시 맞히면 새 문제로 센다.
+- `active_learning_time`: 일시정지와 탭이 비활성인 시간을 뺀 학습 시간
+- 저장
+  - LocalStorage 키 `nurseflow.records.v2`, 최대 500개
+  - v0.1 기록(`flowengine.records.v1`)은 읽기만 한다. CSV로 내보낼 때 `from_v1()`이 v2 열에 맞춘다.
+
+### 3D 연결 검증 (JS, 불러올 때)
+- 오류
+  - Node ID·Edge ID 중복
+  - 없는 해부학 구조, Anchor, Path, Checkpoint, Actor
+  - `move` Edge인데 Path와 Checkpoint가 모두 없음
+  - scene 이벤트의 없는 Actor
+- 경고
+  - 모델이 없는(MISSING) 구조
+  - 노드는 VERIFIED인데 경로는 검증되지 않음
+- 규칙 검증(Python `content_loader`): 시작 노드, 정답, 완료 조건, 순환 경고, 지원하지 않는 이벤트·전환·검증 상태·버전
+- 오류가 하나라도 있으면 그 콘텐츠는 시작하지 않는다. 엔진과 다른 콘텐츠는 계속 쓸 수 있다.

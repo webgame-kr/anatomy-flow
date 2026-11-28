@@ -23,6 +23,7 @@
       "source_anchor_id": "a.ivc.lumen", "target_anchor_id": "a.ra.cavity",
       "points": [ { "anchor_id": "a.ivc.lumen" }, { "anchor_id": "a.ra.cavity" } ],
       "checkpoints": [
+        { "checkpoint_id": "cp.ivc", "path_progress": 0.0, "anatomical_id": "cv.inferior_vena_cava", "stop_on_arrival": false, "label": "하대정맥" },
         { "checkpoint_id": "cp.ivc_ra", "path_progress": 1.0, "anatomical_id": "cv.right_atrium", "stop_on_arrival": true, "label": "우심방 도착" }
       ],
       "links": [ { "to": "cv.ra_to_rv" } ],
@@ -57,6 +58,7 @@
       "source_anchor_id": "a.la.cavity", "target_anchor_id": "a.lv.cavity",
       "points": [ { "anchor_id": "a.la.cavity" }, { "anchor_id": "a.mv.center" }, { "anchor_id": "a.lv.cavity" } ],
       "checkpoints": [
+        { "checkpoint_id": "cp.la", "path_progress": 0.0, "anatomical_id": "cv.left_atrium", "stop_on_arrival": false, "label": "좌심방" },
         { "checkpoint_id": "cp.mitral", "anchor_id": "a.mv.center", "anatomical_id": "cv.valve.mitral", "stop_on_arrival": true, "label": "승모판" },
         { "checkpoint_id": "cp.lv", "path_progress": 1.0, "anatomical_id": "cv.left_ventricle", "stop_on_arrival": true, "label": "좌심실 도착" }
       ],

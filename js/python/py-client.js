@@ -2,9 +2,11 @@
 
 export const PYODIDE_VERSION = '0.26.4';
 const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
-const PY_FILES = ['sandbox3d.py', 'scene_commands.py', 'motion_link.py'];
+const PY_FILES = ['sandbox3d.py', 'scene_commands.py', 'motion_link.py',
+  // STEP 03-D: v0.1 규칙 엔진 + 3D 학습 API
+  'typing_engine.py', 'state_engine.py', 'flow_engine.py', 'content_loader.py', 'record_engine.py', 'game.py', 'lesson.py'];
 // Worker 파일이 바뀌면 올린다 (브라우저·Pages 캐시에 남은 이전 Worker를 쓰지 않도록)
-const WORKER_VERSION = '03c-1';
+const WORKER_VERSION = '03d-1';
 const INIT_TIMEOUT_MS = 90000;
 const CALL_TIMEOUT_MS = 10000;
 

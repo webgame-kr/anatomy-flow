@@ -24,6 +24,9 @@ const ALLOWED = new Set([
   'scene_commands.set_paths', 'scene_commands.route_demo', 'scene_commands.motion_error_test',
   'scene_commands.move_to',
   'motion_link.setup', 'motion_link.to_motion', 'motion_link.motion_done',
+  // STEP 03-D 학습 게임 (규칙 판정·진행·기록은 Python)
+  'lesson.load', 'lesson.reset', 'lesson.submit', 'lesson.arrived', 'lesson.retry', 'lesson.recover',
+  'lesson.hint', 'lesson.record', 'lesson.records_csv', 'lesson.view', 'lesson.peek',
 ]);
 
 function toPlain(value) {
@@ -61,6 +64,7 @@ async function init({ pyodideBase, pyBase, files }) {
     modules.sandbox3d = sandbox;
     modules.scene_commands = py.pyimport('scene_commands');
     modules.motion_link = py.pyimport('motion_link');
+    modules.lesson = py.pyimport('lesson');
     ready = true;
     const info = toPlain(sandbox.ping());
     postMessage({ type: 'ready', python: info.python, pyodide: py.version, ping: info });

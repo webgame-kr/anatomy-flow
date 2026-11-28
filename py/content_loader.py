@@ -1,9 +1,89 @@
 # 콘텐츠 로더: JSON(dict) 구조 검증과 색인 만들기
 
+import scene_commands
+
 OPS = ('==', '!=', '>', '>=', '<', '<=')
-EVENT_TYPES = ('set', 'add', 'color', 'show', 'hide', 'pulse', 'log')
+EVENT_TYPES = ('set', 'add', 'color', 'show', 'hide', 'pulse', 'log', 'scene', 'set_variable')
 MODEL_EVENTS = ('color', 'show', 'hide', 'pulse')
 SHAPES = ('circle', 'rect', 'ellipse', 'path')
+
+# STEP 03-D: 3D 콘텐츠(version 2) 필드
+TRANSITIONS = ('move', 'jump')          # move: 경로를 따라 이동, jump: 이동 없이 바로 도착
+REVISIT = ('relearn', 'review')         # 순환으로 다시 온 노드: 새 학습 시점 / 복습(첫 시도 통계 제외)
+STATUSES = ('VERIFIED', 'APPROXIMATE', 'PENDING', 'CONCEPT', 'TEST')
+EVENT_MODES = ('sequential', 'parallel')
+
+# 3D 데이터 이름 → v0.1 이름 (요구서의 필드 이름을 그대로 써도 된다)
+NODE_ALIASES = {'node_id': 'id', 'name_ko': 'ko', 'name_en': 'en', 'accepted_answers': 'answers',
+                'prerequisites': 'requires'}
+EDGE_ALIASES = {'edge_id': 'id', 'source_node': 'from', 'target_node': 'to', 'conditions': 'condition',
+                'path_id': 'path'}
+
+
+def rename_keys(item, aliases):
+    # 별칭 키를 v0.1 키로 바꾼 새 dict (원본은 바꾸지 않는다)
+    result = {}
+    for key in item:
+        if key in aliases and aliases[key] not in item:
+            result[aliases[key]] = item[key]
+        else:
+            result[key] = item[key]
+    return result
+
+
+def upgrade(content):
+    # version 2(3D) 콘텐츠의 별칭 필드를 v0.1 형식으로 맞춘다. v0.1 콘텐츠는 그대로 돌려준다
+    if type(content) != dict or content.get('version') != 2:
+        return content
+    result = {}
+    for key in content:
+        result[key] = content[key]
+    if type(content.get('nodes')) == list:
+        nodes = []
+        for node in content['nodes']:
+            if type(node) == dict:
+                node = rename_keys(node, NODE_ALIASES)
+                if 'events' in node:
+                    node['events'] = fix_events(node['events'])
+            nodes.append(node)
+        result['nodes'] = nodes
+    if type(content.get('edges')) == list:
+        edges = []
+        for edge in content['edges']:
+            if type(edge) == dict:
+                edge = rename_keys(edge, EDGE_ALIASES)
+                if 'events' in edge:
+                    edge['events'] = fix_events(edge['events'])
+            edges.append(edge)
+        result['edges'] = edges
+    return result
+
+
+def fix_events(events):
+    # set_variable 이벤트는 v0.1의 set 이벤트와 같다
+    if type(events) != list:
+        return events
+    fixed = []
+    for ev in events:
+        if type(ev) == dict and ev.get('type') == 'set_variable':
+            copy = {}
+            for key in ev:
+                copy[key] = ev[key]
+            copy['type'] = 'set'
+            fixed.append(copy)
+        else:
+            fixed.append(ev)
+    return fixed
+
+
+def scene_actions():
+    # 3D 콘텐츠의 scene 이벤트에 쓸 수 있는 명령 이름
+    names = set()
+    for name in scene_commands.ACTIONS:
+        names.add(name)
+    for name in scene_commands.MOTION:
+        names.add(name)
+    return names
 
 
 def is_number(value):
@@ -84,6 +164,12 @@ def check_events(events, where, model_ids, node_ids, errors):
                 errors.append('{}: add의 value는 숫자여야 합니다.'.format(place))
         if kind == 'log' and not is_text(ev.get('text')):
             errors.append('{}: text가 없습니다.'.format(place))
+        if kind == 'scene':
+            command = ev.get('command')
+            if type(command) != dict or command.get('action') not in scene_actions():
+                errors.append('{}: 지원하지 않는 3D 명령 "{}"'.format(place, command))
+            if 'mode' in ev and ev['mode'] not in EVENT_MODES:
+                errors.append('{}: mode는 sequential 또는 parallel'.format(place))
         check_condition(ev.get('when'), place, node_ids, errors)
 
 
@@ -148,6 +234,10 @@ def validate(content):
     if len(errors) > 0:
         return result
 
+    version = content.get('version', 1)
+    if version not in (1, 2):
+        errors.append('지원하지 않는 콘텐츠 버전: {}'.format(version))
+        return result
     nodes = content['nodes']
     edges = content['edges']
     models = content.get('models', [])
@@ -189,7 +279,9 @@ def validate(content):
             for ans in answers:
                 if not is_text(ans):
                     errors.append('{}: 빈 정답이 있습니다.'.format(where))
-        if not is_number(node.get('x')) or not is_number(node.get('y')):
+        if version == 2:
+            check_node3d(node, where, errors, warnings)
+        elif not is_number(node.get('x')) or not is_number(node.get('y')):
             errors.append('{}: 좌표 x, y가 숫자가 아닙니다.'.format(where))
         if 'model' in node and node['model'] not in model_ids:
             errors.append('{}: 모델 "{}"가 없습니다.'.format(where, node['model']))
@@ -215,7 +307,9 @@ def validate(content):
         if edge.get('to') not in node_ids:
             errors.append('{}: 도착 노드 "{}"가 없습니다.'.format(where, edge.get('to')))
             ok = False
-        if 'path' in edge and edge['path'] not in path_ids:
+        if version == 2:
+            check_edge3d(edge, where, node_ids, model_ids, errors)
+        elif 'path' in edge and edge['path'] not in path_ids:
             errors.append('{}: 경로 "{}"가 없습니다.'.format(where, edge['path']))
         if 'duration' in edge:
             if not is_number(edge['duration']) or edge['duration'] <= 0:
@@ -261,6 +355,32 @@ def validate(content):
         steps = content.get('max_steps', 200)
         warnings.append('순환 구조가 있습니다. 완료 조건 또는 최대 {}번 이동으로 끝납니다.'.format(steps))
     return result
+
+
+def check_node3d(node, where, errors, warnings):
+    # 3D 노드 필드 검사 (ID가 실제 모델·Anchor·경로에 있는지는 JS가 검사한다)
+    for key in ['anatomical_id', 'anchor_id', 'checkpoint_id', 'scene_id', 'prompt', 'explanation', 'hint']:
+        if key in node and node[key] != None and not is_text(node[key]):
+            errors.append('{}: {}는 글자여야 합니다.'.format(where, key))
+    status = node.get('verification_status')
+    if status != None and status not in STATUSES:
+        errors.append('{}: 알 수 없는 검증 상태 "{}"'.format(where, status))
+    if status == None:
+        warnings.append('{}: verification_status가 없습니다.'.format(where))
+    if 'revisit' in node and node['revisit'] not in REVISIT:
+        errors.append('{}: revisit은 relearn 또는 review'.format(where))
+
+
+def check_edge3d(edge, where, node_ids, model_ids, errors):
+    kind = edge.get('transition_type', 'move')
+    if kind not in TRANSITIONS:
+        errors.append('{}: transition_type은 move 또는 jump'.format(where))
+    if 'path' in edge and not is_text(edge['path']):
+        errors.append('{}: path_id는 글자여야 합니다.'.format(where))
+    if 'actor_id' in edge and not is_text(edge['actor_id']):
+        errors.append('{}: actor_id는 글자여야 합니다.'.format(where))
+    if 'events' in edge:
+        check_events(edge['events'], where, model_ids, node_ids, errors)
 
 
 def build_index(content):

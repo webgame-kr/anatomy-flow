@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 03-C(경로·Actor·이동 엔진)까지 완료했다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
+현재 단계는 STEP 03-D(Play 화면과 Python 학습 엔진 연결)까지 완료했다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -142,8 +142,30 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
   - 이동 엔진을 바꾸면 `tests/motion-tests.html`(브라우저, 28개)과 `python tests/test_motion_commands.py`를 실행한다.
   - Worker 파일을 바꾸면 `py-client.js`의 `WORKER_VERSION`을 올린다.
 
-## STEP 03-D 방향
-1. (완료: STEP 03-A~C) 심혈관 GLB, 해부학 레지스트리, Anchor, 경로·Actor·이동 엔진
-2. 보존한 규칙 엔진(`game.py`, `flow_engine.py`, `state_engine.py`, `typing_engine.py`)을 Worker에 싣는다. `py-client.js`의 `PY_FILES`와 `py-worker.js`의 `ALLOWED`에 추가한다.
-3. 콘텐츠 Edge를 경로·Checkpoint에 연결한다(`motion_link.setup`). 정답 제출 결과를 `motion_link.to_motion`으로 바꿔 실행하고, 이동 결과를 `motion_link.motion_done`과 `game.arrive`로 돌려준다.
-4. 타이핑 입력(`js/shared/typing-input.js`)과 Next 버튼을 교체한다.
+## 학습 게임 (STEP 03-D, 2026-11-28)
+- **규칙은 Python에만:** 정답 판정, 다음 노드, 분기 조건, 순환, 완료, 기록 계산은 `py/`(`lesson.py` → `game.py`, `flow_engine.py`, `record_engine.py`)가 한다. JS(`js/play/`)에 학습 규칙을 복제하지 않는다.
+- **이동과 진행 분리:**
+  - 정답이면 Python은 `moving` 상태가 되고 이동 명령만 돌려준다.
+  - JS가 이동을 끝내고 `lesson.arrived(status)`를 불러야 진행한다.
+  - 이동이 실패하거나 취소되면 진행하지 않는다. 재시도(`retry`)나 마지막 정상 위치 복구(`recover`)를 한다.
+- **상태 머신:** `js/play/gameplay-state.js`의 표에 상태별 허용 입력과 전이가 있다. 새 동작을 추가하면 이 표를 먼저 고친다.
+- **세션:**
+  - 시작, 재시작, 콘텐츠 변경 때 `session.newSession()`을 부르고 `motion.cancelAll()`을 실행한다.
+  - Python 응답과 이동 결과는 보낸 때의 세션 번호가 같을 때만 반영한다.
+- **콘텐츠:**
+  - `content/lessons/`는 version 2 형식이다(`docs/FLOW_SPEC_v0.1.md` 6장).
+  - 좌표를 적지 않고 anatomical_id, anchor_id, checkpoint_id, path_id로 잇는다.
+  - 3D 경로가 없는 구간은 `transition_type: "jump"`와 `verification_status: "PENDING"`으로 적는다.
+  - 상대정맥과 하대정맥은 서로 다른 유입 경로(분기)로 두고, 순서대로 이어 붙이지 않는다.
+- **정답:**
+  - 비슷한 말을 자동으로 정답 처리하지 않는다. 동의어·약어는 `accepted_answers`에 적은 것만 허용한다.
+  - 띄어쓰기 무시는 콘텐츠의 `options.ignore_spaces`로 정한다.
+- **정답 노출:** 암기·추론 모드에서 이름을 보여 줄지는 `learning-mode.js`의 `canShowName`으로만 정한다(라벨, 진행 목록, Hover, 질문 모두).
+- **산소화 색:** 교육용 구분이다. 혈액이 파란색이 된다고 설명하지 않는다.
+- **Worker:** Python 파일이나 허용 함수를 추가하면 `py-client.js`의 `PY_FILES`·`WORKER_VERSION`과 `py-worker.js`의 `ALLOWED`를 함께 고친다.
+
+## STEP 04 방향
+1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
+2. 내강 중심선으로 경로를 만들어 APPROXIMATE 경로를 검증 가능한 경로로 바꾼다. 폐정맥, 대동맥, 폐 순환 구간을 만든다.
+3. 생리적 형태 변화(심장 박동, 판막 개폐)는 라이선스가 확인된 모델이나 자체 제작 애니메이션으로 한다. 끝나지 않는 연출은 parallel 이벤트로 둔다.
+4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.

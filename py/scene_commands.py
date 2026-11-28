@@ -33,6 +33,7 @@ MOTION = {
     'actor_set_speed': 'actor',
     'actor_seek': 'actor',
     'actor_set_state': 'actor',
+    'actor_place_at_checkpoint': 'actor',
     'path_show': 'path',
     'path_hide': 'path',
     'camera_follow': 'actor',
@@ -116,7 +117,7 @@ def check_motion(command):
             for path_id in command['route']:
                 if path_id not in paths:
                     return 'route에 없는 경로: {}'.format(path_id)
-    if action == 'actor_move_to_checkpoint':
+    if action == 'actor_move_to_checkpoint' or action == 'actor_place_at_checkpoint':
         if command.get('checkpoint_id') not in checkpoints:
             return '없는 Checkpoint: {}'.format(command.get('checkpoint_id'))
         if 'duration' in command and (not is_number(command['duration']) or command['duration'] <= 0):

@@ -19,6 +19,15 @@ def new_state(content):
     state['end_reason'] = ''         # goal, limit, stuck
     state['log'] = []
     state['next_id'] = 1             # 명령 고유 번호
+    # STEP 03-D 학습 기록용
+    state['hints'] = 0               # 힌트 사용 횟수
+    state['first_correct'] = 0       # 첫 시도에 맞힌 문제 수
+    state['questions'] = 0           # 맞힌 문제 수 (복습 노드 제외한 첫 시도 통계의 분모)
+    state['tries'] = 0               # 지금 문제에서 틀린 횟수
+    state['hinted'] = False          # 지금 문제에서 힌트를 봤는지
+    state['attempts'] = []           # (노드들, 입력, 결과) 튜플
+    state['wrong_nodes'] = {}        # 오답이 난 문제의 노드 -> 횟수
+    state['laps'] = 0                # 순환 경로 이동 횟수 (Edge가 이미 지난 Edge일 때)
 
     # 변수 초기값 복사 (원본 콘텐츠가 바뀌지 않게)
     variables = content.get('variables', {})
@@ -49,6 +58,13 @@ def make_command(state, kind):
     command = {'id': state['next_id'], 'type': kind}
     state['next_id'] += 1
     return command
+
+
+def add_attempt(state, node_ids, text, result):
+    # 입력 기록 (최근 200개)
+    state['attempts'].append((list(node_ids), text, result))
+    if len(state['attempts']) > MAX_LOG:
+        state['attempts'].pop(0)
 
 
 def mark_visit(state, node_id):

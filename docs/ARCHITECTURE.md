@@ -118,3 +118,28 @@ py/motion_link.py ───────── 규칙 엔진(game.py) move ↔ 3D
 
 ## 데이터 명세
 `docs/development/MOTION_DATA_SPEC.md`
+
+---
+
+# STEP 03-D — Gameplay Integration
+
+```
+play.html → js/play/play-main.js (화면 연결)
+ ├ play-engine.js ─────── STEP 02 엔진 + 해부학(03-B) + 이동(03-C) 조립. anatomy / sandbox 장면
+ ├ gameplay-controller.js 입력 → Python 판정 → 이동 명령 실행·대기 → Python 도착 처리 → 다음 문제
+ ├ gameplay-state.js ──── 상태 머신 (loading, ready, waiting_input, checking, transitioning, waiting_choice, paused, completed, error)
+ ├ session-manager.js ─── 세션 ID, 학습 시간(일시정지·탭 비활성 제외), 기록 저장(LocalStorage v2)
+ ├ learning-mode.js ───── guide / memory / reasoning 노출 정책 (canShowName)
+ ├ gameplay-ui.js ─────── 진행 패널, 학습 정보, 문제·피드백, 완료·복습 화면
+ └ shared/typing-input.js IME 조합 처리 (STEP v0.1 재사용)
+py/lesson.py ─────────── game.py(규칙) + motion_link.py(3D 이동 명령 변환) 묶음 API
+py/game.py ───────────── + 힌트, 첫 시도, 이동 취소(cancel_move), 진행률, 기록 v2
+py/content_loader.py ─── + version 2 별칭 변환(upgrade), 3D 필드 검사
+```
+
+## 정답 한 번의 흐름
+1. `submit(text)`: 상태가 checking이 된다.
+2. Python `lesson.submit`: 오답이면 waiting 상태로 돌아간다.
+3. 정답이면 상태가 transitioning이 된다. command-runner가 이동 명령(wait)을 실행하고, 카메라가 추적한다.
+4. 이동 결과를 Python `lesson.arrived`에 보낸다: 이벤트(var, scene) → 도착 초점 → 다음 문제
+5. 실패하면 상태가 error가 된다. 재시도나 복구 중에서 고른다.

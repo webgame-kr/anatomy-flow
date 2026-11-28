@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "id": "test.sequential",
+  "content_version": "0.1.0",
+  "title": "[개념 장면] 기본 진행 테스트",
+  "system": "test",
+  "scene": { "type": "sandbox", "catalog": "content/sandbox/scenes.json", "scene_id": "motion_f" },
+  "actor_id": "rbc_01",
+  "start": "s.start",
+  "max_steps": 20,
+  "options": { "ignore_spaces": false },
+  "variables": {},
+  "verification_note": "교육용 개념 장면이다. 해부학 구조가 아니며 정답 입력 → 이동 → 다음 문제 흐름만 검증한다.",
+  "source": "project test data",
+  "nodes": [
+    { "node_id": "s.start", "name_ko": "출발", "name_en": "start", "accepted_answers": ["출발", "start"],
+      "prompt": "시작하려면 '출발'을 입력하세요.", "explanation": "첫 노드는 이동 없이 바로 도착합니다.", "hint": "출발", "verification_status": "TEST" },
+    { "node_id": "s.one", "name_ko": "첫째 관문", "name_en": "first gate", "accepted_answers": ["첫째 관문", "first gate"],
+      "prompt": "다음 지점 이름은?", "explanation": "경로 20% 지점입니다.", "hint": "첫째 ○○", "checkpoint_id": "checkpoint_01", "verification_status": "TEST" },
+    { "node_id": "s.two", "name_ko": "둘째 관문", "name_en": "second gate", "accepted_answers": ["둘째 관문", "second gate"],
+      "prompt": "다음 지점 이름은?", "explanation": "경로 50% 지점입니다.", "hint": "둘째 ○○", "checkpoint_id": "checkpoint_02", "verification_status": "TEST" },
+    { "node_id": "s.goal", "name_ko": "도착", "name_en": "goal", "accepted_answers": ["도착", "goal"],
+      "prompt": "마지막 지점 이름은?", "explanation": "경로 80% 지점입니다.", "hint": "끝", "checkpoint_id": "checkpoint_03", "verification_status": "TEST" }
+  ],
+  "edges": [
+    { "edge_id": "se.1", "source_node": "s.start", "target_node": "s.one", "path_id": "path_001", "duration": 1200 },
+    { "edge_id": "se.2", "source_node": "s.one", "target_node": "s.two", "path_id": "path_001", "duration": 1200 },
+    { "edge_id": "se.3", "source_node": "s.two", "target_node": "s.goal", "path_id": "path_001", "duration": 1200 }
+  ],
+  "complete": { "node": "s.goal" }
+}

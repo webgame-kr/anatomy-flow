@@ -9,6 +9,7 @@
       "path_id": "p.trunk", "name_ko": "줄기 (분기 전)", "curve_type": "catmull_rom",
       "points": [ { "space": "scene", "position": [-4, 0.5, 0] }, { "space": "scene", "position": [-2.6, 0.7, 0.2] }, { "space": "scene", "position": [-1.5, 0.5, 0] } ],
       "links": [ { "to": "p.left", "when": "left", "label": "왼쪽 가지" }, { "to": "p.right", "when": "right", "label": "오른쪽 가지" } ],
+      "checkpoints": [ { "checkpoint_id": "cp.trunk_start", "path_progress": 0.0, "label": "줄기 시작" }, { "checkpoint_id": "cp.trunk_end", "path_progress": 1.0, "label": "분기점" } ],
       "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data",
       "notes": "끝에서 Actor의 biological_state.branch 값(left 또는 right)으로 가지를 고른다. 값이 없으면 첫 연결."
     },
@@ -16,6 +17,7 @@
       "path_id": "p.left", "name_ko": "왼쪽 가지 → 순환 진입", "curve_type": "catmull_rom",
       "points": [ { "space": "scene", "position": [-1.5, 0.5, 0] }, { "space": "scene", "position": [-0.6, 0.6, -1.4] }, { "space": "scene", "position": [1.0, 0.5, -2.0] } ],
       "links": [ { "to": "p.loop" } ],
+      "checkpoints": [ { "checkpoint_id": "cp.left_end", "path_progress": 1.0, "label": "왼쪽 끝 (순환 입구)" } ],
       "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data"
     },
     {
@@ -30,7 +32,11 @@
         { "space": "scene", "position": [1.0, 0.5, -2.0] }, { "space": "scene", "position": [2.6, 1.0, -2.4] },
         { "space": "scene", "position": [3.4, 0.5, -0.8] }, { "space": "scene", "position": [2.2, 0.8, 0.2] }
       ],
-      "checkpoints": [ { "checkpoint_id": "cp.loop_gate", "path_progress": 0.5, "stop_on_arrival": false, "event_ids": ["ev.loop"], "label": "순환 관문 (바퀴마다 다시 활성화)" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.loop_gate", "path_progress": 0.5, "stop_on_arrival": false, "event_ids": ["ev.loop"], "label": "순환 관문 (바퀴마다 다시 활성화)" },
+        { "checkpoint_id": "cp.loop_a", "path_progress": 0.25, "stop_on_arrival": false, "label": "순환 A" },
+        { "checkpoint_id": "cp.loop_b", "path_progress": 0.75, "stop_on_arrival": false, "label": "순환 B" }
+      ],
       "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data",
       "notes": "닫힌 곡선. 종료 조건은 actor_move의 loops(바퀴 수). loops가 없으면 actor_stop까지 계속 돈다."
     },

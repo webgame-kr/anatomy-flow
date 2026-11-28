@@ -105,6 +105,15 @@ def run_events(events, state):
         elif kind == 'pulse':
             cmd = state_engine.make_command(state, 'pulse')
             cmd['model'] = ev['model']
+        elif kind == 'scene':
+            # 3D 명령은 Python이 실행하지 않고 JS에 넘긴다 (복사본)
+            cmd = state_engine.make_command(state, 'scene')
+            command = {}
+            for key in ev['command']:
+                command[key] = ev['command'][key]
+            cmd['command'] = command
+            cmd['mode'] = ev.get('mode', 'parallel')
+            cmd['required'] = ev.get('required', False)
         else:
             cmd = state_engine.make_command(state, 'log')
             cmd['text'] = ev['text']

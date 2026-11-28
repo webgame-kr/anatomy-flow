@@ -11,6 +11,7 @@
 //   actor_set_speed         target=actor_id, value(m/s)
 //   actor_seek              target=actor_id, value(0~1)
 //   actor_set_state         target=actor_id, value={oxygenation: 'oxygenated'|'deoxygenated', ...}
+//   actor_place_at_checkpoint target=actor_id, checkpoint_id (이동 없이 놓기: jump 전환, 위치 복구)
 //   path_show / path_hide   target=path_id
 //   camera_follow           target=actor_id, value?={distance, height, side, first_person}
 //   camera_unfollow         (대상 없음)
@@ -32,6 +33,7 @@ const SPEC = {
   actor_set_speed: 'actor',
   actor_seek: 'actor',
   actor_set_state: 'actor',
+  actor_place_at_checkpoint: 'actor',
   path_show: 'path',
   path_hide: 'path',
   camera_follow: 'actor',
@@ -71,6 +73,7 @@ export function createMotionCommands({ paths, actors, motion, camera, onFollow =
         if ('route' in cmd && !(Array.isArray(cmd.route) && cmd.route.every((p) => paths.has(p)))) return 'route에 없는 경로가 있습니다';
         if (!actors.get(t).path_id) return `경로가 지정되지 않은 Actor: ${t}`;
         break;
+      case 'actor_place_at_checkpoint':
       case 'actor_move_to_checkpoint':
         if (!paths.findCheckpoint(cmd.checkpoint_id)) return `없는 Checkpoint: ${cmd.checkpoint_id}`;
         if ('duration' in cmd && !(isNum(cmd.duration) && cmd.duration > 0)) return 'duration은 0보다 큰 숫자(ms)';
@@ -113,6 +116,7 @@ export function createMotionCommands({ paths, actors, motion, camera, onFollow =
       case 'actor_set_path': return asResult(motion.setPath(t, cmd.path_id, { progress: cmd.progress, direction: cmd.direction }));
       case 'actor_move': return moveResult(motion.move(t, { speed: cmd.speed, duration: cmd.duration, until: cmd.until, loops: cmd.loops, pass_stops: cmd.pass_stops, route: cmd.route }));
       case 'actor_move_to_checkpoint': return moveResult(motion.moveToCheckpoint(t, cmd.checkpoint_id, { speed: cmd.speed, duration: cmd.duration }));
+      case 'actor_place_at_checkpoint': return moveResult(motion.placeAtCheckpoint(t, cmd.checkpoint_id));
       case 'actor_pause': return asResult(motion.pause(t));
       case 'actor_resume': return asResult(motion.resume(t));
       case 'actor_stop': return asResult(motion.stop(t));
