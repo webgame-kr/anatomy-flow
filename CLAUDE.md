@@ -164,8 +164,19 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **산소화 색:** 교육용 구분이다. 혈액이 파란색이 된다고 설명하지 않는다.
 - **Worker:** Python 파일이나 허용 함수를 추가하면 `py-client.js`의 `PY_FILES`·`WORKER_VERSION`과 `py-worker.js`의 `ALLOWED`를 함께 고친다.
 
+## 간호학 자료 분석 (STEP 04-A 사전 분석, 2026-11-28)
+- **콘텐츠 작성 전 확인할 문서:** 학습 콘텐츠나 기전을 새로 만들거나 고치기 전에 `references/nursing/analysis/`의 문서를 먼저 읽는다.
+  - `NURSING_REFERENCE_INDEX.md`: 자료 목록과 주제별 근거 쪽
+  - `CARDIOVASCULAR_CONTENT_AUDIT.md`: 혈액순환 콘텐츠 검증 결과와 수정 목록
+  - `PHYSIOLOGY_MECHANISM_DATABASE.json`: 기전 데이터의 기준. 같은 내용의 `.md`도 있다.
+  - `STEP_04_REQUIREMENTS.md`: STEP 04-A~D 요구사항
+  - `MISSING_MATERIALS.md`: 확인하지 못한 자료와 내용
+- **기준 자료의 우선순위:** 교재와 교수님 강의자료가 우선이다. 자료에서 확인되지 않는 내용은 "미확인"으로 적고, 단정해서 쓰지 않는다.
+- **공개 금지:** `references/`(분석 문서와 `_text/` 추출본 포함)는 Git에서 제외된다. 강의 문장이나 상세 추출 내용을 공개 문서(`docs/`, `content/`, 커밋 메시지)에 옮기지 않는다. 공개 문서에는 쪽 번호와 일치 여부만 적는다.
+- **검증 상태의 범위:** 강의자료와 대조한 것은 용어와 설명의 근거일 뿐이다. 3D 경로의 해부학적 검증(VERIFIED)으로 올리지 않는다.
+
 ## STEP 04 방향
 1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
-2. 내강 중심선으로 경로를 만들어 APPROXIMATE 경로를 검증 가능한 경로로 바꾼다. 폐정맥, 대동맥, 폐 순환 구간을 만든다.
+2. 내강 중심선으로 경로를 만들어 APPROXIMATE 경로를 검증 가능한 경로로 바꾼다. 폐정맥, 대동맥, 폐 순환 구간을 만든다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
 3. 생리적 형태 변화(심장 박동, 판막 개폐)는 라이선스가 확인된 모델이나 자체 제작 애니메이션으로 한다. 끝나지 않는 연출은 parallel 이벤트로 둔다.
 4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.
