@@ -158,3 +158,12 @@ code { background: var(--bg); padding: 1px 4px; border-radius: 4px; }
 .ae .ae-val { flex: 1; min-width: 0; font: 11px ui-monospace, Consolas, monospace; }
 .ae .ae-val.bad { outline: 2px solid #d63c3f; }
 .pe-row .vs.TEST, .pe-row .vs.TEST_PATH { color: #667; border-color: #aab; }
+
+/* STEP 04-C 생리 상태 편집기 */
+.phe .phe-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.phe .phe-table td { padding: 1px 3px; border-bottom: 1px solid var(--line); }
+.phe .phe-scroll { max-height: 140px; overflow: auto; font-size: 11px; }
+.phe .phe-pre { font-size: 10.5px; max-height: 120px; overflow: auto; background: rgba(0,0,0,.04); padding: 4px; }
+.phe .row { flex-wrap: wrap; gap: 3px; }
+.phe .err { color: #b3261e; font-size: 11px; margin: 2px 0; }
+.phe input { min-width: 0; }

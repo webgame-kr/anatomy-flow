@@ -25,6 +25,7 @@ import { createMotionKit } from '../motion/motion-kit.js';
 import { createScaleManager } from '../scale/scale-manager.js';
 import { createMicroScene } from '../scale/micro-scene.js';
 import { createAnimationKit } from '../animation/animation-kit.js';
+import { createSignalManager } from '../physiology/signal-manager.js';
 
 export { checkWebGL };
 export const DEFAULT_WALL_OPACITY = 0.55;
@@ -85,12 +86,15 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
   const resolveAny = (t) => (e.registry.has(t) ? [t] : (e.manager ? e.manager.resolveTargets(t) : []));
   e.anim = createAnimationKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, resolve: resolveAny, log });
   e.kit.paths.setVertexResolver((mesh, i) => e.anim.morph.deformedVertex(mesh, i));
+  // STEP 04-C: 생리 신호 표시 (신경 신호·호르몬 Actor). 생리 상태는 Python이 정하고 여기서는 보여 주기만 한다
+  e.signals = createSignalManager({ kit: e.kit, materials: e.materials, registry: e.registry, log });
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
     resolve: (t) => (e.manager ? e.manager.resolveTargets(t) : []), focusMany: (ids) => (e.manager ? e.manager.focusObjects(ids) : null),
     motion: e.kit.commands,
     scale: e.scale.commands,
     animation: e.anim.commands,
+    physiology: e.signals,
   });
   e.anim.setRunner(e.runner);
   e.client = createPythonClient({ onStatus: onPythonStatus });
@@ -148,6 +152,8 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
       const r = e.kit.actors.create(a);
       if (r.ok && a.path_id) e.kit.motion.setPath(a.actor_id, a.path_id);
     }
+    // 신호 Actor는 신호를 보낼 때만 보인다
+    e.signals.setSignalActors((m.actors || []).filter((a) => a.signal_actor).map((a) => a.actor_id));
   }
   function buildConceptLabels() {
     if (conceptLabels.layer) conceptLabels.layer.remove();

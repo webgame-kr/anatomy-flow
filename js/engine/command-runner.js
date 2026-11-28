@@ -6,6 +6,7 @@
 //               → ctx.motion(js/motion/motion-commands.js)이 검증·실행한다. wait: true면 이동 결과까지 기다린다.
 // STEP 04-A 형식: { action: 'scale_change', target, level, scene_id, checkpoint_id } → ctx.scale(js/scale/scale-manager.js)
 // STEP 04-B 형식: { action: 'animation_*' | 'morph_*' | 'timeline_*' | 'set_biological_visual_state' | 'model_transition' } → ctx.animation
+// STEP 04-C 형식: { action: 'signal_emit', target: 신호 Actor, path_id, from, to, duration } → ctx.physiology(js/physiology/signal-manager.js)
 // 잘못된 명령은 기록만 하고 다음 명령을 계속 실행한다(전체가 멈추지 않게).
 
 const NO_TARGET = new Set(['camera_overview', 'scene_change']);
@@ -44,7 +45,8 @@ export function createCommandRunner(manager, ctx = {}) {
   }
 
   // 시간이 걸리는 확장 명령 처리기 (이동, 스케일 전환): handles/validate/run, 결과는 {status}
-  const handlerOf = (cmd) => [ctx.motion, ctx.scale, ctx.animation].find((h) => h && h.handles(cmd.action)) || null;
+  // STEP 04-C: ctx.physiology = 생리 신호 표시(signal_emit)
+  const handlerOf = (cmd) => [ctx.motion, ctx.scale, ctx.animation, ctx.physiology].find((h) => h && h.handles(cmd.action)) || null;
   const isMotion = (cmd) => !!handlerOf(cmd);
 
   function validateAction(cmd) {

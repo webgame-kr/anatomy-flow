@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 04-B+(해부학 자산 확장: 심장 v2·판막 리깅·가지 혈관·미세 개념 모델·04-C 준비 모델)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`, `docs/development/STEP_04B_ASSET_UPGRADE_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
+현재 단계는 STEP 04-C(생리 상태·인과·되먹임 엔진, 혈압·심박출량·압력수용체 반사·RAAS 콘텐츠)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`, `docs/development/STEP_04B_ASSET_UPGRADE_REPORT.md`, `docs/development/STEP_04C_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -226,12 +226,13 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
   - `tests/animation-tests.html` (26개)
   - `python tests/test_cardiac_cycle.py` (27개)
   - 이동·Play를 건드렸으면 motion-tests(32), test_lesson(63)도 실행한다.
-  - Worker 파일을 바꾸면 `WORKER_VERSION`을 올린다(현재 04b-1).
+  - Worker 파일을 바꾸면 `WORKER_VERSION`을 올린다(현재 04c-1).
 
 ## STEP 04 방향
 1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
 2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. STEP 04-B+에서 나머지 폐정맥·대동맥 가지·팔다리 혈관 경로 13개(GEOMETRY_CHECKED 9, APPROXIMATE 4)를 더했다. 남은 것은 전공자 경로 검토다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
-3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. STEP 04-B+에서 BodyParts3D 파생 판막 리깅·심실 벽 영역 모델(교육용 근사)을 Sandbox HV에 만들었다. Play 학습 화면 연결은 아직이다. 다음은 04-C(연속 생리 변수·인과·피드백)다.
+3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. STEP 04-B+에서 BodyParts3D 파생 판막 리깅·심실 벽 영역 모델(교육용 근사)을 Sandbox HV에 만들었다. Play 학습 화면 연결은 아직이다.
+   - (완료: STEP 04-C) 생리 상태·계산·인과·되먹임 엔진과 콘텐츠 3개(혈역학, 압력수용체 반사, RAAS). 다음은 04-D(대규모 입자·InstancedMesh)다.
 4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.
 
 ## 해부학 자산 확장 (STEP 04-B+, 2026-11-29)
@@ -246,3 +247,14 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **지연 로딩:** `anatomy-manager.ensureAsset`은 불러온 뒤 레이어 표시 상태를 다시 적용한다(꺼진 레이어 자산이 보이지 않게).
 - **04-C 준비 데이터:** `content/anatomy/regulation/prep-04c.json`(구조·Anchor·교육용 신호 경로). 게임 로직은 넣지 않는다.
 - **테스트:** 자산·데이터를 바꾸면 `python tools/asset-processing/test_asset_upgrade.py`(42개)를 실행한다.
+
+## 생리 상태·인과·되먹임 엔진 (STEP 04-C, 2026-11-29)
+- **교육용 단순화 모델:** 실제 환자 반응을 예측하는 임상 시뮬레이터가 아니다. 화면(모니터·그래프·콘텐츠 `verification_note`)에 항상 표시한다. 전문가 검토 전에는 `EXPERT_REVIEWED`로 올리지 않는다.
+- **모듈 (`py/`):** `biological_state`(변수·기록) → `formula_engine`(계산) → `causal_engine`(방향 전파) → `feedback_engine`(고리 한 단계씩) → `scenario_engine` → `physiology_commands`(문맥·바인딩·begin/commit/rollback). 명세는 `docs/FLOW_SPEC_v0.1.md` 8장.
+- **계산:** 허용 함수만 쓰고 문자열을 실행(eval)하지 않는다. 단위는 자동 변환하지 않는다. MAP는 모드(`pressure_estimate` / `hemodynamic`) 중 하나만 켠다. 계산 오류가 나는 입력은 되돌리고 실패를 돌려준다.
+- **인과:** 크기 근거가 없으면 방향(단계)만 전한다. 관계 그래프는 순환 금지(되먹임은 loop로 따로). 같은 방향은 최대 단계, 반대 방향은 `dominant`가 없으면 MIXED. `core` 기전은 자동 포함되지 않으니 명시한다.
+- **되먹임:** 무조건 정상화하지 않는다(`limits`). 재귀 없이 물리 시간 순서로 실행하고 총 반복 수를 제한한다.
+- **학습 연결:** Edge `physiology.ops`는 `lesson.submit`에서 begin, `arrived`에서 commit, 실패·복구에서 rollback한다. 학습(mechanism) 문맥은 `lesson.physiology`로 바꾸지 못한다. 자유 실험·자동 관찰은 별도 문맥이고 암기·추론 모드에서는 완료 뒤에만 연다. 모니터는 정답 변수(기준값 포함)를 숨긴다.
+- **시각 바인딩:** 상태 → 시각 한 방향만(`bindings`). 신호는 `js/physiology/signal-manager.js`(command-runner `signal_emit`)가 기존 Actor·Path로 보여 준다. 신경 경로는 개념 경로이며 실제 주행이라고 쓰지 않는다.
+- **데이터:** `content/physiology/cardiovascular-model.json`, `content/animations/physiology-concept.json`, 세 콘텐츠는 `tools/content/make_physiology_*.py`로 만든다. 직접 고치지 말고 생성기를 고친다. 계산 문제의 정답은 엔진으로 만든다.
+- **테스트:** `python tests/test_biological_state.py`(34), `test_formula_engine.py`(25), `test_causal_engine.py`(26), `test_feedback_engine.py`(30), `test_physiology_lesson.py`(53), 브라우저 `tests/physiology-tests.html`(17). Play를 건드렸으면 test_lesson(63)·motion-tests(32)·animation-tests(26)도 실행한다.

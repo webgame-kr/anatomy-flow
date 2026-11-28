@@ -1,0 +1,530 @@
+{
+ "note": "physiology_commands가 만든 명령 (생성기: tools/content/make_physiology_fixture.py)",
+ "baseline": [
+  {
+   "action": "animation_play",
+   "target": "phy.beat.lv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_lv",
+   "weight": 0.8
+  },
+  {
+   "action": "animation_play",
+   "target": "phy.beat.rv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_rv",
+   "weight": 0.8
+  },
+  {
+   "action": "set_biological_visual_state",
+   "value": {
+    "vessel.phy_arteriole": "BASELINE"
+   },
+   "wait": false,
+   "binding": "b.svr_vessel"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.carotid_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.aortic_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color2"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp",
+   "value": "#c98a5a",
+   "binding": "b.symp_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_v",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_v"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_k",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_k"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_vagus",
+   "value": "#5aa572",
+   "binding": "b.para_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.kidney_jg",
+   "value": "#c9ad63",
+   "binding": "b.renin_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.adrenal",
+   "value": "#d9a845",
+   "binding": "b.aldo_adrenal"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.tubule",
+   "value": "#9fb4c9",
+   "binding": "b.na_tubule"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.blood_pool",
+   "value": "#c04040",
+   "binding": "b.bv_color"
+  }
+ ],
+ "bp_drop_start": [
+  {
+   "action": "animation_play",
+   "target": "phy.beat.lv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_lv",
+   "weight": 0.8
+  },
+  {
+   "action": "animation_play",
+   "target": "phy.beat.rv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_rv",
+   "weight": 0.8
+  },
+  {
+   "action": "set_biological_visual_state",
+   "value": {
+    "vessel.phy_arteriole": "BASELINE"
+   },
+   "wait": false,
+   "binding": "b.svr_vessel"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.carotid_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.aortic_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color2"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp",
+   "value": "#c98a5a",
+   "binding": "b.symp_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_v",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_v"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_k",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_k"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_vagus",
+   "value": "#5aa572",
+   "binding": "b.para_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.kidney_jg",
+   "value": "#c9ad63",
+   "binding": "b.renin_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.adrenal",
+   "value": "#d9a845",
+   "binding": "b.aldo_adrenal"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.tubule",
+   "value": "#9fb4c9",
+   "binding": "b.na_tubule"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.blood_pool",
+   "value": "#c04040",
+   "binding": "b.bv_color"
+  }
+ ],
+ "bp_drop_step": [
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_aff1",
+   "signal_id": "sig.baro_carotid",
+   "signal_type": "neural_afferent",
+   "path_id": "phy.path.carotid_medulla",
+   "from": "cp.phy.carotid_medulla.from",
+   "to": "cp.phy.carotid_medulla.to",
+   "duration": 800,
+   "style": {
+    "color": "#4fc3f7",
+    "kind": "pulse"
+   },
+   "wait": false
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_aff2",
+   "signal_id": "sig.baro_aortic",
+   "signal_type": "neural_afferent",
+   "path_id": "phy.path.aortic_medulla",
+   "from": "cp.phy.aortic_medulla.from",
+   "to": "cp.phy.aortic_medulla.to",
+   "duration": 900,
+   "style": {
+    "color": "#4fc3f7",
+    "kind": "pulse"
+   },
+   "wait": true
+  },
+  {
+   "action": "set_color",
+   "target": "phy.carotid_sinus",
+   "value": "#3f86b3",
+   "binding": "b.baro_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.aortic_sinus",
+   "value": "#3f86b3",
+   "binding": "b.baro_color2"
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_sym1",
+   "signal_id": "sig.symp_heart",
+   "signal_type": "neural_efferent",
+   "path_id": "phy.path.symp_heart",
+   "from": "cp.phy.symp_heart.from",
+   "to": "cp.phy.symp_heart.to",
+   "duration": 900,
+   "style": {
+    "color": "#ff8a3d",
+    "kind": "pulse"
+   },
+   "wait": false
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_sym2",
+   "signal_id": "sig.symp_vessel",
+   "signal_type": "neural_efferent",
+   "path_id": "phy.path.symp_vessel",
+   "from": "cp.phy.symp_vessel.from",
+   "to": "cp.phy.symp_vessel.to",
+   "duration": 900,
+   "style": {
+    "color": "#ff8a3d",
+    "kind": "pulse"
+   },
+   "wait": false
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_para",
+   "signal_id": "sig.vagal_heart",
+   "signal_type": "neural_efferent",
+   "path_id": "phy.path.vagus_heart",
+   "from": "cp.phy.vagus_heart.from",
+   "to": "cp.phy.vagus_heart.to",
+   "duration": 900,
+   "style": {
+    "color": "#5ad17a",
+    "kind": "pulse"
+   },
+   "wait": true
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp",
+   "value": "#ff8a3d",
+   "binding": "b.symp_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_v",
+   "value": "#ff8a3d",
+   "binding": "b.symp_color_v"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_k",
+   "value": "#ff8a3d",
+   "binding": "b.symp_color_k"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_vagus",
+   "value": "#47855a",
+   "binding": "b.para_color"
+  },
+  {
+   "action": "animation_play",
+   "target": "phy.beat.lv",
+   "speed": 1.35,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_lv",
+   "weight": 0.95
+  },
+  {
+   "action": "animation_play",
+   "target": "phy.beat.rv",
+   "speed": 1.35,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_rv",
+   "weight": 0.95
+  },
+  {
+   "action": "set_biological_visual_state",
+   "value": {
+    "vessel.phy_arteriole": "VASOCONSTRICTION"
+   },
+   "wait": false,
+   "binding": "b.svr_vessel"
+  }
+ ],
+ "restore": [
+  {
+   "action": "animation_play",
+   "target": "phy.beat.lv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_lv",
+   "weight": 0.8
+  },
+  {
+   "action": "animation_play",
+   "target": "phy.beat.rv",
+   "speed": 1.0,
+   "loop": true,
+   "wait": false,
+   "binding": "b.hr_beat_rv",
+   "weight": 0.8
+  },
+  {
+   "action": "set_biological_visual_state",
+   "value": {
+    "vessel.phy_arteriole": "BASELINE"
+   },
+   "wait": false,
+   "binding": "b.svr_vessel"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.carotid_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.aortic_sinus",
+   "value": "#4fc3f7",
+   "binding": "b.baro_color2"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp",
+   "value": "#c98a5a",
+   "binding": "b.symp_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_v",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_v"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_symp_k",
+   "value": "#c98a5a",
+   "binding": "b.symp_color_k"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.nerve_vagus",
+   "value": "#5aa572",
+   "binding": "b.para_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.kidney_jg",
+   "value": "#c9ad63",
+   "binding": "b.renin_color"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.adrenal",
+   "value": "#d9a845",
+   "binding": "b.aldo_adrenal"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.tubule",
+   "value": "#9fb4c9",
+   "binding": "b.na_tubule"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.blood_pool",
+   "value": "#c04040",
+   "binding": "b.bv_color"
+  }
+ ],
+ "raas_step": [
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_renin",
+   "signal_id": "sig.renin",
+   "signal_type": "enzyme",
+   "path_id": "phy.path.kidney_liver",
+   "from": "cp.phy.kidney_liver.from",
+   "to": "cp.phy.kidney_liver.to",
+   "duration": 1600,
+   "style": {
+    "color": "#f0c75e",
+    "kind": "particle"
+   },
+   "wait": true
+  },
+  {
+   "action": "set_color",
+   "target": "phy.kidney_jg",
+   "value": "#f0c75e",
+   "binding": "b.renin_color"
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_ang1",
+   "signal_id": "sig.ang1",
+   "signal_type": "hormone",
+   "path_id": "phy.path.liver_lung",
+   "from": "cp.phy.liver_lung.from",
+   "to": "cp.phy.liver_lung.to",
+   "duration": 1600,
+   "style": {
+    "color": "#b07cf0",
+    "kind": "particle"
+   },
+   "wait": true
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_ang2a",
+   "signal_id": "sig.ang2_vessel",
+   "signal_type": "hormone",
+   "path_id": "phy.path.lung_vessel",
+   "from": "cp.phy.lung_vessel.from",
+   "to": "cp.phy.lung_vessel.to",
+   "duration": 1500,
+   "style": {
+    "color": "#b07cf0",
+    "kind": "particle"
+   },
+   "wait": false
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_ang2b",
+   "signal_id": "sig.ang2_adrenal",
+   "signal_type": "hormone",
+   "path_id": "phy.path.lung_adrenal",
+   "from": "cp.phy.lung_adrenal.from",
+   "to": "cp.phy.lung_adrenal.to",
+   "duration": 1500,
+   "style": {
+    "color": "#b07cf0",
+    "kind": "particle"
+   },
+   "wait": true
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_adh",
+   "signal_id": "sig.adh",
+   "signal_type": "hormone",
+   "path_id": "phy.path.pituitary_tubule",
+   "from": "cp.phy.pituitary_tubule.from",
+   "to": "cp.phy.pituitary_tubule.to",
+   "duration": 1800,
+   "style": {
+    "color": "#b07cf0",
+    "kind": "particle"
+   },
+   "wait": true
+  },
+  {
+   "action": "set_biological_visual_state",
+   "value": {
+    "vessel.phy_arteriole": "VASOCONSTRICTION"
+   },
+   "wait": false,
+   "binding": "b.svr_vessel"
+  },
+  {
+   "action": "signal_emit",
+   "target": "phy_sig_aldo",
+   "signal_id": "sig.aldosterone",
+   "signal_type": "hormone",
+   "path_id": "phy.path.adrenal_tubule",
+   "from": "cp.phy.adrenal_tubule.from",
+   "to": "cp.phy.adrenal_tubule.to",
+   "duration": 1600,
+   "style": {
+    "color": "#b07cf0",
+    "kind": "particle"
+   },
+   "wait": true
+  },
+  {
+   "action": "set_color",
+   "target": "phy.adrenal",
+   "value": "#ffc94d",
+   "binding": "b.aldo_adrenal"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.tubule",
+   "value": "#c7e0ff",
+   "binding": "b.na_tubule"
+  },
+  {
+   "action": "set_color",
+   "target": "phy.blood_pool",
+   "value": "#c04040",
+   "binding": "b.bv_color"
+  }
+ ]
+}

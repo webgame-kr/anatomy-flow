@@ -1,0 +1,1829 @@
+{
+ "version": 1,
+ "scene_id": "concept.physiology",
+ "verification_status": "CONCEPTUAL",
+ "description": "혈압 조절 개념 장면: 심장(심장주기 개념 모델), 압력수용체, 숨뇌, 교감·부교감 신경, 세동맥, 신장·사구체옆세포·세뇨관, 부신피질, 간, 폐, 뇌하수체 후엽. 배치·크기·신호 속도는 교육용이다.",
+ "units": {
+  "time": "ms",
+  "morph": "0~1"
+ },
+ "scale_scene": {
+  "scene_id": "concept.physiology",
+  "level": "ORGAN",
+  "title_ko": "혈압 조절 개념 장면",
+  "unit_note": "기관 배치와 크기는 교육용 개념 배치 (실제 위치·비율 아님)",
+  "magnification_note": "신경 신호·호르몬은 보이도록 크게 그린 표시이며, 실제 속도·크기·개수가 아니다. 물리 시간은 압축했다.",
+  "actor_display_size": 0.09,
+  "follow": {
+   "distance": 1.4,
+   "height": 0.4,
+   "side": 0.3,
+   "smooth": 4
+  },
+  "view_direction": [
+   0.1,
+   0.15,
+   1
+  ]
+ },
+ "groups": [
+  {
+   "group_id": "concept.physiology",
+   "name_ko": "혈압 조절 개념 장면",
+   "origin": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "backdrop": {
+    "radius": 9,
+    "color": "#1d2130"
+   },
+   "verification_status": "CONCEPTUAL",
+   "objects": [
+    {
+     "id": "cc.ra",
+     "name_ko": "우심방 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -0.36,
+      0.36,
+      0.0
+     ],
+     "radius": [
+      0.22,
+      0.18,
+      0.18
+     ],
+     "color": "#7d8fd6",
+     "opacity": 0.42,
+     "logical_id": "cv.right_atrium",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.82,
+        0.86,
+        0.82
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.la",
+     "name_ko": "좌심방 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      0.36,
+      0.38,
+      -0.06
+     ],
+     "radius": [
+      0.21,
+      0.17,
+      0.17
+     ],
+     "color": "#d67d7d",
+     "opacity": 0.42,
+     "logical_id": "cv.left_atrium",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.82,
+        0.86,
+        0.82
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.rv",
+     "name_ko": "우심실 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -0.3,
+      -0.26,
+      0.05
+     ],
+     "radius": [
+      0.25,
+      0.32,
+      0.21
+     ],
+     "color": "#6f82cc",
+     "opacity": 0.42,
+     "logical_id": "cv.right_ventricle",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.76,
+        0.86,
+        0.76
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.lv",
+     "name_ko": "좌심실 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      0.3,
+      -0.27,
+      -0.01
+     ],
+     "radius": [
+      0.27,
+      0.35,
+      0.23
+     ],
+     "color": "#cc6f6f",
+     "opacity": 0.42,
+     "logical_id": "cv.left_ventricle",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.76,
+        0.86,
+        0.76
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.valve_tv",
+     "name_ko": "삼첨판 (개념, 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.085,
+     "center": [
+      -0.33,
+      0.12,
+      0.02
+     ],
+     "normal": [
+      0,
+      -1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.tricuspid",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_mv",
+     "name_ko": "승모판 (개념, 첨판 2)",
+     "shape": "leaflets",
+     "count": 2,
+     "radius": 0.085,
+     "center": [
+      0.33,
+      0.13,
+      -0.03
+     ],
+     "normal": [
+      0,
+      -1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.mitral",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_pv",
+     "name_ko": "폐동맥판 (개념, 반달 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.06,
+     "center": [
+      -0.12,
+      0.08,
+      0.2
+     ],
+     "normal": [
+      0.25,
+      1,
+      0.15
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.pulmonary",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_av",
+     "name_ko": "대동맥판 (개념, 반달 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.065,
+     "center": [
+      0.1,
+      0.06,
+      0.04
+     ],
+     "normal": [
+      -0.2,
+      1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.aortic",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.svc",
+     "name_ko": "상대정맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       -0.42,
+       0.95,
+       0.0
+      ],
+      [
+       -0.4,
+       0.7,
+       0.0
+      ],
+      [
+       -0.37,
+       0.48,
+       0.0
+      ]
+     ],
+     "radius": 0.07,
+     "color": "#5a6fc0",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.pa",
+     "name_ko": "폐동맥줄기 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       -0.12,
+       0.08,
+       0.2
+      ],
+      [
+       -0.06,
+       0.45,
+       0.2
+      ],
+      [
+       0.05,
+       0.72,
+       0.15
+      ],
+      [
+       -0.25,
+       0.82,
+       0.1
+      ],
+      [
+       -0.6,
+       0.78,
+       0.05
+      ]
+     ],
+     "radius": 0.06,
+     "color": "#5a6fc0",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.pv",
+     "name_ko": "폐정맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.85,
+       0.48,
+       -0.12
+      ],
+      [
+       0.68,
+       0.42,
+       -0.08
+      ],
+      [
+       0.52,
+       0.4,
+       -0.06
+      ]
+     ],
+     "radius": 0.05,
+     "color": "#c05a5a",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.aorta",
+     "name_ko": "대동맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.1,
+       0.06,
+       0.04
+      ],
+      [
+       0.06,
+       0.5,
+       0.04
+      ],
+      [
+       0.15,
+       0.85,
+       0.0
+      ],
+      [
+       0.45,
+       0.9,
+       -0.08
+      ],
+      [
+       0.62,
+       0.65,
+       -0.12
+      ],
+      [
+       0.64,
+       0.2,
+       -0.14
+      ]
+     ],
+     "radius": 0.065,
+     "color": "#c05a5a",
+     "opacity": 0.4
+    },
+    {
+     "id": "phy.medulla",
+     "name_ko": "숨뇌(연수) — 심혈관 중추 (개념)",
+     "shape": "sphere",
+     "center": [
+      0.0,
+      2.3,
+      -0.35
+     ],
+     "radius": 0.17,
+     "color": "#f1e3b5",
+     "opacity": 0.9
+    },
+    {
+     "id": "phy.pituitary",
+     "name_ko": "시상하부·뇌하수체 후엽 (개념)",
+     "shape": "sphere",
+     "center": [
+      -0.38,
+      2.42,
+      -0.1
+     ],
+     "radius": 0.08,
+     "color": "#e9c9e0",
+     "opacity": 0.9
+    },
+    {
+     "id": "phy.spinal_cord",
+     "name_ko": "척수 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.0,
+       2.15,
+       -0.45
+      ],
+      [
+       0.0,
+       1.2,
+       -0.52
+      ],
+      [
+       0.0,
+       0.0,
+       -0.55
+      ],
+      [
+       0.0,
+       -1.4,
+       -0.55
+      ]
+     ],
+     "radius": 0.05,
+     "color": "#f1e3b5",
+     "opacity": 0.7
+    },
+    {
+     "id": "phy.carotid",
+     "name_ko": "온목동맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.15,
+       0.85,
+       0.0
+      ],
+      [
+       0.28,
+       1.45,
+       0.05
+      ],
+      [
+       0.32,
+       2.1,
+       0.05
+      ]
+     ],
+     "radius": 0.045,
+     "color": "#c05a5a",
+     "opacity": 0.55
+    },
+    {
+     "id": "phy.carotid_sinus",
+     "name_ko": "목동맥팽대 압력수용체 (개념)",
+     "shape": "sphere",
+     "center": [
+      0.31,
+      1.85,
+      0.05
+     ],
+     "radius": 0.065,
+     "color": "#4fc3f7",
+     "opacity": 0.95
+    },
+    {
+     "id": "phy.aortic_sinus",
+     "name_ko": "대동맥동 압력수용체 (대동맥판 바로 위, 개념)",
+     "shape": "sphere",
+     "center": [
+      0.08,
+      0.32,
+      0.04
+     ],
+     "radius": 0.05,
+     "color": "#4fc3f7",
+     "opacity": 0.95
+    },
+    {
+     "id": "phy.arteriole",
+     "name_ko": "세동맥 (개념, 지름 변형)",
+     "shape": "tube",
+     "points": [
+      [
+       1.2,
+       0.3,
+       0.1
+      ],
+      [
+       1.6,
+       0.25,
+       0.1
+      ],
+      [
+       2.0,
+       0.3,
+       0.1
+      ]
+     ],
+     "radius": 0.09,
+     "color": "#d0605a",
+     "opacity": 0.6
+    },
+    {
+     "id": "phy.kidney",
+     "name_ko": "신장 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      1.38,
+      -1.05,
+      -0.25
+     ],
+     "radius": [
+      0.22,
+      0.3,
+      0.15
+     ],
+     "color": "#9b4a3c",
+     "opacity": 0.55
+    },
+    {
+     "id": "phy.kidney_jg",
+     "name_ko": "사구체옆세포 (개념)",
+     "shape": "sphere",
+     "center": [
+      1.2,
+      -0.9,
+      -0.08
+     ],
+     "radius": 0.06,
+     "color": "#c9ad63",
+     "opacity": 0.95
+    },
+    {
+     "id": "phy.tubule",
+     "name_ko": "원위세뇨관·집합관 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       1.45,
+       -1.25,
+       -0.02
+      ],
+      [
+       1.62,
+       -1.0,
+       -0.02
+      ],
+      [
+       1.5,
+       -0.8,
+       -0.02
+      ]
+     ],
+     "radius": 0.035,
+     "color": "#9fb4c9",
+     "opacity": 0.9
+    },
+    {
+     "id": "phy.adrenal",
+     "name_ko": "부신피질 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      1.32,
+      -0.6,
+      -0.3
+     ],
+     "radius": [
+      0.13,
+      0.07,
+      0.09
+     ],
+     "color": "#d9a845",
+     "opacity": 0.9
+    },
+    {
+     "id": "phy.liver",
+     "name_ko": "간 — 안지오텐시노겐 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -1.3,
+      -0.95,
+      0.1
+     ],
+     "radius": [
+      0.4,
+      0.22,
+      0.25
+     ],
+     "color": "#8a4b3a",
+     "opacity": 0.6
+    },
+    {
+     "id": "phy.lung",
+     "name_ko": "폐 혈관 — ACE 풍부 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -1.45,
+      0.75,
+      -0.1
+     ],
+     "radius": [
+      0.3,
+      0.42,
+      0.22
+     ],
+     "color": "#e8a0ac",
+     "opacity": 0.45
+    },
+    {
+     "id": "phy.blood_pool",
+     "name_ko": "혈액량 표시 (개념)",
+     "shape": "sphere",
+     "center": [
+      -0.85,
+      -1.62,
+      0.2
+     ],
+     "radius": 0.14,
+     "color": "#c04040",
+     "opacity": 0.9
+    },
+    {
+     "id": "phy.nerve_symp",
+     "name_ko": "교감신경 → 심장 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.06,
+       2.15,
+       -0.35
+      ],
+      [
+       0.06,
+       1.3,
+       -0.5
+      ],
+      [
+       0.25,
+       0.2,
+       -0.2
+      ],
+      [
+       0.3,
+       -0.27,
+       0.0
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#c98a5a",
+     "opacity": 0.85
+    },
+    {
+     "id": "phy.nerve_symp_v",
+     "name_ko": "교감신경 → 세동맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.08,
+       2.15,
+       -0.35
+      ],
+      [
+       0.06,
+       0.9,
+       -0.5
+      ],
+      [
+       1.0,
+       0.4,
+       -0.1
+      ],
+      [
+       1.6,
+       0.25,
+       0.1
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#c98a5a",
+     "opacity": 0.85
+    },
+    {
+     "id": "phy.nerve_symp_k",
+     "name_ko": "교감신경 → 신장 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.08,
+       2.15,
+       -0.35
+      ],
+      [
+       0.06,
+       -0.6,
+       -0.5
+      ],
+      [
+       0.9,
+       -0.85,
+       -0.2
+      ],
+      [
+       1.2,
+       -0.9,
+       -0.08
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#c98a5a",
+     "opacity": 0.85
+    },
+    {
+     "id": "phy.nerve_vagus",
+     "name_ko": "미주신경(부교감) → 심장 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       -0.1,
+       2.15,
+       -0.3
+      ],
+      [
+       -0.25,
+       1.2,
+       -0.15
+      ],
+      [
+       -0.36,
+       0.42,
+       0.02
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#5aa572",
+     "opacity": 0.85
+    },
+    {
+     "id": "phy.nerve_glosso",
+     "name_ko": "목동맥팽대 → 숨뇌 구심 신경 (개념, 혀인두신경)",
+     "shape": "tube",
+     "points": [
+      [
+       0.31,
+       1.85,
+       0.05
+      ],
+      [
+       0.2,
+       2.1,
+       -0.15
+      ],
+      [
+       0.08,
+       2.25,
+       -0.3
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#3f86b3",
+     "opacity": 0.85
+    },
+    {
+     "id": "phy.nerve_aortic_aff",
+     "name_ko": "대동맥동 → 숨뇌 구심 신경 (개념, 미주신경 구심)",
+     "shape": "tube",
+     "points": [
+      [
+       0.08,
+       0.32,
+       0.04
+      ],
+      [
+       -0.05,
+       1.2,
+       -0.1
+      ],
+      [
+       -0.06,
+       2.2,
+       -0.3
+      ]
+     ],
+     "radius": 0.018,
+     "color": "#3f86b3",
+     "opacity": 0.85
+    }
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "animation_id": "phy.beat.lv",
+   "target_id": "cc.lv",
+   "animation_type": "procedural",
+   "procedure": "morph_cycle",
+   "morph_target": "contract",
+   "duration_ms": 800,
+   "params": {
+    "period_ms": 800,
+    "min": 0,
+    "max": 1
+   },
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "박동 표시. 기본 주기 800 ms = 75회/분. 재생 속도 = 심박수 배율, 가중치 = 수축력 단계(교육용). 실제 심실 용적 변화 아님"
+  },
+  {
+   "animation_id": "phy.beat.rv",
+   "target_id": "cc.rv",
+   "animation_type": "procedural",
+   "procedure": "morph_cycle",
+   "morph_target": "contract",
+   "duration_ms": 800,
+   "params": {
+    "period_ms": 800,
+    "min": 0,
+    "max": 1
+   },
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "박동 표시. 기본 주기 800 ms = 75회/분. 재생 속도 = 심박수 배율, 가중치 = 수축력 단계(교육용). 실제 심실 용적 변화 아님"
+  },
+  {
+   "animation_id": "phy.arteriole.constrict",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.0
+    },
+    {
+     "time": 1,
+     "value": 0.65
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  },
+  {
+   "animation_id": "phy.arteriole.dilate",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.0
+    },
+    {
+     "time": 1,
+     "value": 1.35
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  },
+  {
+   "animation_id": "phy.arteriole.c_to_base",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0.65
+    },
+    {
+     "time": 1,
+     "value": 1.0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  },
+  {
+   "animation_id": "phy.arteriole.d_to_base",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.35
+    },
+    {
+     "time": 1,
+     "value": 1.0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  },
+  {
+   "animation_id": "phy.arteriole.c_to_d",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0.65
+    },
+    {
+     "time": 1,
+     "value": 1.35
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  },
+  {
+   "animation_id": "phy.arteriole.d_to_c",
+   "target_id": "phy.arteriole",
+   "animation_type": "deform",
+   "duration_ms": 800,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.35
+    },
+    {
+     "time": 1,
+     "value": 0.65
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "지름 배율은 교육용 값. 혈관 지름만으로 혈압 전체를 설명하지 않는다"
+  }
+ ],
+ "structures": [
+  {
+   "structure_id": "vessel.phy_arteriole",
+   "name_ko": "세동맥 긴장도 (개념)",
+   "kind": "vessel",
+   "states": [
+    "BASELINE",
+    "VASOCONSTRICTION",
+    "VASODILATION"
+   ],
+   "initial": "BASELINE",
+   "transitions": {
+    "BASELINE->VASOCONSTRICTION": {
+     "animation": "phy.arteriole.constrict"
+    },
+    "BASELINE->VASODILATION": {
+     "animation": "phy.arteriole.dilate"
+    },
+    "VASOCONSTRICTION->BASELINE": {
+     "animation": "phy.arteriole.c_to_base"
+    },
+    "VASODILATION->BASELINE": {
+     "animation": "phy.arteriole.d_to_base"
+    },
+    "VASOCONSTRICTION->VASODILATION": {
+     "animation": "phy.arteriole.c_to_d"
+    },
+    "VASODILATION->VASOCONSTRICTION": {
+     "animation": "phy.arteriole.d_to_c"
+    }
+   },
+   "indicators": [],
+   "verification_status": "CONCEPTUAL"
+  }
+ ],
+ "timelines": [],
+ "motion": {
+  "scene_id": "concept.physiology",
+  "marker_size": 0.02,
+  "paths": [
+   {
+    "path_id": "phy.path.carotid_medulla",
+    "name_ko": "목동맥팽대 → 숨뇌 (구심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.31,
+       1.85,
+       0.05
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.2,
+       2.1,
+       -0.15
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.08,
+       2.25,
+       -0.3
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.carotid_medulla.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.carotid_medulla.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.aortic_medulla",
+    "name_ko": "대동맥동 → 숨뇌 (구심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.08,
+       0.32,
+       0.04
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.95,
+       1.2,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.94,
+       2.2,
+       -0.3
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.aortic_medulla.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.aortic_medulla.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.symp_heart",
+    "name_ko": "숨뇌 → 척수 → 심장 (교감 원심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.06,
+       2.15,
+       -0.35
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.06,
+       1.3,
+       -0.5
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.25,
+       0.2,
+       -0.2
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.3,
+       -0.27,
+       0.0
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.symp_heart.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.symp_heart.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.symp_vessel",
+    "name_ko": "숨뇌 → 척수 → 세동맥 (교감 원심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.08,
+       2.15,
+       -0.35
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.06,
+       0.9,
+       -0.5
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.0,
+       0.4,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.6,
+       0.25,
+       0.1
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.symp_vessel.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.symp_vessel.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.symp_kidney",
+    "name_ko": "숨뇌 → 척수 → 신장 사구체옆세포 (교감 원심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.08,
+       2.15,
+       -0.35
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.06,
+       -0.6,
+       -0.5
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.9,
+       -0.85,
+       -0.2
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.2,
+       -0.9,
+       -0.08
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.symp_kidney.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.symp_kidney.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.vagus_heart",
+    "name_ko": "숨뇌 → 미주신경 → 심장 (부교감 원심)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       99.9,
+       2.15,
+       -0.3
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.75,
+       1.2,
+       -0.15
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.64,
+       0.42,
+       0.02
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.vagus_heart.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.vagus_heart.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.kidney_liver",
+    "name_ko": "신장(레닌) → 혈액 → 간 쪽 (효소)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       101.2,
+       -0.9,
+       -0.08
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.0,
+       -1.35,
+       0.15
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       98.7,
+       -0.95,
+       0.1
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.kidney_liver.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.kidney_liver.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.liver_lung",
+    "name_ko": "혈액 → 폐 혈관 (안지오텐신 I)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       98.7,
+       -0.95,
+       0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       98.3,
+       0.0,
+       0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       98.55,
+       0.75,
+       -0.1
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.liver_lung.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.liver_lung.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.lung_vessel",
+    "name_ko": "혈액 → 세동맥 (안지오텐신 II)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       98.55,
+       0.75,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.6,
+       1.15,
+       0.45
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.9,
+       0.7,
+       0.35
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.6,
+       0.25,
+       0.1
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.lung_vessel.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.lung_vessel.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.lung_adrenal",
+    "name_ko": "혈액 → 부신피질 (안지오텐신 II)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       98.55,
+       0.75,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.4,
+       0.0,
+       0.5
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.6,
+       -0.5,
+       0.35
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.32,
+       -0.6,
+       -0.3
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.lung_adrenal.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.lung_adrenal.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.adrenal_tubule",
+    "name_ko": "부신피질 → 혈액 → 세뇨관 (알도스테론)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       101.32,
+       -0.6,
+       -0.3
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.6,
+       -0.7,
+       0.05
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.55,
+       -0.95,
+       -0.02
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.adrenal_tubule.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.adrenal_tubule.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   },
+   {
+    "path_id": "phy.path.pituitary_tubule",
+    "name_ko": "뇌하수체 후엽 → 혈액 → 집합관 (ADH)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       99.62,
+       2.42,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.4,
+       1.6,
+       0.4
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.9,
+       0.2,
+       0.4
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       101.55,
+       -0.95,
+       -0.02
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.phy.pituitary_tubule.from",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "출발"
+     },
+     {
+      "checkpoint_id": "cp.phy.pituitary_tubule.to",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "교육용 개념 경로. 실제 신경 주행·혈류 경로가 아니다."
+   }
+  ],
+  "actors": [
+   {
+    "actor_id": "phy_sig_aff1",
+    "actor_type": "nerve_signal",
+    "name": "구심 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.carotid_medulla",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_aff2",
+    "actor_type": "nerve_signal",
+    "name": "구심 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.aortic_medulla",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_sym1",
+    "actor_type": "nerve_signal",
+    "name": "교감 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.symp_heart",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_sym2",
+    "actor_type": "nerve_signal",
+    "name": "교감 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.symp_vessel",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_sym3",
+    "actor_type": "nerve_signal",
+    "name": "교감 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.symp_kidney",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_para",
+    "actor_type": "nerve_signal",
+    "name": "부교감 신호 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.vagus_heart",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_renin",
+    "actor_type": "hormone",
+    "name": "레닌(효소) (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.kidney_liver",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_ang1",
+    "actor_type": "hormone",
+    "name": "안지오텐신 I (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.liver_lung",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_ang2a",
+    "actor_type": "hormone",
+    "name": "안지오텐신 II (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.lung_vessel",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_ang2b",
+    "actor_type": "hormone",
+    "name": "안지오텐신 II (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.lung_adrenal",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_aldo",
+    "actor_type": "hormone",
+    "name": "알도스테론 (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.adrenal_tubule",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   },
+   {
+    "actor_id": "phy_sig_adh",
+    "actor_type": "hormone",
+    "name": "ADH (표시용, 실제 크기·속도 아님)",
+    "display_size": 0.09,
+    "path_id": "phy.path.pituitary_tubule",
+    "speed": 0.8,
+    "rotation_mode": "none",
+    "signal_actor": true
+   }
+  ]
+ },
+ "labels": [
+  {
+   "text": "숨뇌(연수) 심혈관 중추",
+   "position": [
+    100.0,
+    2.52,
+    -0.35
+   ]
+  },
+  {
+   "text": "시상하부·뇌하수체 후엽",
+   "position": [
+    99.17,
+    2.54,
+    -0.1
+   ]
+  },
+  {
+   "text": "목동맥팽대",
+   "position": [
+    100.31,
+    1.95,
+    0.05
+   ]
+  },
+  {
+   "text": "대동맥동",
+   "position": [
+    100.08,
+    0.41,
+    0.04
+   ]
+  },
+  {
+   "text": "세동맥",
+   "position": [
+    101.6,
+    0.4,
+    0.1
+   ]
+  },
+  {
+   "text": "사구체옆세포",
+   "position": [
+    101.2,
+    -0.8,
+    -0.08
+   ]
+  },
+  {
+   "text": "신장",
+   "position": [
+    101.38,
+    -1.41,
+    -0.25
+   ]
+  },
+  {
+   "text": "세뇨관",
+   "position": [
+    101.55,
+    -0.83,
+    -0.02
+   ]
+  },
+  {
+   "text": "부신피질",
+   "position": [
+    101.32,
+    -0.48,
+    -0.3
+   ]
+  },
+  {
+   "text": "간(안지오텐시노겐)",
+   "position": [
+    98.7,
+    -0.67,
+    0.1
+   ]
+  },
+  {
+   "text": "폐 혈관(ACE 풍부)",
+   "position": [
+    98.55,
+    1.23,
+    -0.1
+   ]
+  },
+  {
+   "text": "혈액량",
+   "position": [
+    99.15,
+    -1.42,
+    0.2
+   ]
+  },
+  {
+   "text": "심장",
+   "position": [
+    100.0,
+    -0.75,
+    0.2
+   ]
+  }
+ ],
+ "generator": "tools/content/make_physiology_concept.py"
+}

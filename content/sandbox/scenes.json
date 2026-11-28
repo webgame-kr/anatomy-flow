@@ -337,6 +337,19 @@
         { "asset_id": "za-reg-nerves-thyroid", "display_name": "Vagus · sympathetic trunk · thyroid (Z-Anatomy, CC BY-SA)", "position": [0, 0, 0] }
       ],
       "objects": []
+    },
+    {
+      "scene_id": "phys_lab",
+      "scene_name": "PH — 생리 상태 엔진 (STEP 04-C 편집기)",
+      "description": "혈압 조절 개념 장면 + 생리 상태 모델(변수·공식·인과·되먹임·신호·수용체). 오른쪽 Physiology 패널에서 단계 실행. 교육용 단순화 모델",
+      "animation": "content/animations/physiology-concept.json",
+      "physiology_model": "content/physiology/cardiovascular-model.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [100.2, 0.6, 5.6], "target": [100.1, 0.4, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#1d2130",
+      "assets": [],
+      "objects": []
     }
   ]
 }

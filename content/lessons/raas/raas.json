@@ -1,0 +1,593 @@
+{
+ "version": 2,
+ "id": "cv.raas",
+ "content_version": "0.1.0",
+ "title": "RAAS: 레닌 → 안지오텐신 → 알도스테론·ADH (생리 상태 엔진)",
+ "system": "cardiovascular",
+ "scene": {
+  "type": "anatomy",
+  "url": "content/anatomy/cardiovascular/scene.json",
+  "animations": "content/animations/physiology-concept.json",
+  "start_scale": "concept.physiology"
+ },
+ "actor_id": "phy_sig_aff1",
+ "start": "n.ra.renin",
+ "max_steps": 60,
+ "options": {
+  "ignore_spaces": true
+ },
+ "variables": {},
+ "variable_labels": {},
+ "physiology": {
+  "model": "content/physiology/cardiovascular-model.json",
+  "context": "mechanism",
+  "scenario": "sc.volume_loss",
+  "monitor": [
+   "mean_arterial_pressure",
+   "blood_volume",
+   "renin_activity",
+   "angiotensin_i",
+   "angiotensin_ii",
+   "aldosterone",
+   "adh",
+   "sodium_reabsorption",
+   "water_reabsorption",
+   "systemic_vascular_resistance"
+  ],
+  "graph": [
+   "mean_arterial_pressure",
+   "renin_activity",
+   "aldosterone",
+   "blood_volume"
+  ],
+  "observe": {
+   "scenarios": [
+    "sc.volume_loss",
+    "sc.dehydration"
+   ],
+   "loops": [
+    "fb.baroreflex",
+    "fb.raas"
+   ]
+  },
+  "mechanism_note": "혈액량 감소 상황에서 시작합니다. 자동 관찰에서는 빠른 신경 반사(t=1)와 느린 RAAS(t=4 이후)를 시간 순서로 비교합니다."
+ },
+ "verification_note": "교육용 계산·단순화 모델과 개념 장면입니다. 실제 환자의 생리 반응을 예측하지 않습니다. 호르몬 입자는 표시용이며 실제 농도·개수·속도가 아닙니다. 분기 a(혈관)와 b(알도스테론)·c(ADH)는 실제로 병렬로 일어납니다.",
+ "lecture_check_note": "lecture_check: 강의자료·교재 쪽 번호와 일치 여부만 적는다(내용 미전재).",
+ "source": "직접 작성. 14주 p10–14, 약리 9주 p4·p9·p24, 신장 강의 슬라이드 35–39·50, 내분비 강의 슬라이드 46, 자율신경 수용체 표 대조. 보조: OpenStax A&P 2e 20.4.",
+ "complete": {
+  "node": "n.ra.speed"
+ },
+ "nodes": [
+  {
+   "node_id": "n.ra.renin",
+   "name_ko": "레닌",
+   "name_en": "renin",
+   "accepted_answers": [
+    "레닌",
+    "renin"
+   ],
+   "prompt": "혈압·혈액량이 줄면 신장의 사구체옆세포가 혈액으로 분비하는 효소는?",
+   "reason_prompt": "신장 관류가 줄 때 RAAS를 시작하는 물질은?",
+   "explanation": "혈압이 낮아지면 사구체옆세포(JG 세포)가 레닌을 분비합니다. 교감신경의 신장 β1 자극도 레닌 분비를 늘립니다(수용체 표). 레닌은 효소입니다(일부에서는 호르몬으로 분류).",
+   "hint": "사구체옆세포",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "자율신경 수용체 표"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.ang1",
+   "name_ko": "안지오텐신 I",
+   "name_en": "angiotensin I",
+   "accepted_answers": [
+    "안지오텐신i",
+    "안지오텐신1",
+    "안지오텐신 i",
+    "안지오텐신 1",
+    "앤지오텐신1",
+    "angiotensin i",
+    "angiotensin 1"
+   ],
+   "prompt": "레닌이 간에서 만들어진 안지오텐시노겐을 바꾸어 생기는 물질은?",
+   "reason_prompt": "안지오텐시노겐에 레닌이 작용한 결과물은?",
+   "explanation": "레닌은 간에서 만든 혈장 단백질 안지오텐시노겐을 안지오텐신 I로 바꿉니다.",
+   "hint": "첫 번째 안지오텐신",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.ace",
+   "name_ko": "ACE",
+   "name_en": "angiotensin-converting enzyme",
+   "accepted_answers": [
+    "ace",
+    "안지오텐신전환효소",
+    "안지오텐신 전환효소",
+    "안지오텐신 전환 효소",
+    "angiotensin converting enzyme"
+   ],
+   "prompt": "안지오텐신 I을 안지오텐신 II로 바꾸는 효소는?",
+   "reason_prompt": "폐 혈관에 특히 풍부한 전환 효소는?",
+   "explanation": "ACE(안지오텐신 전환효소). 폐 혈관계통에 특히 풍부하지만 다른 혈관 내부에도 있습니다(약리 9주). \"폐에만 있다\"가 아닙니다.",
+   "hint": "전환 효소",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "약리 9주 p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.vaso",
+   "name_ko": "혈관 수축",
+   "name_en": "vasoconstriction",
+   "accepted_answers": [
+    "수축",
+    "혈관수축",
+    "혈관 수축",
+    "좁아진다",
+    "수축한다",
+    "vasoconstriction"
+   ],
+   "prompt": "[분기 a] 안지오텐신 II가 세동맥에 직접 작용하면 혈관은?",
+   "reason_prompt": "[분기 a] 강력한 혈관 수축제인 안지오텐신 II의 직접 작용은?",
+   "explanation": "안지오텐신 II는 강력한 혈관 수축제입니다(AT1 수용체: 강의는 혈관·심장). 말초혈관 저항↑ → 혈압 상승 쪽. 이 분기는 알도스테론 분기와 병렬로 일어납니다.",
+   "hint": "직접 작용",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "약리 9주 p9, p24"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.aldo",
+   "name_ko": "알도스테론",
+   "name_en": "aldosterone",
+   "accepted_answers": [
+    "알도스테론",
+    "aldosterone"
+   ],
+   "prompt": "[분기 b] 안지오텐신 II가 부신피질에서 분비를 늘리는 호르몬은?",
+   "reason_prompt": "[분기 b] 부신피질의 무기질코르티코이드는?",
+   "explanation": "안지오텐신 II는 부신피질의 알도스테론 분비를 자극합니다. 호르몬 작용이라 신경 반사보다 느립니다.",
+   "hint": "부신피질 호르몬",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "약리 9주 p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.na",
+   "name_ko": "나트륨",
+   "name_en": "sodium",
+   "accepted_answers": [
+    "나트륨",
+    "소듐",
+    "na",
+    "na+",
+    "나트륨이온",
+    "sodium"
+   ],
+   "prompt": "알도스테론이 원위세뇨관·집합관에서 재흡수를 늘리는 이온은?",
+   "reason_prompt": "알도스테론이 늘리면 물도 따라가는 이온은?",
+   "explanation": "알도스테론은 원위세뇨관의 Na⁺ 재흡수를 늘리고 K⁺ 배설을 늘립니다(내분비 강의). 물이 Na⁺를 따라 재흡수됩니다.",
+   "hint": "Na⁺",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "내분비 생리 슬라이드 46"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.adh",
+   "name_ko": "ADH",
+   "name_en": "antidiuretic hormone",
+   "accepted_answers": [
+    "adh",
+    "항이뇨호르몬",
+    "항이뇨 호르몬",
+    "바소프레신",
+    "vasopressin"
+   ],
+   "prompt": "[분기 c] 안지오텐신 II가 분비를 늘리는, 뇌하수체 후엽에서 나와 집합관 수분 재흡수를 늘리는 호르몬은?",
+   "reason_prompt": "[분기 c] 삼투압 증가·혈액량 감소로도 분비되는 호르몬은?",
+   "explanation": "ADH(바소프레신)는 뇌하수체 후엽에서 분비되어 집합관의 수분 투과도를 높입니다. 분비 자극: 혈장 삼투압 증가, 혈액량 감소(신장 강의). 말초 혈관 수축 작용도 있습니다. 안지오텐신 II는 갈증도 자극합니다.",
+   "hint": "뇌하수체 후엽",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p10–11",
+     "신장 강의 슬라이드 50"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.volume",
+   "name_ko": "혈액량 증가",
+   "name_en": "blood volume up",
+   "accepted_answers": [
+    "혈액량",
+    "체액량",
+    "순환혈액량",
+    "혈액량증가",
+    "혈액량 증가",
+    "체액량 증가",
+    "blood volume"
+   ],
+   "prompt": "나트륨·수분 재흡수가 늘면 어떤 양이 늘어나 혈압을 올릴까요?",
+   "reason_prompt": "신장이 물을 붙잡으면 늘어나는 것은?",
+   "explanation": "수분 보유 → 혈액량 증가 → 정맥 환류·전부하 증가 → 일회박출량·심박출량 증가 → 혈압 회복 방향. 이 모델은 한 단계 회복으로 단순화했습니다. 실제 회복 정도와 시간은 원인과 처치에 따라 다릅니다.",
+   "hint": "체액",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11",
+     "약리 9주 p4"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.bp",
+   "name_ko": "혈압 회복 방향",
+   "name_en": "BP toward recovery",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases",
+    "회복",
+    "회복된다",
+    "회복 방향",
+    "올라간다"
+   ],
+   "prompt": "[방향 예측] 혈관 수축과 혈액량 증가가 함께 작용하면 혈압은 어느 방향으로?",
+   "reason_prompt": "[방향 예측] 저항↑와 심박출량↑이면 MAP는?",
+   "explanation": "두 분기 모두 혈압을 올리는(회복시키는) 방향입니다. 혈압이 회복되면 레닌 분비가 줄어드는 음성 되먹임입니다. ANP는 반대로 작용합니다(이 모델에는 넣지 않음).",
+   "hint": "두 분기 모두",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p11–14"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.ra.speed",
+   "name_ko": "느리다",
+   "name_en": "slower",
+   "accepted_answers": [
+    "느리다",
+    "느림",
+    "느린",
+    "더느리다",
+    "더 느리다",
+    "느려요",
+    "slower",
+    "slow"
+   ],
+   "prompt": "압력수용체 반사(신경)와 비교하면 RAAS·체액량 조절은 더 빠를까요, 느릴까요?",
+   "reason_prompt": "호르몬·신장을 거치는 조절의 속도는?",
+   "explanation": "내분비계는 신경계보다 혈압 변화에 반응하는 속도가 느립니다(약리 9주). 신경 반사는 단기, 신장·호르몬은 장기 기전입니다. 화면의 물리 시간은 교육용으로 압축했습니다.",
+   "hint": "호르몬은",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 9주 p4"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  }
+ ],
+ "edges": [
+  {
+   "edge_id": "e.ra.1",
+   "source_node": "n.ra.renin",
+   "target_node": "n.ra.ang1",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "renal_perfusion",
+        "delta": -1
+       },
+       {
+        "var": "renin_activity",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     },
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "angiotensin_i",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "angiotensin_i"
+   ]
+  },
+  {
+   "edge_id": "e.ra.2",
+   "source_node": "n.ra.ang1",
+   "target_node": "n.ra.ace",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "angiotensin_ii",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "angiotensin_ii"
+   ]
+  },
+  {
+   "edge_id": "e.ra.3",
+   "source_node": "n.ra.ace",
+   "target_node": "n.ra.vaso",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "at1_vessel",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "raas"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "systemic_vascular_resistance"
+   ]
+  },
+  {
+   "edge_id": "e.ra.4",
+   "source_node": "n.ra.vaso",
+   "target_node": "n.ra.aldo",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "aldosterone",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "aldosterone"
+   ]
+  },
+  {
+   "edge_id": "e.ra.5",
+   "source_node": "n.ra.aldo",
+   "target_node": "n.ra.na",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "mr_tubule",
+        "delta": 1
+       },
+       {
+        "var": "sodium_reabsorption",
+        "delta": 1
+       },
+       {
+        "var": "water_reabsorption",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "sodium_reabsorption",
+    "water_reabsorption"
+   ]
+  },
+  {
+   "edge_id": "e.ra.6",
+   "source_node": "n.ra.na",
+   "target_node": "n.ra.adh",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "adh",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "adh"
+   ]
+  },
+  {
+   "edge_id": "e.ra.7",
+   "source_node": "n.ra.adh",
+   "target_node": "n.ra.volume",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "blood_volume",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "core"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "blood_volume",
+    "mean_arterial_pressure",
+    "cardiac_output"
+   ]
+  },
+  {
+   "edge_id": "e.ra.8",
+   "source_node": "n.ra.volume",
+   "target_node": "n.ra.bp",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology_hide": [
+    "mean_arterial_pressure"
+   ]
+  },
+  {
+   "edge_id": "e.ra.9",
+   "source_node": "n.ra.bp",
+   "target_node": "n.ra.speed",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600
+  }
+ ],
+ "generator": "tools/content/make_physiology_lessons.py"
+}

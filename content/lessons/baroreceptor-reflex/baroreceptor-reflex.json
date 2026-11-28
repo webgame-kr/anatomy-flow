@@ -1,0 +1,609 @@
+{
+ "version": 2,
+ "id": "cv.baroreflex",
+ "content_version": "0.1.0",
+ "title": "압력수용체 반사: 혈압 감소와 증가 (생리 상태 엔진)",
+ "system": "cardiovascular",
+ "scene": {
+  "type": "anatomy",
+  "url": "content/anatomy/cardiovascular/scene.json",
+  "animations": "content/animations/physiology-concept.json",
+  "start_scale": "concept.physiology"
+ },
+ "actor_id": "phy_sig_aff1",
+ "start": "n.br.receptor",
+ "max_steps": 60,
+ "options": {
+  "ignore_spaces": true
+ },
+ "variables": {},
+ "variable_labels": {},
+ "physiology": {
+  "model": "content/physiology/cardiovascular-model.json",
+  "context": "mechanism",
+  "scenario": "sc.bp_drop",
+  "monitor": [
+   "mean_arterial_pressure",
+   "baroreceptor_activity",
+   "sympathetic_activity",
+   "parasympathetic_activity",
+   "heart_rate",
+   "contractility",
+   "systemic_vascular_resistance",
+   "cardiac_output"
+  ],
+  "graph": [
+   "mean_arterial_pressure",
+   "heart_rate",
+   "systemic_vascular_resistance",
+   "sympathetic_activity"
+  ],
+  "observe": {
+   "scenarios": [
+    "sc.bp_drop",
+    "sc.bp_rise"
+   ],
+   "loops": [
+    "fb.baroreflex"
+   ]
+  },
+  "mechanism_note": "구심(압력수용체→숨뇌)과 원심(숨뇌→심장·세동맥) 신호를 색으로 구분합니다. 문제 순서는 학습용이며 실제 반응은 병렬입니다."
+ },
+ "verification_note": "교육용 계산·단순화 모델과 개념 장면입니다. 실제 환자의 생리 반응을 예측하지 않습니다. 신경 경로는 개념 장면의 표시용 선이며 실제 신경 주행이 아닙니다. 문제는 학습을 위해 순서대로 묻지만 실제 반응은 동시에(병렬로) 일어납니다.",
+ "lecture_check_note": "lecture_check: 강의자료·교재 쪽 번호와 일치 여부만 적는다(내용 미전재).",
+ "source": "직접 작성. 14주 p5–9, p15, 자율신경 수용체 표 대조. 보조: OpenStax A&P 2e 20.4.",
+ "complete": {
+  "node": "n.br.rise"
+ },
+ "nodes": [
+  {
+   "node_id": "n.br.receptor",
+   "name_ko": "압력수용체",
+   "name_en": "baroreceptor",
+   "accepted_answers": [
+    "압력수용체",
+    "압수용체",
+    "압력 수용체",
+    "baroreceptor",
+    "압수용기"
+   ],
+   "prompt": "혈관 벽이 늘어나는 정도(신장)를 감지해 혈압 정보를 보내는 수용체는?",
+   "reason_prompt": "목동맥팽대와 대동맥동에 있는 신장 수용체는?",
+   "explanation": "압력수용체는 주로 대동맥동(대동맥판 바로 위 오름대동맥 벽)과 목동맥팽대(속목동맥 시작부)에 있습니다. 대정맥·우심방 벽에도 저압 수용체가 있습니다.",
+   "hint": "늘어남을 감지",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p7"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.firing",
+   "name_ko": "발화 감소",
+   "name_en": "firing decreases",
+   "accepted_answers": [
+    "감소",
+    "감소한다",
+    "감소함",
+    "줄어든다",
+    "줄어듦",
+    "줄어요",
+    "하강",
+    "떨어진다",
+    "낮아진다",
+    "작아진다",
+    "↓",
+    "decrease",
+    "decreases"
+   ],
+   "prompt": "[방향 예측] 혈압이 떨어지면 압력수용체의 발화(활동전위 빈도)는?",
+   "reason_prompt": "[방향 예측] 혈관 벽이 덜 늘어나면 발화 빈도는?",
+   "explanation": "혈압이 낮아지면 벽이 덜 늘어나 발화 빈도가 줄어듭니다. 이 신호는 구심 신경을 따라 숨뇌로 갑니다(화면의 파란 신호).",
+   "hint": "덜 늘어나면",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p7–8"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.center",
+   "name_ko": "숨뇌(연수)",
+   "name_en": "medulla oblongata",
+   "accepted_answers": [
+    "숨뇌",
+    "연수",
+    "심혈관중추",
+    "심혈관 중추",
+    "숨뇌 심혈관 중추",
+    "medulla",
+    "medulla oblongata"
+   ],
+   "prompt": "압력수용체의 구심 신호를 받아 심장과 혈관을 조절하는 중추가 있는 곳은?",
+   "reason_prompt": "혈압과 혈류를 신경으로 조절하는 뇌줄기 부위는?",
+   "explanation": "숨뇌(연수)의 심혈관 중추가 교감·부교감 출력을 조절합니다.",
+   "hint": "뇌줄기 아래쪽",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p5"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.symp",
+   "name_ko": "교감 증가",
+   "name_en": "sympathetic up",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases"
+   ],
+   "prompt": "[방향 예측] 발화가 줄면 숨뇌에서 교감신경 출력은?",
+   "reason_prompt": "[방향 예측] 혈압을 올려야 할 때 교감신경은?",
+   "explanation": "혈압이 낮으면 교감신경 활성이 증가합니다(화면의 주황 원심 신호). 실제로는 다음 단계들이 동시에 일어납니다.",
+   "hint": "혈압을 올리는 쪽",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p8–9",
+     "OpenStax 20.4"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.para",
+   "name_ko": "부교감 감소",
+   "name_en": "parasympathetic down",
+   "accepted_answers": [
+    "감소",
+    "감소한다",
+    "감소함",
+    "줄어든다",
+    "줄어듦",
+    "줄어요",
+    "하강",
+    "떨어진다",
+    "낮아진다",
+    "작아진다",
+    "↓",
+    "decrease",
+    "decreases"
+   ],
+   "prompt": "[방향 예측] 같은 상황에서 미주신경(부교감) 출력은?",
+   "reason_prompt": "[방향 예측] 심박수를 늦추는 신경은 어떻게?",
+   "explanation": "부교감(미주신경) 활성은 감소합니다. 교감↑·부교감↓가 함께 작용합니다(병렬).",
+   "hint": "심박수를 늦추는 신경",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p8–9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.b1",
+   "name_ko": "심박수·수축력 증가",
+   "name_en": "HR and contractility up",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases"
+   ],
+   "prompt": "[방향 예측] 교감신경이 심장의 β1 수용체를 자극하면 심박수와 수축력은?",
+   "reason_prompt": "[방향 예측] β1 자극의 심장 효과는?",
+   "explanation": "β1: 심박수·수축력·방실결절 전도 증가 → 심박출량 증가(자율신경 수용체 표). 부교감 감소로 무스카린 수용체 자극이 줄어든 것도 심박수를 올리는 쪽입니다.",
+   "hint": "β1",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "자율신경 수용체 표"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.a1",
+   "name_ko": "혈관 수축",
+   "name_en": "vasoconstriction",
+   "accepted_answers": [
+    "수축",
+    "혈관수축",
+    "혈관 수축",
+    "좁아진다",
+    "좁아짐",
+    "수축한다",
+    "vasoconstriction"
+   ],
+   "prompt": "교감신경이 세동맥의 α1 수용체를 자극하면 혈관은?",
+   "reason_prompt": "α1 수용체의 혈관 효과는?",
+   "explanation": "α1: 피부·내장·골격근·신장 혈관 수축 → 말초혈관 저항 증가 → 혈압 상승 쪽.",
+   "hint": "α1",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "자율신경 수용체 표",
+     "14주 p6"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.map",
+   "name_ko": "혈압 회복 방향",
+   "name_en": "BP toward recovery",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases",
+    "회복",
+    "회복된다",
+    "회복 방향",
+    "올라간다"
+   ],
+   "prompt": "[방향 예측] 심박출량과 말초혈관 저항이 늘면 평균동맥압은 어느 방향으로 작용할까요?",
+   "reason_prompt": "[방향 예측] MAP = CO × TPR에서 둘 다 늘면?",
+   "explanation": "MAP = CO × TPR이므로 혈압을 올리는(회복시키는) 방향으로 작용합니다. \"회복 방향으로 작용\"은 실제로 항상 정상으로 돌아간다는 뜻이 아닙니다.",
+   "hint": "MAP = CO × TPR",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p4, p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.negfb",
+   "name_ko": "음성 되먹임",
+   "name_en": "negative feedback",
+   "accepted_answers": [
+    "음성되먹임",
+    "음성 되먹임",
+    "음성피드백",
+    "음성 피드백",
+    "네거티브 피드백",
+    "negative feedback"
+   ],
+   "prompt": "결과(혈압 회복)가 처음 변화(혈압 감소)를 줄이는 방향으로 작용하는 조절 방식은?",
+   "reason_prompt": "변화를 되돌리는 방향의 조절 고리는?",
+   "explanation": "압력수용체 반사는 음성 되먹임입니다. 신경 조절이라 빠르게(초 단위) 일어납니다.",
+   "hint": "되돌리는 고리",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p9, p15"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.br.rise",
+   "name_ko": "혈압 증가 → 심박수 감소",
+   "name_en": "BP rise → HR down",
+   "accepted_answers": [
+    "감소",
+    "감소한다",
+    "감소함",
+    "줄어든다",
+    "줄어듦",
+    "줄어요",
+    "하강",
+    "떨어진다",
+    "낮아진다",
+    "작아진다",
+    "↓",
+    "decrease",
+    "decreases"
+   ],
+   "prompt": "[방향 예측] 이번에는 혈압이 올랐습니다. 압력수용체 반사가 한 번 작동하면 심박수는?",
+   "reason_prompt": "[방향 예측] 발화↑ → 부교감↑·교감↓이면 심박수는?",
+   "explanation": "혈압↑ → 발화↑ → 부교감↑·교감↓ → 심박수·심박출량↓, 세동맥 확장 → 혈압을 낮추는 방향. 이 단계는 되먹임 엔진이 반사 전체를 한 번에(병렬로) 계산한 결과입니다.",
+   "hint": "반대 방향",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p8",
+     "OpenStax 20.4"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  }
+ ],
+ "edges": [
+  {
+   "edge_id": "e.br.1",
+   "source_node": "n.br.receptor",
+   "target_node": "n.br.firing",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "baroreceptor_activity",
+        "delta": -1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "baroreceptor_activity"
+   ]
+  },
+  {
+   "edge_id": "e.br.2",
+   "source_node": "n.br.firing",
+   "target_node": "n.br.center",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600
+  },
+  {
+   "edge_id": "e.br.3",
+   "source_node": "n.br.center",
+   "target_node": "n.br.symp",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "sympathetic_activity",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "sympathetic_activity"
+   ]
+  },
+  {
+   "edge_id": "e.br.4",
+   "source_node": "n.br.symp",
+   "target_node": "n.br.para",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "parasympathetic_activity",
+        "delta": -1
+       }
+      ],
+      "mechanisms": [
+       "_step"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "parasympathetic_activity"
+   ]
+  },
+  {
+   "edge_id": "e.br.5",
+   "source_node": "n.br.para",
+   "target_node": "n.br.b1",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "beta1_heart",
+        "delta": 1
+       },
+       {
+        "var": "m2_heart",
+        "delta": -1
+       }
+      ],
+      "mechanisms": [
+       "ans"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "heart_rate",
+    "contractility"
+   ]
+  },
+  {
+   "edge_id": "e.br.6",
+   "source_node": "n.br.b1",
+   "target_node": "n.br.a1",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "alpha1_vessel",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "ans"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "systemic_vascular_resistance"
+   ]
+  },
+  {
+   "edge_id": "e.br.7",
+   "source_node": "n.br.a1",
+   "target_node": "n.br.map",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "heart_rate",
+        "delta": 0
+       },
+       {
+        "var": "cardiac_output",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "core"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "cardiac_output",
+    "mean_arterial_pressure"
+   ]
+  },
+  {
+   "edge_id": "e.br.8",
+   "source_node": "n.br.map",
+   "target_node": "n.br.negfb",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600
+  },
+  {
+   "edge_id": "e.br.9",
+   "source_node": "n.br.negfb",
+   "target_node": "n.br.rise",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "scenario_start",
+      "scenario_id": "sc.bp_rise"
+     },
+     {
+      "op": "feedback_step",
+      "loop_id": "fb.baroreflex"
+     }
+    ]
+   },
+   "physiology_hide": [
+    "heart_rate",
+    "sympathetic_activity",
+    "parasympathetic_activity",
+    "baroreceptor_activity",
+    "cardiac_output",
+    "mean_arterial_pressure"
+   ]
+  }
+ ],
+ "generator": "tools/content/make_physiology_lessons.py"
+}

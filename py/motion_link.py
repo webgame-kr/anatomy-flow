@@ -44,7 +44,7 @@ def to_motion(game_commands):
             continue
         edge_id = one.get('edge')
         if edge_id not in edge_map and one.get('path') == None and one.get('checkpoint', '') == '' \
-                and one.get('transition', 'move') == 'move' and one.get('timeline', '') == '':
+                and one.get('transition', 'move') == 'move' and one.get('timeline', '') == ''                 and one.get('physiology') == None:
             errors.append('3D 경로가 연결되지 않은 Edge: {}'.format(edge_id))
             continue
         info = info_of(one)

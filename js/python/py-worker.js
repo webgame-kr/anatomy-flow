@@ -29,6 +29,16 @@ const ALLOWED = new Set([
   // STEP 03-D 학습 게임 (규칙 판정·진행·기록은 Python)
   'lesson.load', 'lesson.reset', 'lesson.submit', 'lesson.arrived', 'lesson.retry', 'lesson.recover',
   'lesson.hint', 'lesson.record', 'lesson.records_csv', 'lesson.view', 'lesson.peek',
+  // STEP 04-C 생리 상태 (학습 중 실험·관찰은 lesson.physiology가 문맥을 지킨다)
+  'lesson.physiology',
+  // STEP 04-C 개발자 편집기(Sandbox): 생리 엔진 직접 호출
+  'physiology_commands.load', 'physiology_commands.view', 'physiology_commands.describe', 'physiology_commands.reset',
+  'physiology_commands.switch_context', 'physiology_commands.state_set', 'physiology_commands.state_update',
+  'physiology_commands.state_calculate', 'physiology_commands.set_formula_mode', 'physiology_commands.causal_apply',
+  'physiology_commands.feedback_start', 'physiology_commands.feedback_step', 'physiology_commands.feedback_stop',
+  'physiology_commands.feedback_run', 'physiology_commands.signal_emit', 'physiology_commands.receptor_activate',
+  'physiology_commands.receptor_deactivate', 'physiology_commands.state_bind_visual', 'physiology_commands.state_snapshot',
+  'physiology_commands.state_restore', 'physiology_commands.run_ops',
 ]);
 
 function toPlain(value) {
@@ -67,6 +77,7 @@ async function init({ pyodideBase, pyBase, files }) {
     modules.scene_commands = py.pyimport('scene_commands');
     modules.motion_link = py.pyimport('motion_link');
     modules.lesson = py.pyimport('lesson');
+    modules.physiology_commands = py.pyimport('physiology_commands');
     ready = true;
     const info = toPlain(sandbox.ping());
     postMessage({ type: 'ready', python: info.python, pyodide: py.version, ping: info });

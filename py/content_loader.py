@@ -377,6 +377,20 @@ def check_node3d(node, where, errors, warnings):
         errors.append('{}: revisit은 relearn 또는 review'.format(where))
 
 
+PHYSIOLOGY_OPS = ('causal_apply', 'feedback_step', 'feedback_run', 'signal_emit', 'receptor_activate', 'state_set',
+                  'state_update', 'scenario_start', 'set_formula_mode')
+
+
+def check_physiology(phys, where, errors):
+    # STEP 04-C: Edge의 생리 상태 변화 형식 (변수·관계 ID 확인은 physiology_commands가 모델을 불러온 뒤 한다)
+    if type(phys) != dict or type(phys.get('ops')) != list or len(phys['ops']) == 0:
+        errors.append('{}: physiology는 {{"ops": [명령, ...]}} 형식이어야 합니다.'.format(where))
+        return
+    for op in phys['ops']:
+        if type(op) != dict or op.get('op') not in PHYSIOLOGY_OPS:
+            errors.append('{}: 알 수 없는 생리 명령 {}'.format(where, op))
+
+
 def check_edge3d(edge, where, node_ids, model_ids, errors):
     kind = edge.get('transition_type', 'move')
     if kind not in TRANSITIONS:
@@ -401,6 +415,10 @@ def check_edge3d(edge, where, node_ids, model_ids, errors):
         errors.append('{}: path_id는 글자여야 합니다.'.format(where))
     if 'actor_id' in edge and not is_text(edge['actor_id']):
         errors.append('{}: actor_id는 글자여야 합니다.'.format(where))
+    if 'physiology' in edge:
+        check_physiology(edge['physiology'], where, errors)
+    if 'physiology_hide' in edge and type(edge['physiology_hide']) != list:
+        errors.append('{}: physiology_hide는 변수 id 리스트여야 합니다.'.format(where))
     if 'events' in edge:
         check_events(edge['events'], where, model_ids, node_ids, errors)
 

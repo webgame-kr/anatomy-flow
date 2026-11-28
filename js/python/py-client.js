@@ -4,9 +4,12 @@ export const PYODIDE_VERSION = '0.26.4';
 const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
 const PY_FILES = ['sandbox3d.py', 'scene_commands.py', 'motion_link.py',
   // STEP 03-D: v0.1 규칙 엔진 + 3D 학습 API
-  'typing_engine.py', 'state_engine.py', 'flow_engine.py', 'content_loader.py', 'record_engine.py', 'game.py', 'lesson.py'];
+  'typing_engine.py', 'state_engine.py', 'flow_engine.py', 'content_loader.py', 'record_engine.py', 'game.py',
+  // STEP 04-C: 생리 상태·계산·인과·되먹임·시나리오 엔진 (lesson.py가 가져오므로 먼저 둔다)
+  'biological_state.py', 'formula_engine.py', 'causal_engine.py', 'feedback_engine.py', 'scenario_engine.py', 'physiology_commands.py',
+  'lesson.py'];
 // Worker 파일이 바뀌면 올린다 (브라우저·Pages 캐시에 남은 이전 Worker를 쓰지 않도록)
-const WORKER_VERSION = '04b-1';
+const WORKER_VERSION = '04c-1';
 const INIT_TIMEOUT_MS = 90000;
 const CALL_TIMEOUT_MS = 10000;
 

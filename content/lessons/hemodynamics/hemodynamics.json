@@ -1,0 +1,677 @@
+{
+ "version": 2,
+ "id": "cv.hemodynamics",
+ "content_version": "0.1.0",
+ "title": "혈압과 심박출량: 계산과 방향 예측 (생리 상태 엔진)",
+ "system": "cardiovascular",
+ "scene": {
+  "type": "anatomy",
+  "url": "content/anatomy/cardiovascular/scene.json",
+  "animations": "content/animations/physiology-concept.json",
+  "start_scale": "concept.physiology"
+ },
+ "actor_id": "phy_sig_aff1",
+ "start": "n.hd.co",
+ "max_steps": 60,
+ "options": {
+  "ignore_spaces": true
+ },
+ "variables": {},
+ "variable_labels": {},
+ "physiology": {
+  "model": "content/physiology/cardiovascular-model.json",
+  "context": "mechanism",
+  "scenario": "sc.baseline",
+  "monitor": [
+   "heart_rate",
+   "end_diastolic_volume",
+   "end_systolic_volume",
+   "stroke_volume",
+   "cardiac_output",
+   "preload",
+   "afterload",
+   "contractility",
+   "systemic_vascular_resistance",
+   "mean_arterial_pressure"
+  ],
+  "graph": [
+   "heart_rate",
+   "cardiac_output",
+   "mean_arterial_pressure",
+   "systemic_vascular_resistance"
+  ],
+  "experiment": {
+   "inputs": [
+    "heart_rate",
+    "end_diastolic_volume",
+    "end_systolic_volume",
+    "systolic_bp",
+    "diastolic_bp",
+    "systemic_vascular_resistance"
+   ],
+   "outputs": [
+    "stroke_volume",
+    "ejection_fraction",
+    "cardiac_output",
+    "pulse_pressure",
+    "mean_arterial_pressure"
+   ],
+   "note": "자유 실험: 바꾼 값 하나만 다르고 나머지 조건은 일정하다고 가정합니다. 실제 몸에서는 여러 변수가 함께 바뀝니다."
+  },
+  "mechanism_note": "기전 학습: 정답을 맞힐 때마다 해당 원인 하나를 적용하고, 매 방향 문제 전에 기준 상태로 되돌립니다(\"다른 조건이 같다\")."
+ },
+ "verification_note": "교육용 계산·단순화 모델과 개념 장면입니다. 실제 환자의 생리 반응을 예측하지 않습니다. 계산 문제의 값(EDV 120·ESV 50 mL)은 교재 그림, 심박수 75회/분과 혈압 120/80 mmHg는 공개 참고자료(OpenStax) 예시값입니다. 방향 문제는 \"다른 조건이 같다\"는 가정입니다.",
+ "lecture_check_note": "lecture_check: 강의자료·교재 쪽 번호와 일치 여부만 적는다(내용 미전재).",
+ "source": "직접 작성. 교재 p614–615, 약리 10주 p8–9, 14주 p4, 기본간호학 활력징후, 자율신경 수용체 표 대조. 일부 예시값은 OpenStax A&P 2e 19.4, 20.2.",
+ "complete": {
+  "node": "n.hd.calc_map"
+ },
+ "nodes": [
+  {
+   "node_id": "n.hd.co",
+   "name_ko": "심박출량",
+   "name_en": "cardiac output",
+   "accepted_answers": [
+    "심박출량",
+    "심장박출량",
+    "co",
+    "cardiac output"
+   ],
+   "prompt": "좌심실이 1분 동안 대동맥으로 내보내는 혈액량을 무엇이라 할까요?",
+   "reason_prompt": "심박수와 한 번에 내보내는 양을 곱한 값은?",
+   "explanation": "심박출량(CO) = 심박수(HR) × 일회박출량(SV). 교재는 정상 범위를 분당 약 4~8 L로 제시합니다.",
+   "hint": "심장이 1분 동안 뿜어내는 양",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "교재 p614"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.sv",
+   "name_ko": "일회박출량",
+   "name_en": "stroke volume",
+   "accepted_answers": [
+    "일회박출량",
+    "1회박출량",
+    "일회 박출량",
+    "sv",
+    "stroke volume"
+   ],
+   "prompt": "심실이 한 번 수축할 때 내보내는 혈액량은?",
+   "reason_prompt": "확장기말 용적에서 수축기말 용적을 뺀 양은?",
+   "explanation": "SV = 이완기말 용적(EDV) − 수축기말 용적(ESV). 교재 그림 15-7: EDV 120 mL, ESV 50 mL, SV 70 mL.",
+   "hint": "한 번 박출하는 양",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "교재 p614 그림 15-7",
+     "약리 10주 p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.calc_sv",
+   "name_ko": "SV 계산 70 mL",
+   "name_en": "SV = 70 mL",
+   "accepted_answers": [
+    "70",
+    "70ml",
+    "70 ml",
+    "70mL",
+    "70 mL"
+   ],
+   "prompt": "[계산] EDV 120 mL, ESV 50 mL일 때 일회박출량은 몇 mL일까요? (숫자만)",
+   "reason_prompt": "[계산] SV = EDV − ESV",
+   "explanation": "SV = 120 − 50 = 70 mL. 박출률 EF = SV ÷ EDV × 100 ≈ 58.3%.",
+   "hint": "EDV − ESV",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "교재 p614 그림 15-7"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.calc_co",
+   "name_ko": "CO 계산 5.25 L/분",
+   "name_en": "CO = 5.25 L/min",
+   "accepted_answers": [
+    "5.25",
+    "5.25l/분",
+    "5.25 l/분",
+    "5.25L/분",
+    "5.25 L/분",
+    "5.25l/min",
+    "5.25 l/min",
+    "5.25L/min",
+    "5.25 L/min"
+   ],
+   "prompt": "[계산] 심박수 75회/분, 일회박출량 70 mL일 때 심박출량은 몇 L/분일까요? (소수 둘째 자리까지)",
+   "reason_prompt": "[계산] CO = HR × SV, mL를 L로 바꾸기",
+   "explanation": "75 × 70 = 5,250 mL/분 = 5.25 L/분. 단위를 mL에서 L로 바꾸려고 1000으로 나눕니다. (75회/분은 OpenStax 예시값이며 강의 수치가 아닙니다)",
+   "hint": "5,250 mL ÷ 1000",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "PARTIAL",
+    "refs": [
+     "교재 p614"
+    ],
+    "unconfirmed": [
+     "심박수 75회/분 예시값은 OpenStax(강의 미확인)"
+    ],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.calc_hr",
+   "name_ko": "HR 100일 때 CO 7 L/분",
+   "name_en": "CO = 7 L/min",
+   "accepted_answers": [
+    "7",
+    "7l/분",
+    "7 l/분",
+    "7L/분",
+    "7 L/분",
+    "7l/min",
+    "7 l/min",
+    "7L/min",
+    "7 L/min"
+   ],
+   "prompt": "[계산] 다른 조건이 같고 심박수만 100회/분이 되면 심박출량은 몇 L/분일까요?",
+   "reason_prompt": "[계산] SV가 그대로라는 가정에서 CO는?",
+   "explanation": "100 × 70 ÷ 1000 = 7.0 L/분. \"다른 조건이 같다\"는 가정입니다. 실제로 심박수가 매우 빠르면 충만 시간이 줄어 SV가 줄 수 있습니다(OpenStax: 건강한 젊은 성인 약 160회/분 이상).",
+   "hint": "HR × SV",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "교재 p614"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.preload",
+   "name_ko": "전부하",
+   "name_en": "preload",
+   "accepted_answers": [
+    "전부하",
+    "preload"
+   ],
+   "prompt": "확장기말에 심실 근육이 늘어난 정도(이완기말 용적에 따라 달라짐)를 무엇이라 할까요?",
+   "reason_prompt": "정맥 환류가 늘면 커지는, 수축 직전 심근의 신장 정도는?",
+   "explanation": "전부하는 확장기말 용적(EDV)에 따라 달라지며, 정맥 환류가 많을수록 커집니다.",
+   "hint": "수축 전 늘어난 정도",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 10주 p9",
+     "교재 p615"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.dir_preload",
+   "name_ko": "전부하↑ → SV 증가",
+   "name_en": "preload up → SV up",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases"
+   ],
+   "prompt": "[방향 예측] 다른 조건이 같을 때 정맥 환류가 늘어 전부하가 증가하면 일회박출량은? (증가/감소)",
+   "reason_prompt": "[방향 예측] Frank-Starling 법칙: 더 늘어난 심근은?",
+   "explanation": "Frank-Starling 법칙: \"어느 시점까지는\" 더 많이 늘어날수록 더 강하게 수축해 일회박출량이 늘어납니다. 범위를 넘으면 이 모델은 결과를 미확정으로 둡니다.",
+   "hint": "Frank-Starling",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 10주 p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.afterload",
+   "name_ko": "후부하",
+   "name_en": "afterload",
+   "accepted_answers": [
+    "후부하",
+    "afterload"
+   ],
+   "prompt": "심실이 혈액을 내보낼 때 이겨야 하는 저항(주로 말초혈관 저항)을 무엇이라 할까요?",
+   "reason_prompt": "대동맥판을 열고 박출하려면 이겨야 하는 것은?",
+   "explanation": "후부하는 박출에 대한 저항입니다. 말초혈관 저항이 커지면 후부하가 커집니다.",
+   "hint": "박출할 때의 저항",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "교재 p615",
+     "약리 10주 p9"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.dir_afterload",
+   "name_ko": "후부하↑ → SV 감소",
+   "name_en": "afterload up → SV down",
+   "accepted_answers": [
+    "감소",
+    "감소한다",
+    "감소함",
+    "줄어든다",
+    "줄어듦",
+    "줄어요",
+    "하강",
+    "떨어진다",
+    "낮아진다",
+    "작아진다",
+    "↓",
+    "decrease",
+    "decreases"
+   ],
+   "prompt": "[방향 예측] 다른 조건이 같을 때 말초혈관 저항이 커져 후부하가 증가하면 일회박출량은?",
+   "reason_prompt": "[방향 예측] 저항이 커지면 박출되는 양은?",
+   "explanation": "후부하가 커지면 수축기말 용적이 늘고 일회박출량은 줄어듭니다. 이때 평균동맥압은 저항↑(올리는 쪽)과 심박출량↓(내리는 쪽)이 함께 작용해 이 모델에서는 \"미확정(MIXED)\"입니다. 혈관 지름만으로 혈압 변화를 설명할 수 없습니다.",
+   "hint": "저항이 클수록",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 10주 p8",
+     "교재 p615"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.contr",
+   "name_ko": "심근수축력",
+   "name_en": "contractility",
+   "accepted_answers": [
+    "심근수축력",
+    "수축력",
+    "심근 수축력",
+    "contractility"
+   ],
+   "prompt": "같은 전부하에서 심근이 수축하는 힘(교감신경 β1 자극으로 커짐)은?",
+   "reason_prompt": "β1 수용체가 자극되면 커지는 심장의 성질은?",
+   "explanation": "심근수축력이 커지면 같은 전부하에서도 더 많이 박출합니다(약리 10주 p8, 자율신경 수용체 표의 β1).",
+   "hint": "수축하는 힘",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 10주 p8",
+     "자율신경 수용체 표"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.dir_contr",
+   "name_ko": "수축력↑ → SV 증가",
+   "name_en": "contractility up → SV up",
+   "accepted_answers": [
+    "증가",
+    "증가한다",
+    "증가함",
+    "늘어난다",
+    "늘어남",
+    "늘어나요",
+    "상승",
+    "상승한다",
+    "커진다",
+    "↑",
+    "높아진다",
+    "increase",
+    "increases"
+   ],
+   "prompt": "[방향 예측] 다른 조건이 같을 때 수축력이 증가하면 일회박출량은?",
+   "reason_prompt": "[방향 예측] 더 강하게 수축하면 남는 혈액(ESV)은 줄고, SV는?",
+   "explanation": "수축력↑ → 수축기말 용적↓ → 일회박출량↑ → 심박출량↑.",
+   "hint": "더 세게 짜면",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "relearn",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "약리 10주 p8"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.map_rel",
+   "name_ko": "말초혈관저항",
+   "name_en": "systemic vascular resistance",
+   "accepted_answers": [
+    "말초혈관저항",
+    "총말초저항",
+    "말초저항",
+    "말초 혈관 저항",
+    "혈관저항",
+    "tpr",
+    "svr"
+   ],
+   "prompt": "평균동맥압(MAP)은 심박출량과 무엇의 곱으로 나타낼까요? (MAP = CO × ?)",
+   "reason_prompt": "심박출량이 같을 때 MAP를 바꾸는 혈관 쪽 요인은?",
+   "explanation": "MAP = CO × TPR(총 말초저항). 중심정맥압을 무시한 교육용 식이며, 이 식만으로 수축기·이완기 혈압이 정해지지는 않습니다.",
+   "hint": "혈관 쪽 저항",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "MATCH",
+    "refs": [
+     "14주 p4",
+     "기본간호학 활력징후"
+    ],
+    "unconfirmed": [],
+    "date": "2026-11-29"
+   },
+   "events": []
+  },
+  {
+   "node_id": "n.hd.calc_map",
+   "name_ko": "MAP 추정 93.3 mmHg",
+   "name_en": "MAP estimate 93.3",
+   "accepted_answers": [
+    "93.3",
+    "93.3mmhg",
+    "93.3 mmhg",
+    "93.3mmHg",
+    "93.3 mmHg"
+   ],
+   "prompt": "[계산] 혈압 120/80 mmHg일 때 평균동맥압 추정값(DBP + 맥압/3)은? (소수 첫째 자리)",
+   "reason_prompt": "[계산] 맥압 = 120 − 80, MAP ≈ 80 + 맥압/3",
+   "explanation": "80 + 40/3 ≈ 93.3 mmHg. 강의 정상 범위 70–100 mmHg 안입니다. 이것은 근사식이며, 혈압 120/80은 OpenStax 예시값입니다.",
+   "hint": "DBP + (SBP − DBP)/3",
+   "verification_status": "CONCEPTUAL",
+   "revisit": "review",
+   "lecture_check": {
+    "status": "PARTIAL",
+    "refs": [
+     "14주 p4",
+     "기본간호학 활력징후"
+    ],
+    "unconfirmed": [
+     "혈압 120/80 예시값은 OpenStax"
+    ],
+    "date": "2026-11-29"
+   },
+   "events": []
+  }
+ ],
+ "edges": [
+  {
+   "edge_id": "e.hd.1",
+   "source_node": "n.hd.co",
+   "target_node": "n.hd.sv",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600
+  },
+  {
+   "edge_id": "e.hd.2",
+   "source_node": "n.hd.sv",
+   "target_node": "n.hd.calc_sv",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology_hide": [
+    "stroke_volume"
+   ]
+  },
+  {
+   "edge_id": "e.hd.3",
+   "source_node": "n.hd.calc_sv",
+   "target_node": "n.hd.calc_co",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology_hide": [
+    "cardiac_output"
+   ]
+  },
+  {
+   "edge_id": "e.hd.4",
+   "source_node": "n.hd.calc_co",
+   "target_node": "n.hd.calc_hr",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "state_set",
+      "var": "heart_rate",
+      "value": 100
+     }
+    ]
+   },
+   "physiology_hide": [
+    "cardiac_output"
+   ]
+  },
+  {
+   "edge_id": "e.hd.5",
+   "source_node": "n.hd.calc_hr",
+   "target_node": "n.hd.preload",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "scenario_start",
+      "scenario_id": "sc.baseline"
+     }
+    ]
+   }
+  },
+  {
+   "edge_id": "e.hd.6",
+   "source_node": "n.hd.preload",
+   "target_node": "n.hd.dir_preload",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "venous_return",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "core"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "end_diastolic_volume",
+    "preload",
+    "stroke_volume",
+    "cardiac_output",
+    "mean_arterial_pressure"
+   ]
+  },
+  {
+   "edge_id": "e.hd.7",
+   "source_node": "n.hd.dir_preload",
+   "target_node": "n.hd.afterload",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "scenario_start",
+      "scenario_id": "sc.baseline"
+     }
+    ]
+   }
+  },
+  {
+   "edge_id": "e.hd.8",
+   "source_node": "n.hd.afterload",
+   "target_node": "n.hd.dir_afterload",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "systemic_vascular_resistance",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "core"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "afterload",
+    "stroke_volume",
+    "cardiac_output",
+    "mean_arterial_pressure"
+   ]
+  },
+  {
+   "edge_id": "e.hd.9",
+   "source_node": "n.hd.dir_afterload",
+   "target_node": "n.hd.contr",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "scenario_start",
+      "scenario_id": "sc.baseline"
+     }
+    ]
+   }
+  },
+  {
+   "edge_id": "e.hd.10",
+   "source_node": "n.hd.contr",
+   "target_node": "n.hd.dir_contr",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "causal_apply",
+      "changes": [
+       {
+        "var": "contractility",
+        "delta": 1
+       }
+      ],
+      "mechanisms": [
+       "core"
+      ]
+     }
+    ]
+   },
+   "physiology_hide": [
+    "stroke_volume",
+    "cardiac_output",
+    "mean_arterial_pressure"
+   ]
+  },
+  {
+   "edge_id": "e.hd.11",
+   "source_node": "n.hd.dir_contr",
+   "target_node": "n.hd.map_rel",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology": {
+    "ops": [
+     {
+      "op": "scenario_start",
+      "scenario_id": "sc.baseline"
+     }
+    ]
+   }
+  },
+  {
+   "edge_id": "e.hd.12",
+   "source_node": "n.hd.map_rel",
+   "target_node": "n.hd.calc_map",
+   "transition_type": "jump",
+   "checkpoint_id": "",
+   "duration": 600,
+   "physiology_hide": [
+    "mean_arterial_pressure"
+   ]
+  }
+ ],
+ "generator": "tools/content/make_physiology_lessons.py"
+}

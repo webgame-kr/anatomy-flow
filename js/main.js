@@ -22,6 +22,8 @@ import { createMotionKit } from './motion/motion-kit.js';
 import { createPathEditor } from './motion/path-editor.js';
 import { createAnimationKit } from './animation/animation-kit.js';
 import { createAnimationEditor } from './animation/animation-editor.js';
+import { createSignalManager } from './physiology/signal-manager.js';
+import { createPhysiologyEditor } from './physiology/physiology-editor.js';
 
 window.__nf3dBooted = true;
 
@@ -117,10 +119,13 @@ function buildEngine() {
   // STEP 04-B: 애니메이션·타임라인·Morph·변형·구조 상태
   e.anim = createAnimationKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, log });
   e.kit.paths.setVertexResolver((mesh, i) => e.anim.morph.deformedVertex(mesh, i));
+  // STEP 04-C: 생리 신호 표시 (signal_emit)
+  e.signals = createSignalManager({ kit: e.kit, materials: e.materials, registry: e.registry, log });
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
     motion: e.kit.commands,
     animation: e.anim.commands,
+    physiology: e.signals,
   });
   e.anim.setRunner(e.runner);
   e.bridge = createPythonBridge({ client, runner: e.runner, log, guard: () => e.kit.motion.session });
@@ -328,13 +333,19 @@ function wireUi(e) {
   });
   // STEP 04-B: 애니메이션 편집기 (Sandbox 오른쪽 패널)
   e.animEditor = createAnimationEditor({ container: $('anim-panel'), kit: e.anim, motionKit: e.kit, registry: e.registry, camera: e.camera, log });
+  // STEP 04-C: 생리 상태 편집기 (Python 생리 엔진 직접 호출)
+  e.physEditor = createPhysiologyEditor({ container: $('phys-panel'), client, runner: e.runner, log });
   async function loadMotion(sceneDef) {
     // 애니메이션 데이터를 먼저: 개념 모델이 있어야 경로 점(object_local, mesh_vertex)이 계산된다
     if (sceneDef.animation) {
       try {
         const r = await e.anim.loadUrl(sceneDef.animation);
         if (!r.ok) log(`애니메이션 데이터 오류 ${r.errors.length}개`, 'error');
-        if (e.anim.data && e.anim.data.motion) e.kit.apply(e.anim.data.motion);
+        if (e.anim.data && e.anim.data.motion) {
+          e.kit.apply(e.anim.data.motion);
+          e.signals.setSignalActors((e.anim.data.motion.actors || []).filter((a) => a.signal_actor).map((a) => a.actor_id));
+        }
+        if (sceneDef.physiology_model && client.state === 'ready') e.physEditor.loadDefault();
       } catch (err) {
         log(`애니메이션 데이터를 읽지 못했습니다: ${err.message}`, 'error');
       }

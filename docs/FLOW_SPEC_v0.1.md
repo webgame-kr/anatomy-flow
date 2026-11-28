@@ -370,3 +370,56 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
 - Object-local Anchor와 `object_local` 경로 점은 객체 Transform만 따라간다. Morph로 바뀐 Mesh 모양은 따라가지 않는다.
 - 변형을 따라가야 하는 점은 `{space:'mesh_vertex', object_id, vertex_index}`로 적는다. Morph 가중치가 바뀌면 곡선을 다시 계산한다.
 - 혈관 수축·확장(deform)은 중심선을 유지하고 반지름만 바꾼다. 같은 중심선 위의 경로와 Actor는 그대로다.
+
+## 8. 생리 상태 모델 (STEP 04-C)
+교육용 계산·단순화 모델이다. 실제 환자의 생리 반응을 예측하지 않는다. 기준 파일: `content/physiology/cardiovascular-model.json`(생성기 `tools/content/make_physiology_model.py`). 엔진: `py/biological_state.py`, `formula_engine.py`, `causal_engine.py`, `feedback_engine.py`, `scenario_engine.py`, `physiology_commands.py`.
+
+### 8.1 변수 (`variables`)
+| 필드 | 뜻 |
+|---|---|
+| `variable_id`, `name_ko`, `name_en` | ID와 이름 |
+| `data_type` | `number`(수치), `computed`(계산 결과, 공식만 씀), `relative`(상대 단계 -2~2), `activation`(ACTIVE/INACTIVE), `boolean`, `category` |
+| `unit`, `baseline`, `allowed_range` | 단위, 기준값, 입력 검사 범위(정상 범위가 아님) |
+| `normal_range` | 참고 범위 (표시용) |
+| `source`, `verification_status` | 근거(강의 쪽 번호·공개 자료)와 상태: `LECTURE_CHECKED`, `PUBLIC_REFERENCE`, `EDUCATIONAL_VALUE`, `CONCEPTUAL`, `PENDING_REVIEW`, `TECH_TESTED`, `NEEDS_*_REVIEW`, `EXPERT_REVIEWED`(사람만) |
+| `value_kind` | `input`, `calculated`, `derived`(다른 기준값에서 유도), `relative`, `activation` |
+
+- 상대 단계: -2 크게 감소, -1 감소, 0 기준, 1 증가, 2 크게 증가, `UNKNOWN`(판단 불가), `MIXED`(반대 원인).
+- 수치 변수도 `trend`(방향 단계)를 가진다. 인과관계는 크기 근거가 없으면 숫자를 바꾸지 않고 `trend`만 바꾼다.
+
+### 8.2 공식 (`formulas`)
+`{formula_id, output, function, inputs: {매개변수: 변수}, input_units, output_unit, round, mode_group, mode, run, source}`
+- `function`은 허용 목록만: `cardiac_output`(HR × SV ÷ 1000), `stroke_volume`, `ejection_fraction`, `pulse_pressure`, `map_estimate`(DBP + PP/3), `map_hemodynamic`(CO × SVR + CVP), `svr_from_map_co`. 문자열 수식은 없다.
+- 같은 결과를 내는 공식은 `mode_group`으로 묶고 하나만 켠다(`formula_modes`). MAP: `pressure_estimate` / `hemodynamic`.
+- `run: "baseline"`: 기준값 유도 전용(예: SVR = MAP ÷ CO).
+- 오류: 입력 누락, 숫자 아님·NaN·무한대, 단위 불일치, 0으로 나누기, 음수 용적(ESV > EDV), 비정상 관계(SBP < DBP), 순환 의존성.
+
+### 8.3 인과관계 (`causal`)
+`{causal_id, source_variable, target_variable, direction: increase|decrease, relationship_type, conditions, threshold, delay, priority, dominant, mechanism, timescale, out_of_range, magnitude, source, verification_status, notes}`
+- `relationship_type`: positive, negative, activation, inhibition, conditional, threshold, multi_condition, parallel, formula_direction.
+- `conditions`: `[{var, op, level}]`(상대 단계) 또는 `[{var, op, value}]`(값). 맞지 않으면 적용하지 않고, `out_of_range: "unknown"`이면 결과를 `UNKNOWN`으로.
+- `threshold`: `{var, op, value}` — 값이 역치를 넘을 때만.
+- `delay`: 물리 시간 단위(정수). 같은 시간에 바뀌는 변수는 병렬 반응이다.
+- 결합 정책: 같은 방향 원인은 가장 큰 단계 하나(더하지 않음). 반대 방향은 `dominant`인 최고 우선 관계가 있을 때만 그쪽, 아니면 `MIXED`(더 전하지 않음).
+- 일반 인과관계 그래프는 순환이 없어야 한다. 되먹임은 8.4로 정의한다.
+- `mechanism`: 실행 때 넘기는 기전 목록에 있는 관계만 적용한다(`core`도 명시). 학습 단계를 하나씩 보여 줄 때 쓴다.
+
+### 8.4 되먹임 (`feedback`)
+`{loop_id, loop_type: negative|positive, sensed_variable, setpoint: {level}|{range}, sensor_variable, sensor_direction, mechanism, also_mechanisms, delay, timescale, max_iterations(1~50), limits: [{when, cap_level, reason}], stop: [조건]}`
+- 한 번 부를 때 한 단계: 설정점에서 벗어난 정도 → 수용체 → 인과 전파 → 감지 변수의 회복(또는 강화) 방향 기록.
+- 끝: `within_setpoint`, `plateau`(변화 없음·제한), `max_iterations`, `stop_condition`, `undetermined`. 여러 고리는 물리 시간 순서로 번갈아(결정적) 실행하고 총 반복 수를 제한한다.
+- `limits`: 원인이 남아 있으면 감지 변수가 기준까지 가지 못한다(무조건 정상화하지 않음).
+
+### 8.5 수용체·신호·시각 바인딩·시나리오
+- `receptors`: `{receptor_id, variable(activation), ligand, anatomical_location, target_variables, downstream_effects, mechanisms, source}`.
+- `signals`: `{signal_id, signal_type(neural_afferent|neural_efferent|hormone|enzyme|neurotransmitter|paracrine|electrical), source_structure, target_structure, path_id, from_checkpoint, to_checkpoint, signal_direction, actor_id, receptor_id, visual_style, educational_scale, duration_ms}`.
+- `visual_bindings`(상태 → 시각, 한 방향): `animation_speed`(mode ratio|level|auto, map, weight_variable, weight_map), `morph`, `structure_state`, `material`, `signal`(when: change|increase|decrease). 명령은 Python이 만들고 JS command-runner가 실행한다.
+- `scenarios`: `{scenario_id, initial_state, trigger, available_mechanisms, expected_response, learning_objectives, completion_condition, source, limitations}`.
+
+### 8.6 학습 콘텐츠 연결 (version 2 확장)
+- 콘텐츠 최상위 `physiology`: `{model, context, scenario, monitor, graph, experiment: {inputs, outputs, note}, observe: {scenarios, loops}, mechanism_note}`.
+- Edge `physiology`: `{"ops": [...]}` — 정답 뒤 생리 변화. op: `causal_apply{changes, mechanisms}`, `feedback_step{loop_id}`, `feedback_run{loop_ids}`, `signal_emit`, `receptor_activate`, `state_set`, `state_update`, `scenario_start`, `set_formula_mode`.
+  - 실행 흐름: 정답 → `begin`(확정 전 계산, 시각 명령을 이동 묶음에 넣음) → 필수 명령 완료 → `lesson.arrived` → `commit`. 실패·취소·복구 → `rollback`(이전 정상 상태). 같은 Edge 방문은 한 번만 확정한다.
+- Edge `physiology_hide`: 암기·추론 모드에서 제출 전 상태 모니터가 숨길 변수.
+- 물질 이동 Actor 없이 상태만 바뀌는 단계는 `transition_type: "jump"`로 쓴다.
+- 문맥: `mechanism`(학습, 정답으로만 바뀜) · `experiment`(자유 실험) · `observe`(자동 관찰). 상태·기록을 따로 둔다.

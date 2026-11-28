@@ -21,7 +21,7 @@ const VAR_LABEL = {
   laps: ['순환 횟수(laps)', {}],
 };
 
-export function createGameplayUi({ game, mode, session, engine }) {
+export function createGameplayUi({ game, mode, session, engine, isLocked = () => false }) {
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
   const nid = (n) => n.node_id || n.id;
   const nameOf = (n) => n.name_ko || n.ko;
@@ -152,7 +152,8 @@ export function createGameplayUi({ game, mode, session, engine }) {
   // 입력 가능 상태와 버튼
   function renderControls(typing) {
     const s = game.state;
-    const canType = s === 'waiting_input' || s === 'waiting_choice';
+    // STEP 04-C: 자유 실험·자동 관찰(다른 생리 문맥) 중에는 입력하지 않는다
+    const canType = (s === 'waiting_input' || s === 'waiting_choice') && !isLocked();
     typing.lock(!canType);
     $('answer').disabled = !canType && s !== 'checking' && s !== 'transitioning';
     $('btn-hint').disabled = !canType;

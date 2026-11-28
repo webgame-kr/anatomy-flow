@@ -143,3 +143,11 @@ py/content_loader.py ─── + version 2 별칭 변환(upgrade), 3D 필드 검
 3. 정답이면 상태가 transitioning이 된다. command-runner가 이동 명령(wait)을 실행하고, 카메라가 추적한다.
 4. 이동 결과를 Python `lesson.arrived`에 보낸다: 이벤트(var, scene) → 도착 초점 → 다음 문제
 5. 실패하면 상태가 error가 된다. 재시도나 복구 중에서 고른다.
+
+
+## 생리 상태 엔진 (STEP 04-C)
+- Python(`py/`): `biological_state`(변수·단계·스냅샷·기록) → `formula_engine`(허용 공식, 의존성 순서) → `causal_engine`(방향 전파, 조건·역치·지연·결합 정책) → `feedback_engine`(단계별 되먹임) · `scenario_engine` → `physiology_commands`(JS용 명령, 문맥, begin/commit/rollback, 시각 바인딩 명령 생성).
+- `lesson.py`가 학습 흐름에 붙인다: 정답 → begin → 이동 묶음(필수 시각 명령) → arrived → commit / 실패 → rollback.
+- JS(`js/physiology/`): `signal-manager`(command-runner의 `signal_emit` 처리, Actor·Path 재사용), `physiology-monitor`(Play 상태·그래프·자유 실험·자동 관찰), `physiology-editor`(Sandbox 편집기). 생리 값은 Python 스냅샷으로만 표시한다.
+- Python은 상태가 바뀔 때만 부른다(정답·실험 입력·관찰 시작). 프레임마다 부르지 않는다. 그래프도 상태가 바뀔 때만 다시 그린다.
+- 명세: `docs/FLOW_SPEC_v0.1.md` 8장.

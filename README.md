@@ -221,6 +221,48 @@ commands = [
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
 
+## STEP 04-C 생리 상태·인과·되먹임 엔진
+
+> 교육용 단순화 모델입니다. 실제 환자의 생리 반응을 예측하지 않으며, 진단·처치·약물 결정에 쓰지 않습니다. 전문가 검토 전입니다.
+
+- **Play 콘텐츠**
+
+  | 콘텐츠 | 주소 | 내용 |
+  |---|---|---|
+  | 혈압·심박출량 | `play.html?lesson=cv.hemodynamics` | SV·CO·MAP 계산, 전부하·후부하·수축력 방향 예측, 자유 실험(HR·EDV·ESV·SBP·DBP·SVR 입력) |
+  | 압력수용체 반사 | `play.html?lesson=cv.baroreflex` | 혈압 감소 → 수용체 → 숨뇌 → 교감·부교감 → 심장·혈관 → 음성 되먹임, 자동 관찰 |
+  | RAAS | `play.html?lesson=cv.raas` | 혈액량 감소 → 레닌 → 안지오텐신 I·II → 혈관 수축·알도스테론·ADH → 혈액량 회복 방향, 자동 관찰 |
+
+  - 화면 왼쪽 위 생리 패널: 상태(기준·현재·방향·근거), 그래프, 자유 실험, 자동 관찰
+  - 암기·추론 모드에서는 정답 변수를 숨기고, 실험·관찰은 학습을 마친 뒤에 열립니다.
+- **Sandbox:** `index.html?scene=phys_lab` (PH) — Physiology Editor(모델 불러오기·검사, 값 설정, 시나리오, 되먹임 단계, 관계 추가, 신호)
+- **엔진:** `py/biological_state.py`, `formula_engine.py`, `causal_engine.py`, `feedback_engine.py`, `scenario_engine.py`, `physiology_commands.py`. 데이터 형식은 `docs/FLOW_SPEC_v0.1.md` 8장에 있습니다.
+- **데이터 생성기:** `tools/content/make_physiology_model.py`, `make_physiology_concept.py`, `make_physiology_lessons.py`, `make_physiology_fixture.py`
+- **테스트:**
+
+  ```powershell
+  python tests/test_biological_state.py
+  ```
+
+  ```powershell
+  python tests/test_formula_engine.py
+  ```
+
+  ```powershell
+  python tests/test_causal_engine.py
+  ```
+
+  ```powershell
+  python tests/test_feedback_engine.py
+  ```
+
+  ```powershell
+  python tests/test_physiology_lesson.py
+  ```
+
+  브라우저: 로컬 서버에서 `tests/physiology-tests.html`
+- **보고서:** `docs/development/STEP_04C_REPORT.md`
+
 ## STEP 04-B+ 해부학 자산 확장
 
 - **Sandbox 새 장면** (`index.html?scene=<id>`)

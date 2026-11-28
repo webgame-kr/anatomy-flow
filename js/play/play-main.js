@@ -5,6 +5,7 @@ import { checkWebGL, createPlayEngine, DEFAULT_WALL_OPACITY } from './play-engin
 import { createGameplayController } from './gameplay-controller.js';
 import { createGameplayUi } from './gameplay-ui.js';
 import { createCyclePanel } from './cycle-panel.js';
+import { createPhysiologyMonitor } from '../physiology/physiology-monitor.js';
 import { createLearningMode, MODES } from './learning-mode.js';
 import { createSessionManager } from './session-manager.js';
 import { setupTyping } from '../shared/typing-input.js';
@@ -41,19 +42,26 @@ async function boot() {
     onPythonStatus: (state, text) => { if (state === 'error') log(`Python: ${text}`, 'error'); },
   });
   const game = createGameplayController({ engine, session, mode, log });
-  const ui = createGameplayUi({ game, mode, session, engine });
+  const locks = { on: () => false };
+  const ui = createGameplayUi({ game, mode, session, engine, isLocked: () => locks.on() });
   // STEP 04-B: 단계형 애니메이션 콘텐츠(심장주기)의 상태 표시·자유 관찰. 관찰 중에는 입력을 막는다 (Python 상태를 바꾸지 않게)
   const cycle = createCyclePanel({
     engine, game, container: $('cc-panel'), log,
     onObserveChange: (on) => { $('answer').disabled = on; $('btn-submit').disabled = on; },
     canRevealAll: () => mode.id === 'guide' || game.state === 'completed',
   });
+  // STEP 04-C: 생리 상태 모니터 (상태·그래프·자유 실험·자동 관찰). 실험·관찰 중에는 입력을 막는다 (학습 상태와 다른 문맥)
+  const physio = createPhysiologyMonitor({
+    game, mode, engine, container: $('ph-panel'), log,
+    onLockChange: (on) => { $('answer').disabled = on; $('btn-submit').disabled = on; },
+  });
+  locks.on = () => cycle.observing || physio.locked;
 
   // ---------- 입력 ----------
   const input = $('answer');
   const typing = setupTyping(input, $('btn-submit'), {
     onSubmit: async (value) => {
-      if (cycle.observing) return;
+      if (cycle.observing || physio.locked) return;
       const r = await game.submit(value);
       if (r === 'wrong') {
         const box = document.querySelector('.pl-typing');
@@ -250,7 +258,7 @@ async function boot() {
     fit();
   }
 
-  window.__play = { engine, game, mode, session, logs, typing, cycle };
+  window.__play = { engine, game, mode, session, logs, typing, cycle, physio };
   ui.renderAll(typing);
   await game.loadLesson(pick.url);
   if (params.get('autostart') === '1' && game.state === 'ready') { $('ov-start').hidden = true; await game.start(mode.id); }

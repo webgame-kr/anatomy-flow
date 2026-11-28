@@ -113,6 +113,10 @@ def submit(text):
     cmd['pre_checkpoint'] = edge.get('pre_checkpoint_id', '')
     # STEP 04-B: 이동과 함께 끝까지 기다릴 필수(Blocking) 타임라인
     cmd['timeline'] = edge.get('timeline_id', '')
+    # STEP 04-C: 생리 상태 변화 (Edge의 physiology.ops). 확정은 이동·필수 애니메이션이 끝난 뒤(lesson.arrived)
+    phys = edge.get('physiology')
+    if type(phys) == dict:
+        cmd['physiology'] = phys
     scale = edge.get('scale')
     if type(scale) == dict:
         cmd['scale'] = {'level': scale.get('level', ''), 'scene_id': scale.get('scene_id', ''),
@@ -275,6 +279,11 @@ def get_view():
                     'checkpoint_id', 'verification_status', 'source']:
             info[key] = node.get(key, '')
         info['revisit'] = node.get('revisit', 'relearn')
+        # STEP 04-C: 이 문제의 정답과 관련된 생리 변수 (암기·추론 모드에서 제출 전 상태 모니터가 숨긴다)
+        info['physiology_hide'] = []
+        if cand[0] != None and cand[0] in index['edges']:
+            for var_id in index['edges'][cand[0]].get('physiology_hide', []):
+                info['physiology_hide'].append(var_id)
         info['seen'] = cand[1] in state['completed']
         view['candidates'].append(info)
     return view

@@ -20,6 +20,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
   let validation = { errors: [], warnings: [] };
   let hints = [];               // 이번 문제의 힌트
   let lastMs = { submit: 0, arrive: 0 };
+  let physiology = null;        // STEP 04-C: Python 생리 상태 스냅샷 (표시용. 기준은 Python)
   const options = { cameraMode: 'auto', reducedMotion: false, cameraSpeed: 1, actorSpeed: 1, showPath: false };
   const listeners = new Set();
 
@@ -69,6 +70,17 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       return fatal(`콘텐츠 오류: ${err.message}`);
     }
     const sc = lesson.scene || {};
+    physiology = null;
+    let physModel = null;
+    if (lesson.physiology && lesson.physiology.model) {
+      try {
+        const res = await fetch(lesson.physiology.model, { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`생리 모델 파일 (${res.status})`);
+        physModel = await res.json();
+      } catch (err) {
+        return fatal(`생리 모델 오류: ${err.message}`);
+      }
+    }
     try {
       emit('loading', { text: '3D 모델을 불러오는 중…' });
       if (sc.type === 'anatomy') await engine.loadAnatomy(sc.url, { micro: sc.micro || null, animations: sc.animations || null, start_scale: sc.start_scale || null });
@@ -86,11 +98,13 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     emit('loading', { text: 'Python 학습 엔진을 준비하는 중…' });
     try {
       await engine.client.start();
-      const r = await py('lesson.load', lesson, actorId());
+      const data = physModel ? { ...lesson, physiology_model: physModel } : lesson;
+      const r = await py('lesson.load', data, actorId());
       if (r === STALE) return;
       if (!r.ok) return fatal(`콘텐츠 규칙 오류: ${r.errors.join(' / ')}`);
       for (const w of r.warnings) log(`규칙 검사: ${w}`, 'warn');
       view = r.view;
+      if (r.physiology) { physiology = r.physiology; await runPhysiology(r.physiology_commands); }
     } catch (err) {
       return fatal(`Python 엔진 오류: ${err.message}`);
     }
@@ -177,6 +191,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const r = await py('lesson.reset');
     if (r === STALE) return false;
     view = r;
+    if (r && r.physiology) { physiology = r.physiology; await runPhysiology(r.physiology_commands); }
     lastExplain = null; feedback = null; failure = null; hints = [];
     session.startClock();
     sm.to(nextWaitState(), 'start');
@@ -185,7 +200,16 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     return true;
   }
 
+  // STEP 04-C: 생리 상태의 시각 명령 (장식·상태 표시, 기다리지 않음). 필수 명령은 이동 묶음(runMotion)에서 실행한다
+  async function runPhysiology(commands) {
+    if (!commands || !commands.length) return null;
+    const summary = await engine.runner.run(commands.map((c) => ({ ...c })));
+    if (summary.failed) log(`생리 상태 표시 명령 실패 ${summary.failed}개: ${summary.errors.slice(0, 2).join(' / ')}`, 'warn');
+    return summary;
+  }
+
   async function resetScene() {
+    if (engine.signals) engine.signals.cancelAll();
     engine.anim.cancelAll('restart');
     engine.kit.motion.cancelAll('restart');
     engine.camera.stopFollow();
@@ -229,6 +253,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     }
     if (r === STALE) return 'stale';
     view = r.view;
+    if (r.physiology) physiology = r.physiology;
     if (r.result === 'wrong') {
       feedback = { kind: 'wrong', text: `"${value.trim()}"은(는) 정답이 아닙니다. 현재 위치에서 다시 입력하세요.` };
       sm.to(nextWaitState(), 'wrong');
@@ -297,6 +322,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const r = await py('lesson.arrived', status === 'arrived' || status === 'completed' || status === 'ok' ? 'arrived' : status);
     if (r === STALE) return 'stale';
     view = r.view;
+    if (r.physiology) physiology = r.physiology;
     if (r.result === 'arrived') {
       await runEvents(r.events);
       if (!session.isCurrent(no)) return 'stale';
@@ -459,6 +485,8 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const r = await py('lesson.recover', '사용자 복구');
     if (r === STALE) return false;
     view = r.view;
+    // STEP 04-C: 확정 전 생리 변화를 되돌린 상태의 시각 명령
+    if (r.physiology) { physiology = r.physiology; if (engine.signals) engine.signals.cancelAll(); await runPhysiology(r.physiology_commands); }
     if (r.checkpoint_id) {
       // 마지막 정상 위치가 다른 스케일 장면이면 그 장면으로 먼저 돌아간다 (즉시 전환)
       const sid = engine.scale.sceneOfCheckpoint(r.checkpoint_id);
@@ -484,8 +512,21 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     return true;
   }
 
+  // STEP 04-C: 자유 실험·자동 관찰 (학습 진행과 별개 문맥). 학습 상태(mechanism)는 Python이 직접 바꾸지 못하게 막는다
+  async function physiologyCall(fn, ...args) {
+    if (!lesson || !lesson.physiology) return { ok: false, errors: ['생리 모델이 없는 콘텐츠'] };
+    if (sm.state === 'transitioning' || sm.state === 'checking') return { ok: false, errors: ['진행 중에는 바꿀 수 없습니다'] };
+    const r = await py('lesson.physiology', fn, args);
+    if (r === STALE) return { ok: false, errors: ['이전 세션'] };
+    if (r.view) physiology = r.view;
+    emit('physiology', { fn, result: r });
+    return r;
+  }
+
   return {
     loadLesson,
+    physiologyCall,
+    runPhysiology,
     start,
     restart,
     end,
@@ -501,7 +542,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (k === 'showPath') engine.kit.paths.setShowPaths(!!v);
       if (k === 'cameraMode' && v === 'free') engine.camera.stopFollow();
       if (k === 'reducedMotion' && v) engine.camera.stopFollow();
-      if (k === 'reducedMotion') { engine.scale.setReducedMotion(!!v); engine.anim.setReducedMotion(!!v); }
+      if (k === 'reducedMotion') { engine.scale.setReducedMotion(!!v); engine.anim.setReducedMotion(!!v); if (engine.signals) engine.signals.setReducedMotion(!!v); }
       emit('options');
     },
     onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },
@@ -509,6 +550,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     get state() { return sm.state; },
     get machine() { return sm; },
     get view() { return view; },
+    get physiology() { return physiology; },
     get lesson() { return lesson; },
     get lastExplain() { return lastExplain; },
     get feedback() { return feedback; },
