@@ -38,7 +38,9 @@ MOTION = {
     'path_hide': 'path',
     'camera_follow': 'actor',
     'camera_unfollow': 'none',
+    'scale_change': 'actor',      # STEP 04-A 스케일 전환
 }
+LEVELS = ('BODY', 'ORGAN', 'TISSUE', 'CELL', 'MOLECULAR')
 UNTIL = ('end', 'next_stop')
 
 snapshot = {}       # 객체 ID -> {'type', 'visible', 'parent'}
@@ -132,6 +134,14 @@ def check_motion(command):
     if action == 'actor_set_state':
         if type(command.get('value')) != dict:
             return 'value는 딕셔너리여야 합니다'
+    if action == 'scale_change':
+        if command.get('level') not in LEVELS:
+            return 'level은 {} 중 하나'.format(', '.join(LEVELS))
+        if type(command.get('scene_id')) != str or command.get('scene_id') == '':
+            return 'scene_id가 필요합니다'
+        cid = command.get('checkpoint_id', '')
+        if cid != '' and cid not in checkpoints:
+            return '없는 Checkpoint: {}'.format(cid)
     return ''
 
 

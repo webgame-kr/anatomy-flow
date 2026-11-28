@@ -191,6 +191,7 @@ export function createMotionController({ paths, actors, log = () => {} }) {
       return c;
     }
     setState(a, 'moving');
+    if (gameHold) { setState(a, 'paused'); pausedByGame.add(a.actor_id); }
     return c;
   }
 
@@ -232,12 +233,16 @@ export function createMotionController({ paths, actors, log = () => {} }) {
   }
 
   // 전체 일시정지·재개 (게임 일시정지): 이동 중인 Actor만
+  // gameHold: 게임 일시정지 중에 시작된 이동(예: 스케일 전환 뒤 이어지는 이동)도 멈춘 채로 시작한다 (STEP 04-A)
   const pausedByGame = new Set();
+  let gameHold = false;
   function pauseAll() {
+    gameHold = true;
     for (const a of actors.list()) if (a.movement_state === 'moving') { setState(a, 'paused'); pausedByGame.add(a.actor_id); }
     return pausedByGame.size;
   }
   function resumeAll() {
+    gameHold = false;
     for (const id of pausedByGame) { const a = actors.get(id); if (a && a.movement_state === 'paused') setState(a, 'moving'); }
     const n = pausedByGame.size;
     pausedByGame.clear();
@@ -316,6 +321,7 @@ export function createMotionController({ paths, actors, log = () => {} }) {
 
   // 장면 전환·초기화: 모든 이동 취소, session 증가
   function cancelAll(reason = 'reset') {
+    gameHold = false;      // 재시작·장면 전환은 게임 일시정지도 푼다
     for (const a of actors.list()) {
       if (a.m && a.m.cmd) finishCmd(a, 'cancelled', { reason });
       if (a.movement_state === 'moving' || a.movement_state === 'paused') setState(a, 'cancelled');
@@ -372,7 +378,9 @@ export function createMotionController({ paths, actors, log = () => {} }) {
       const end = a.direction > 0 ? len : 0;
       const room = Math.abs(end - d0);
       const move = Math.min(remaining, room);
-      const d1 = d0 + a.direction * move;
+      // 경로 끝에 닿으면 끝 좌표를 그대로 쓴다: d0 + (len - d0)가 부동소수 오차로 len과 달라지면
+      // 진행률 1.0 Checkpoint(c.distance === len)를 놓치고 다음 경로로 넘어간다 (STEP 04-A에서 발견)
+      const d1 = move >= room ? end : d0 + a.direction * move;
       const stopCp = crossCheckpoints(a, d0, d1, m.fresh);
       m.fresh = false;
       if (stopCp) {
@@ -465,6 +473,7 @@ export function createMotionController({ paths, actors, log = () => {} }) {
     reverse,
     cancelAll,
     tick,
+    get gameHold() { return gameHold; },
     nextCheckpoint: (id) => { const a = actors.get(id); return a ? nextCheckpoint(a) : null; },
     events: () => [...events],
     clearEvents: () => { events.length = 0; },

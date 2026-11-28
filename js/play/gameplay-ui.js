@@ -2,7 +2,17 @@
 // 표시할 이름은 모두 learning-mode 정책(canShowName)을 거친다 → 암기·추론 모드에서 정답이 새지 않게.
 
 const $ = (id) => document.getElementById(id);
-const STATUS_KO = { APPROXIMATE: '근사 경로', PENDING: '모델·경로 없음', CONCEPT: '개념', TEST: '테스트', VERIFIED: '검증됨' };
+const STATUS_KO = {
+  APPROXIMATE: '근사 경로', PENDING: '모델·경로 없음', CONCEPT: '개념', TEST: '테스트', VERIFIED: '검증됨',
+  GEOMETRY_CHECKED: '기하 검사', ANATOMY_REVIEWED: '전공자 검토', CONCEPTUAL: '개념 모델',
+};
+const STATUS_TIP = {
+  APPROXIMATE: '해부학적으로 검증되지 않은 근사 경로',
+  PENDING: '3D 모델이나 이동 경로가 없어 개념으로만 진행',
+  GEOMETRY_CHECKED: '모델 내강 안쪽인지 기하 검사만 통과한 경로. 해부학 전문가 검토는 받지 않았다',
+  ANATOMY_REVIEWED: '전공자가 검토한 경로',
+  CONCEPTUAL: '해부 모델이 없어 직접 만든 개념 장면. 실제 모양·비율과 다르다',
+};
 const VAR_LABEL = {
   oxygenation: ['산소 상태', { oxygenated: '산소가 많음 (교육용 표시)', deoxygenated: '산소가 적음 (교육용 표시)' }],
   current_circulation: ['순환', { pulmonary: '폐순환', systemic: '체순환' }],
@@ -18,7 +28,7 @@ export function createGameplayUi({ game, mode, session, engine }) {
 
   function badge(status) {
     const b = el('span', `vs ${status || ''}`, STATUS_KO[status] || status || '');
-    b.title = status === 'APPROXIMATE' ? '해부학적으로 검증되지 않은 근사 경로' : (status === 'PENDING' ? '3D 모델이나 이동 경로가 없어 개념으로만 진행' : '');
+    b.title = STATUS_TIP[status] || '';
     return b;
   }
 

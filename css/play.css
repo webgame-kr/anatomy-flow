@@ -95,3 +95,21 @@ body.play { background: var(--bg); }
   .q-lines li { font-size: 13.5px; }
   .q-row button#btn-clear { display: none; }
 }
+
+/* STEP 04-A 다중 스케일 */
+.scale-fade { position: absolute; inset: 0; background: #0d0f16; opacity: 0; pointer-events: none; transition-property: opacity; transition-timing-function: ease; z-index: 6; }
+.scale-fade.on { opacity: 1; }
+.scale-ind { position: absolute; left: 10px; bottom: 34px; max-width: min(360px, calc(100% - 20px)); padding: 6px 9px; border-radius: 8px; background: rgba(255,255,255,.88); color: #223; font-size: 12px; line-height: 1.35; z-index: 5; pointer-events: none; }
+.scale-ind.concept { background: rgba(30,34,50,.9); color: #eef; }
+.scale-ind .si-head { font-weight: 600; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.scale-ind .si-note { opacity: .85; }
+.vs.CONCEPTUAL { color: #7a5ce0; border-color: #7a5ce0; }
+.scale-ind.concept .vs.CONCEPTUAL { color: #cbbcff; border-color: #cbbcff; }
+.vs.GEOMETRY_CHECKED { color: #2f7d5b; border-color: #2f7d5b; }
+.vs.ANATOMY_REVIEWED { color: var(--ok); border-color: var(--ok); }
+.micro-labels { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.micro-label { position: absolute; left: 0; top: 0; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,.55); color: #fff; font-size: 12px; white-space: nowrap; }
+.micro-label.o2 { background: rgba(20,110,160,.85); }
+.micro-label.co2 { background: rgba(170,100,20,.85); }
+.micro-label.io { background: rgba(80,80,80,.7); font-size: 11px; }
+@media (max-width: 720px) { .scale-ind { bottom: 30px; font-size: 11px; max-width: calc(100% - 20px); } .scale-ind .si-note + .si-note { display: none; } }

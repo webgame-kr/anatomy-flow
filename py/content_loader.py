@@ -8,9 +8,11 @@ MODEL_EVENTS = ('color', 'show', 'hide', 'pulse')
 SHAPES = ('circle', 'rect', 'ellipse', 'path')
 
 # STEP 03-D: 3D 콘텐츠(version 2) 필드
-TRANSITIONS = ('move', 'jump')          # move: 경로를 따라 이동, jump: 이동 없이 바로 도착
+TRANSITIONS = ('move', 'jump', 'scene')  # move: 경로를 따라 이동, jump: 이동 없이 바로 도착, scene: 스케일 장면 전환(STEP 04-A)
+LEVELS = ('BODY', 'ORGAN', 'TISSUE', 'CELL', 'MOLECULAR')
 REVISIT = ('relearn', 'review')         # 순환으로 다시 온 노드: 새 학습 시점 / 복습(첫 시도 통계 제외)
-STATUSES = ('VERIFIED', 'APPROXIMATE', 'PENDING', 'CONCEPT', 'TEST')
+STATUSES = ('VERIFIED', 'APPROXIMATE', 'PENDING', 'CONCEPT', 'TEST',
+            'GEOMETRY_CHECKED', 'ANATOMY_REVIEWED', 'CONCEPTUAL')   # STEP 04-A 경로 상태도 노드에 쓸 수 있다
 EVENT_MODES = ('sequential', 'parallel')
 
 # 3D 데이터 이름 → v0.1 이름 (요구서의 필드 이름을 그대로 써도 된다)
@@ -374,7 +376,21 @@ def check_node3d(node, where, errors, warnings):
 def check_edge3d(edge, where, node_ids, model_ids, errors):
     kind = edge.get('transition_type', 'move')
     if kind not in TRANSITIONS:
-        errors.append('{}: transition_type은 move 또는 jump'.format(where))
+        errors.append('{}: transition_type은 move, jump, scene 중 하나'.format(where))
+    if kind == 'scene':
+        # 스케일 전환: scale = {level, scene_id, checkpoint_id(새 장면에 놓을 곳)}
+        scale = edge.get('scale')
+        if type(scale) != dict:
+            errors.append('{}: scene 전환에는 scale(딕셔너리)이 필요합니다.'.format(where))
+        else:
+            if scale.get('level') not in LEVELS:
+                errors.append('{}: scale.level은 {} 중 하나'.format(where, ', '.join(LEVELS)))
+            if not is_text(scale.get('scene_id')) or scale.get('scene_id') == '':
+                errors.append('{}: scale.scene_id가 필요합니다.'.format(where))
+            if 'checkpoint_id' in scale and not is_text(scale['checkpoint_id']):
+                errors.append('{}: scale.checkpoint_id는 글자여야 합니다.'.format(where))
+    if 'pre_checkpoint_id' in edge and not is_text(edge['pre_checkpoint_id']):
+        errors.append('{}: pre_checkpoint_id는 글자여야 합니다.'.format(where))
     if 'path' in edge and not is_text(edge['path']):
         errors.append('{}: path_id는 글자여야 합니다.'.format(where))
     if 'actor_id' in edge and not is_text(edge['actor_id']):

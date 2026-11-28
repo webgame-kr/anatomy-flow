@@ -331,6 +331,66 @@ export async function run({ log = console.log } = {}) {
     check('경로 JSON 내보내기 → 불러오기 동일', JSON.stringify(r2.paths.get('w').points) === JSON.stringify(r.paths.get('w').points) && r2.paths.length('w') === l2);
   }
 
+  // 11. (STEP 04-A) 경로 끝(진행률 1.0) Checkpoint + 연결 경로: 큰 dt·어긋난 부동소수에서도 끝에서 멈춘다
+  {
+    const r = rig();
+    r.paths.load({ paths: [
+      { path_id: 'e1', curve_type: 'catmull_rom', points: [{ space: 'scene', position: [-0.015556, 1.309287, 0.119659] }, { space: 'scene', position: [-0.015357, 1.276383, 0.114841] }, { space: 'scene', position: [-0.01408, 1.23136, 0.12083] }],
+        checkpoints: [{ checkpoint_id: 'mid', path_progress: 0.24, stop_on_arrival: false }, { checkpoint_id: 'end', path_progress: 1, stop_on_arrival: true }], links: [{ to: 'e2' }] },
+      { path_id: 'e2', curve_type: 'linear', points: [{ space: 'scene', position: [-0.01408, 1.23136, 0.12083] }, { space: 'scene', position: [0, 1.2, 0.13] }] }] });
+    let okAll = true;
+    const seen = [];
+    for (const dt of [1 / 60, 0.1, 0.37, 1.3]) {
+      r.actors.clear();
+      r.actors.create({ actor_id: 'a', actor_type: 'custom', speed: 0.02 });
+      r.motion.placeAtCheckpoint('a', 'mid');
+      const c = r.motion.moveToCheckpoint('a', 'end', { duration: 2500 });
+      for (let i = 0; i < 2000 && r.actors.get('a').movement_state === 'moving'; i += 1) r.motion.tick(dt);
+      const a = r.actors.get('a');
+      seen.push(`${dt}:${a.path_id}@${a.progress.toFixed(3)}`);
+      if (a.path_id !== 'e1' || Math.abs(a.progress - 1) > 1e-9 || !c.promise) okAll = false;
+    }
+    check('끝 Checkpoint에서 정지 (다음 경로로 넘어가지 않음, dt 1/60~1.3 s)', okAll, seen.join(' '));
+  }
+
+  // 12. (STEP 04-A) 편집 되돌리기용 복사본·복원, 편집하면 GEOMETRY_CHECKED가 낮아짐
+  {
+    const r = rig();
+    r.paths.load({ paths: [{ path_id: 'g', curve_type: 'linear', verification_status: 'GEOMETRY_CHECKED', geometry_check: { outside_ratio: 0 }, points: [{ position: [0, 0, 0] }, { position: [1, 0, 0] }] }] });
+    const snap = r.paths.snapshot('g');
+    r.paths.insertPoint('g', 1, { space: 'scene', position: [0.5, 0.5, 0] });
+    const after = r.paths.get('g');
+    const lowered = after.verification_status === 'APPROXIMATE' && after.geometry_check.stale === true;
+    r.paths.restore(snap);
+    const back = r.paths.get('g');
+    check('편집 시 상태 낮춤 → 복원하면 원래 점·상태', lowered && back.points.length === 2 && back.verification_status === 'GEOMETRY_CHECKED' && Math.abs(r.paths.length('g') - 1) < 1e-9);
+    const old = r.paths.validatePath('g');
+    r.paths.update('g', { verification_status: 'VERIFIED_GEOMETRY_X' });
+    const w = r.paths.validatePath('g');
+    check('알 수 없는 검증 상태는 경고', old.warnings.length === 0 && w.warnings.some((x) => x.includes('검증 상태')));
+  }
+
+  // 13. (STEP 04-A) 기다린 이동이 취소되면 같은 묶음의 스케일 전환은 실행하지 않는다
+  {
+    const r = rig();
+    let scaleCalls = 0;
+    const fakeScale = { handles: (a) => a === 'scale_change', validate: () => '', run: () => { scaleCalls += 1; return Promise.resolve({ status: 'arrived' }); } };
+    const runner = createCommandRunner({ whenSettled: () => Promise.resolve() }, { registry: r.registry, materials: r.materials, camera: r.fakeCam, motion: r.commands, scale: fakeScale });
+    r.paths.load({ paths: [CP_PATH] });
+    r.actors.create({ actor_id: 'a', actor_type: 'custom', speed: 1 });
+    r.motion.setPath('a', CP_PATH.path_id);
+    const job = runner.run([
+      { action: 'actor_move', target: 'a', until: 'end', wait: true },
+      { action: 'scale_change', target: 'a', level: 'TISSUE', scene_id: 's', wait: true },
+    ]);
+    r.motion.tick(0.05);
+    r.motion.stop('a');
+    const sum = await job;
+    const job2 = runner.run([{ action: 'scale_change', target: 'a', level: 'TISSUE', scene_id: 's', wait: true }]);
+    const sum2 = await job2;
+    check('취소된 이동 뒤 스케일 전환 건너뜀, 단독 전환은 실행', scaleCalls === 1 && sum.skipped === 1 && sum2.applied === 1, `scale 호출 ${scaleCalls}, skipped ${sum.skipped}`);
+  }
+
   const passed = results.filter((x) => x.ok).length;
   log(`결과: ${passed}/${results.length} 통과`);
   return { passed, total: results.length, results };

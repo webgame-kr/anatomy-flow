@@ -52,7 +52,21 @@ def to_motion(game_commands):
         if who == '':
             who = actor
         duration = one.get('duration', 1000)
-        if one.get('transition', 'move') == 'jump':
+        if one.get('transition', 'move') == 'scene':
+            # 스케일 전환 (STEP 04-A): 전환 전 이동 → 장면 전환(같은 Actor를 새 장면 Checkpoint에) → 새 장면에서 이동
+            scale = one.get('scale', {})
+            pre = one.get('pre_checkpoint', '')
+            if pre != '':
+                commands.append({'action': 'actor_move_to_checkpoint', 'target': who,
+                                 'checkpoint_id': pre, 'duration': duration, 'wait': True})
+            commands.append({'action': 'scale_change', 'target': who, 'level': scale.get('level', ''),
+                             'scene_id': scale.get('scene_id', ''), 'checkpoint_id': scale.get('checkpoint_id', ''),
+                             'duration': one.get('scale_duration', 900), 'wait': True})
+            goal = info['checkpoint_id']
+            if goal != '' and goal != scale.get('checkpoint_id', ''):
+                commands.append({'action': 'actor_move_to_checkpoint', 'target': who,
+                                 'checkpoint_id': goal, 'duration': duration, 'wait': True})
+        elif one.get('transition', 'move') == 'jump':
             # 이동 없이 바로 도착: Checkpoint가 있으면 그 위치에 놓는다
             if info['checkpoint_id'] != '':
                 commands.append({'action': 'actor_place_at_checkpoint', 'target': who,

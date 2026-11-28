@@ -4,6 +4,7 @@
 //               set_color, set_visibility, set_opacity, highlight, camera_focus, camera_overview, scene_change
 // STEP 03-C 형식: { action: 'actor_*' | 'path_show' | 'path_hide' | 'camera_follow' | 'camera_unfollow', target, ... }
 //               → ctx.motion(js/motion/motion-commands.js)이 검증·실행한다. wait: true면 이동 결과까지 기다린다.
+// STEP 04-A 형식: { action: 'scale_change', target, level, scene_id, checkpoint_id } → ctx.scale(js/scale/scale-manager.js)
 // 잘못된 명령은 기록만 하고 다음 명령을 계속 실행한다(전체가 멈추지 않게).
 
 const NO_TARGET = new Set(['camera_overview', 'scene_change']);
@@ -41,10 +42,12 @@ export function createCommandRunner(manager, ctx = {}) {
     return ctx.registry.has(target) ? [target] : [];
   }
 
-  const isMotion = (cmd) => !!(ctx.motion && ctx.motion.handles(cmd.action));
+  // 시간이 걸리는 확장 명령 처리기 (이동, 스케일 전환): handles/validate/run, 결과는 {status}
+  const handlerOf = (cmd) => [ctx.motion, ctx.scale].find((h) => h && h.handles(cmd.action)) || null;
+  const isMotion = (cmd) => !!handlerOf(cmd);
 
   function validateAction(cmd) {
-    if (isMotion(cmd)) return ctx.motion.validate(cmd);
+    if (isMotion(cmd)) return handlerOf(cmd).validate(cmd);
     if (!(cmd.action in CHECK)) return `지원하지 않는 명령: ${cmd.action}`;
     if (!NO_TARGET.has(cmd.action) && targetIds(cmd.target).length === 0) return `없는 객체 ID: ${cmd.target}`;
     if (cmd.action === 'scene_change' && ctx.scenes && !ctx.scenes.has(cmd.value)) return `없는 장면: ${cmd.value}`;
@@ -52,7 +55,7 @@ export function createCommandRunner(manager, ctx = {}) {
   }
 
   function runAction(cmd) {
-    if (isMotion(cmd)) return ctx.motion.run(cmd);
+    if (isMotion(cmd)) return handlerOf(cmd).run(cmd);
     const d = isNum(cmd.duration) ? cmd.duration : 0;
     const ids = NO_TARGET.has(cmd.action) ? [] : targetIds(cmd.target);
     switch (cmd.action) {
@@ -119,6 +122,13 @@ export function createCommandRunner(manager, ctx = {}) {
             const outcome = pending && typeof pending.then === 'function' && cmd.wait === true ? await pending : pending;
             if (outcome && outcome.status === 'failed') throw new Error(outcome.reason || '이동 명령 실패');
             summary.results.push({ index: i, action: cmd.action, target: cmd.target, outcome: outcome && outcome.then ? 'pending' : outcome });
+            // 기다린 명령이 취소되면 같은 묶음의 나머지(예: 이동 뒤 스케일 전환)는 실행하지 않는다 (STEP 04-A)
+            if (cmd.wait === true && outcome && outcome.status === 'cancelled') {
+              summary.applied += 1;
+              summary.skipped += commands.length - i - 1;
+              if (i < commands.length - 1) log(`명령 #${i + 1} ${cmd.action} 취소 → 남은 ${commands.length - i - 1}개 실행 안 함`, 'warn');
+              break;
+            }
           } else if (pending && typeof pending.then === 'function') await pending;
           summary.applied += 1;
         } else if (cmd && typeof cmd.op === 'string') {

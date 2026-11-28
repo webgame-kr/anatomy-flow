@@ -34,8 +34,29 @@
 | `links` | | 끝에서 이어질 경로. `[{to, when, label}]`. `when`이 Actor의 `biological_state.branch`와 같은 연결을 고르고, 맞는 것이 없으면 첫 연결을 쓴다. |
 | `default_speed` | | m/s |
 | `default_duration` | | ms (참고값) |
-| `verification_status` | | `TEST_PATH`, `APPROXIMATE`, `PENDING`, `VERIFIED_GEOMETRY` 중 하나. 해부학적 검증을 뜻하는 값은 두지 않았다. |
+| `verification_status` | | (STEP 04-A) `PENDING`, `APPROXIMATE`, `GEOMETRY_CHECKED`, `ANATOMY_REVIEWED`, `CONCEPTUAL`, `TEST_PATH` 중 하나. `VERIFIED_GEOMETRY`(03-C 이름)는 `GEOMETRY_CHECKED`로 읽는다. 아래 "검증 상태" 참고 |
+| `method` | | (STEP 04-A) 만든 방법. 예: `centerline:aorta`, `waypoints:valve normal` |
+| `geometry_check` | | (STEP 04-A) 저장한 기하 검사 결과. `{date, samples, outside_ratio, enclosed_ratio, surface_crossings, min_clearance_mm, start_inside, end_inside, checkpoint_order_ok, link_gap_mm, length_m, stale}`. 점을 편집하면 `stale: true` |
 | `source`, `notes` | | 출처와 메모 |
+
+### 검증 상태 (STEP 04-A)
+| 상태 | 뜻 | 누가 올리나 |
+|---|---|---|
+| PENDING | 경로가 없거나 작성 중 | - |
+| APPROXIMATE | Anchor 정점 평균을 이은 근사, 또는 편집 뒤 다시 검사하지 않은 경로 | 자동(편집하면 GEOMETRY_CHECKED·ANATOMY_REVIEWED에서 내려감) |
+| GEOMETRY_CHECKED | 기하 검사 통과: 표본 81개가 모두 메시 안쪽(닫힌 면 안 또는 옆으로 둘러싸임), 연결 간격 0, Checkpoint 순서 정상, 모든 Checkpoint 위치 계산 가능 | 개발자(검사 결과로) |
+| ANATOMY_REVIEWED | 전공자가 경로를 검토함 | 사람만. 기하 검사로 올리지 않는다 |
+| CONCEPTUAL | 해부 모델이 없는 개념 장면의 경로 | 개념 장면 |
+| TEST_PATH | 엔진 시험용 | - |
+
+기하 검사(`js/motion/path-geometry-check.js`)는 표면 메시 기하만 본다. 해부학적으로 맞는 혈류 경로라는 뜻이 아니다.
+- parity: 6방향 광선의 교차 홀짝(5/6 다수결)로 닫힌 메시 안쪽인지 본다.
+- 둘러싸임: 진행 방향에 수직인 8방향 광선이 3 cm 안에서 벽에 닿는 비율이 75% 이상이면 끝이 열린 관 안쪽으로 본다.
+- 관통: 이웃 표본 사이 선분이 면을 지나는 횟수를 기록한다. 메시가 겹치는 곳(혈관↔심방)과 판막 첨판에서 생기므로 실패 조건이 아니라 참고값이다.
+- 속도: 삼각형 격자 색인(`triangle-grid.js`) + 8 ms 단위로 나눠 실행 + 결과 캐시
+
+### 중심선 경로 (STEP 04-A)
+`js/motion/centerline-tracer.js`가 혈관 메시를 진행 방향에 수직인 평면으로 잘라, 단면 선분의 길이 가중 중심을 따라간다(3 mm 간격). 정점만 쓰면 혈관처럼 길쭉한 삼각형에서 단면 정점이 3~5개뿐이라 중심이 치우쳐서 삼각형 단면을 쓴다. 관이 열려 단면이 없어지면 멈춘다. Path Editor의 "단면 중심선으로 채우기"가 선택한 점에서 다음 점 방향으로 추적해 Waypoint를 넣는다.
 
 ### 점 좌표계
 곡선은 항상 장면(world) 좌표로 계산한다. 점마다 자기 좌표계를 적고, 계산할 때 장면 좌표로 바꾼다.

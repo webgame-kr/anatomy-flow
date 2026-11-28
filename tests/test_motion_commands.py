@@ -79,6 +79,22 @@ check('취소 결과 전달', ml.motion_done('cancelled')['result'] == 'cancelle
 r = ml.to_motion([{'type': 'move', 'edge': 'e9'}])
 check('연결 안 된 Edge 오류', not r['ok'] and len(r['commands']) == 0)
 
+# STEP 04-A 스케일 전환 명령
+check('scale_change 정상', sc.validate({'action': 'scale_change', 'target': 'rbc_01', 'level': 'TISSUE', 'scene_id': 'micro.x', 'checkpoint_id': 'checkpoint_01'}) == '')
+check('scale_change 수준 오류', sc.validate({'action': 'scale_change', 'target': 'rbc_01', 'level': 'GALAXY', 'scene_id': 'micro.x'}) != '')
+check('scale_change 장면 ID 없음', sc.validate({'action': 'scale_change', 'target': 'rbc_01', 'level': 'ORGAN', 'scene_id': ''}) != '')
+check('scale_change 없는 Checkpoint', sc.validate({'action': 'scale_change', 'target': 'rbc_01', 'level': 'ORGAN', 'scene_id': 'o', 'checkpoint_id': 'zz'}) != '')
+check('scale_change 없는 Actor', sc.validate({'action': 'scale_change', 'target': 'nobody', 'level': 'ORGAN', 'scene_id': 'o'}) != '')
+r = ml.to_motion([{'type': 'move', 'edge': 'e5', 'transition': 'scene', 'checkpoint': 'checkpoint_02', 'pre_checkpoint': 'checkpoint_01',
+                   'scale': {'level': 'TISSUE', 'scene_id': 'micro.x', 'checkpoint_id': 'checkpoint_01'}, 'duration': 900}])
+check('scene 전환 → 이동, scale_change, 이동', [c['action'] for c in r['commands']] == ['actor_move_to_checkpoint', 'scale_change', 'actor_move_to_checkpoint'])
+check('scene 전환 명령이 Python 검사 통과', sc.build(r['commands'])['ok'])
+ml.motion_done('arrived')
+r = ml.to_motion([{'type': 'move', 'edge': 'e6', 'transition': 'scene', 'checkpoint': 'checkpoint_01',
+                   'scale': {'level': 'ORGAN', 'scene_id': 'o', 'checkpoint_id': 'checkpoint_01'}}])
+check('도착 Checkpoint가 전환 위치와 같으면 추가 이동 없음', [c['action'] for c in r['commands']] == ['scale_change'])
+ml.motion_done('arrived')
+
 print('')
 print('결과: {}개 통과, {}개 실패'.format(passed, failed))
 if failed > 0:

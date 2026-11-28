@@ -221,12 +221,21 @@ commands = [
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
 
+## STEP 04-A 해부학 경로·다중 스케일
+
+- **경로:** 심혈관 경로 9개를 BodyParts3D 혈관 메시의 단면 중심선과 판막 전후 Waypoint로 다시 만들었습니다(`content/anatomy/cardiovascular/paths.json`). 모두 기하 검사(메시 밖 0%)를 통과한 `GEOMETRY_CHECKED`이며 해부학 전문가 검토는 받지 않았습니다. 이전 경로는 `paths.v1-approx.json`에 있습니다.
+- **다중 스케일:** 혈액순환 학습 중 폐 모세혈관과 전신 조직에서 직접 만든 개념 장면(CONCEPTUAL, `content/micro/capillary-scenes.json`)으로 확대했다가 돌아옵니다. 화면 왼쪽 아래에 수준, 실제 크기, 교육용 확대 배율을 표시합니다.
+- **심장 내부 보기 (Play 설정):** 자동(심장 안이면 Actor 앞을 자르는 움직이는 단면), 반투명, 불투명, 고스트, 절개, 움직이는 단면, 좌우 단면. 학습 물질(Actor)은 자르지 않습니다.
+- **Path Editor (Explorer 개발자 모드):** 경로별 검증 상태, 기하 검사 문제 지점(빨간 점), 되돌리기·다시 하기(Ctrl+Z / Ctrl+Y), 이전 버전 비교(회색 점선과 최대 차이), 단면 중심선으로 Waypoint 채우기
+- **기하 검사 속도:** 경로 6개 12.7초(화면 멈춤 1.4~2.6초) → 0.18초(최대 정지 10 ms). 자세한 내용은 `docs/development/STEP_04A_REPORT.md`
+- **문서:** 경로 상태와 중심선은 `docs/development/MOTION_DATA_SPEC.md`, 스케일 전환 Edge는 `docs/FLOW_SPEC_v0.1.md` 6장
+
 ## STEP 03-D Play (학습 게임)
 
 `play.html`이 학습자용 게임 화면입니다. Explorer와 Sandbox는 그대로 있습니다.
 
 - **콘텐츠:** `content/lessons/index.json`에 목록이 있습니다.
-  - 심혈관 「혈액순환: 정맥 환류에서 체순환까지」: 실제 BodyParts3D 모델을 씁니다. 3D 경로는 근사(APPROXIMATE) 경로이고, 폐 모세혈관·폐정맥·대동맥 이후는 PENDING이라 이동 없이 개념으로만 진행합니다.
+  - 심혈관 「혈액순환: 정맥 환류에서 체순환까지」: 실제 BodyParts3D 모델을 씁니다. (STEP 04-A부터) 3D 경로는 기하 검사만 통과한 GEOMETRY_CHECKED이고, 폐·조직 모세혈관은 개념 장면(CONCEPTUAL)입니다.
   - 테스트 콘텐츠 2개: 교육용 개념 장면에서 기본 진행과 분기·순환을 확인합니다.
 - **진행:** 질문에 맞는 용어(한글·영문·등록된 약어)를 입력합니다.
   - 정답이면 Python이 다음 노드를 정하고 적혈구가 다음 Checkpoint로 이동합니다.
@@ -237,7 +246,7 @@ commands = [
   - 암기: 정답을 숨기고 3D 위치와 힌트를 줍니다.
   - 기전 추론: 원인과 결과를 묻는 질문을 보여 주고, 맞힌 뒤 설명합니다.
   - 암기·추론 모드에서는 라벨, 진행 목록, Hover에서 아직 배우지 않은 구조 이름을 숨깁니다.
-- **설정:** 자동 추적·자유 탐색, 애니메이션 줄이기, 카메라·이동 속도, 경로 표시, 라벨, 투명도, 단면, 정답이면 자동 제출(한글 조합 중 제외)
+- **설정:** 자동 추적·자유 탐색, 애니메이션 줄이기, 카메라·이동 속도, 경로 표시, 라벨, 투명도, 심장 내부 보기(STEP 04-A), 정답이면 자동 제출(한글 조합 중 제외)
 - **기록:** 완료하거나 학습을 종료하면 이 브라우저(LocalStorage)에 저장합니다. 설정에서 CSV로 내보낼 수 있습니다. 정답률의 정의는 `docs/FLOW_SPEC_v0.1.md` 6장에 있습니다.
 - **주소 옵션 (개발·검증용):** `play.html?lesson=cv.blood_circulation&mode=memory&autostart=1`
 - **Python 테스트:** `python tests/test_lesson.py`

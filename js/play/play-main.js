@@ -98,21 +98,48 @@ async function boot() {
   $('opt-camspeed').addEventListener('input', (ev) => game.setOption('cameraSpeed', Number(ev.target.value)));
   $('opt-actorspeed').addEventListener('input', (ev) => game.setOption('actorSpeed', Number(ev.target.value)));
   $('opt-path').addEventListener('change', (ev) => game.setOption('showPath', ev.target.checked));
-  $('opt-labels').addEventListener('change', (ev) => { if (engine.labels) engine.labels.setVisible(ev.target.checked); });
+  $('opt-labels').addEventListener('change', (ev) => {
+    engine.userLabels = ev.target.checked;
+    const sp = engine.scale.currentSpec;
+    if (engine.labels) engine.labels.setVisible(ev.target.checked && (!sp || sp.level === 'ORGAN'));
+  });
   $('opt-opacity').value = String(DEFAULT_WALL_OPACITY);
   $('opt-opacity').addEventListener('input', (ev) => engine.setWallOpacity(Number(ev.target.value)));
-  const clip = () => {
-    $('opt-clip-pos').disabled = !$('opt-clip').checked;
-    engine.clipping.set({ enabled: $('opt-clip').checked, scope: 'all', axis: 'x', t: Number($('opt-clip-pos').value) / 100, flip: false });
-  };
-  $('opt-clip').addEventListener('change', clip);
-  $('opt-clip-pos').addEventListener('input', clip);
+  $('opt-view').addEventListener('change', (ev) => {
+    $('opt-clip-pos').disabled = ev.target.value !== 'section_x';
+    engine.setViewMode(ev.target.value);
+  });
+  $('opt-clip-pos').addEventListener('input', (ev) => engine.setSectionPosition(Number(ev.target.value) / 100));
   $('btn-view-all').addEventListener('click', () => { engine.camera.stopFollow(); engine.overview(); });
   $('btn-view-actor').addEventListener('click', () => { const a = game.lesson && game.lesson.actor_id; if (a) engine.focusActor(a); });
   $('btn-csv').addEventListener('click', async () => {
     const csv = await engine.client.call('lesson.records_csv', session.loadRecords());
     session.downloadCsv(`nurseflow-records-${new Date().toISOString().slice(0, 10)}.csv`, csv);
   });
+
+  // 스케일 표시: 지금 수준, 개념 모델 여부, 실제 크기와 교육용 확대
+  const renderScale = () => {
+    const sp = engine.scale.currentSpec;
+    const box = $('scale-ind');
+    box.innerHTML = '';
+    if (!sp) { box.hidden = true; return; }
+    box.hidden = false;
+    const lv = engine.scale.levels[sp.level];
+    const head = document.createElement('div');
+    head.className = 'si-head';
+    head.textContent = `${lv ? lv.name_ko : sp.level} 수준 · ${sp.title_ko || ''}`;
+    if (sp.conceptual) { const b = document.createElement('span'); b.className = 'vs CONCEPTUAL'; b.textContent = '개념 모델'; b.title = '해부 모델이 아니라 직접 만든 단순 형태'; head.appendChild(b); }
+    const unit = document.createElement('div');
+    unit.className = 'si-note';
+    unit.textContent = sp.unit_note || '';
+    const mag = document.createElement('div');
+    mag.className = 'si-note';
+    mag.textContent = sp.magnification_note || '';
+    box.append(head, unit, mag);
+    box.classList.toggle('concept', !!sp.conceptual);
+  };
+  engine.scale.onChange((k) => { if (k === 'changed') renderScale(); });
+  renderScale();
 
   // Hover 툴팁: 아직 배우지 않은 학습 구조 이름은 숨긴다
   engine.selection.onHover((oid) => {

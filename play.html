@@ -38,8 +38,18 @@
       <label class="chk"><input id="opt-path" type="checkbox"> 경로 표시</label>
       <label class="chk"><input id="opt-labels" type="checkbox" checked> 구조 라벨</label>
       <label>심장·혈관 투명도 <input id="opt-opacity" type="range" min="0.1" max="1" step="0.05" value="1"></label>
-      <label class="chk"><input id="opt-clip" type="checkbox"> 단면 (좌우)</label>
-      <input id="opt-clip-pos" type="range" min="0" max="100" value="50" aria-label="단면 위치" disabled>
+      <label>심장 내부 보기
+        <select id="opt-view">
+          <option value="auto">자동 (안쪽이면 움직이는 단면)</option>
+          <option value="translucent">반투명</option>
+          <option value="normal">불투명 (원래대로)</option>
+          <option value="ghost">고스트 (아주 옅게)</option>
+          <option value="cutaway">절개 (지금 방향 앞쪽 절반)</option>
+          <option value="dynamic">움직이는 단면 (물질 앞)</option>
+          <option value="section_x">좌우 단면</option>
+        </select>
+      </label>
+      <input id="opt-clip-pos" type="range" min="0" max="100" value="50" aria-label="좌우 단면 위치" disabled>
       <div class="row btns"><button id="btn-view-all" type="button">전체 보기</button><button id="btn-view-actor" type="button">물질 위치로</button></div>
       <div class="row btns"><button id="btn-csv" type="button">학습 기록 CSV</button></div>
       <p class="note"><a href="explorer.html">Anatomy Explorer</a> · <a href="index.html">개발자 Sandbox</a></p>
@@ -58,6 +68,7 @@
       <div id="hover-tip" class="hover-tip" hidden></div>
       <div id="credits" class="credits" hidden></div>
       <div id="pl-status" class="pl-status" hidden></div>
+      <div id="scale-ind" class="scale-ind" aria-live="polite"></div>
       <div id="fatal" class="fatal" hidden></div>
     </section>
 

@@ -140,6 +140,12 @@ code { background: var(--bg); padding: 1px 4px; border-radius: 4px; }
 .pe-row.active { background: var(--accent-soft); }
 .pe-row .nm { flex: 1; min-width: 0; border: 0; background: none; min-height: 24px; padding: 0 4px; display: block; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
 .pe-row .eye { border: 0; background: none; min-height: 22px; width: 22px; padding: 0; justify-content: center; color: var(--muted); }
+.pe-row.err { box-shadow: inset 3px 0 0 #d63c3f; }
+.pe-row .vs { font-size: 9px; border: 1px solid #aab; border-radius: 3px; padding: 0 3px; color: #667; white-space: nowrap; }
+.pe-row .vs.GEOMETRY_CHECKED { color: #2f7d5b; border-color: #2f7d5b; }
+.pe-row .vs.APPROXIMATE { color: #b26b00; border-color: #b26b00; }
+.pe-row .vs.CONCEPTUAL { color: #7a5ce0; border-color: #7a5ce0; }
+.pe-row .vs.ANATOMY_REVIEWED { color: #1d5fa8; border-color: #1d5fa8; }
 .pe-row .muted { font-size: 11px; white-space: nowrap; }
 .pe button.mini { min-height: 22px; min-width: 22px; padding: 0 5px; font-size: 11px; }
 .pe .kv input[type=text], .pe .kv select { width: 100%; min-width: 0; }

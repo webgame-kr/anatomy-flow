@@ -16,6 +16,7 @@ export function createMotionKit({ scene, registry, tracker, materials, camera, a
   const commands = createMotionCommands({ paths, actors, motion, camera });
   camera.setExtraBounds(() => paths.bounds());   // 전체 보기·프리셋에 경로 범위 포함
   let data = null;
+  let dataUrl = null;      // 불러온 경로 JSON 주소 (Path Editor가 previous_version을 찾을 때 쓴다)
 
   // 장면 이동 데이터 적용: 경로 → Actor 생성 → 경로 지정
   function apply(doc, actorDoc = null) {
@@ -48,6 +49,7 @@ export function createMotionKit({ scene, registry, tracker, materials, camera, a
   async function loadUrl(url, actorsUrl = null) {
     const doc = await (await fetch(url, { cache: 'no-cache' })).json();
     const actorDoc = actorsUrl ? await (await fetch(actorsUrl, { cache: 'no-cache' })).json() : null;
+    dataUrl = url;
     return apply(doc, actorDoc);
   }
 
@@ -69,5 +71,6 @@ export function createMotionKit({ scene, registry, tracker, materials, camera, a
     apply, loadUrl, unload, pathSnapshot,
     tick(dt) { paths.tick(); motion.tick(dt); },
     get data() { return data; },
+    get url() { return dataUrl; },
   };
 }

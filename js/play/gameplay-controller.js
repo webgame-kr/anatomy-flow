@@ -28,6 +28,13 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     onUpdate(kind, data);
   }
 
+  // 스케일 전환 뒤: 이동 중이면 새 장면에서 카메라 추적을 다시 켠다 (전환 때 추적을 끈다)
+  engine.scale.onChange((kind, d) => {
+    if (kind !== 'changed') return;
+    if (sm.state === 'transitioning' && options.cameraMode === 'auto' && !options.reducedMotion) engine.camera.startFollow(actorId());
+    emit('scale', d);
+  });
+
   // ---------- Python 호출 (세션 검증) ----------
   async function py(fn, ...args) {
     const no = session.no;
@@ -64,7 +71,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const sc = lesson.scene || {};
     try {
       emit('loading', { text: '3D 모델을 불러오는 중…' });
-      if (sc.type === 'anatomy') await engine.loadAnatomy(sc.url);
+      if (sc.type === 'anatomy') await engine.loadAnatomy(sc.url, { micro: sc.micro || null });
       else if (sc.type === 'sandbox') await engine.loadSandbox(sc.catalog, sc.scene_id);
       else throw new Error(`알 수 없는 장면 종류: ${sc.type}`);
     } catch (err) {
@@ -120,7 +127,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (n.verification_status === 'VERIFIED') {
         const cp = n.checkpoint_id && kit.paths.findCheckpoint(n.checkpoint_id);
         const p = cp && kit.paths.get(cp.pathId);
-        if (p && p.verification_status !== 'VERIFIED_GEOMETRY') warnings.push(`${id}: 노드는 VERIFIED지만 경로 ${p.path_id}는 ${p.verification_status}`);
+        if (p && p.verification_status !== 'ANATOMY_REVIEWED') warnings.push(`${id}: 노드는 VERIFIED지만 경로 ${p.path_id}는 ${p.verification_status}`);
       }
       checkEvents(n.events, id, errors);
     }
@@ -133,6 +140,14 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (ed.checkpoint_id && !kit.paths.findCheckpoint(ed.checkpoint_id)) errors.push(`${id}: 없는 Checkpoint ${ed.checkpoint_id}`);
       if (ed.actor_id && !kit.actors.has(ed.actor_id)) errors.push(`${id}: 없는 Actor ${ed.actor_id}`);
       const target = nodeOf(ed.target_node || ed.to);
+      if (ed.pre_checkpoint_id && !kit.paths.findCheckpoint(ed.pre_checkpoint_id)) errors.push(`${id}: 없는 Checkpoint ${ed.pre_checkpoint_id}`);
+      if (ed.transition_type === 'scene') {
+        const sc = ed.scale || {};
+        const spec = engine.scale.get(sc.scene_id);
+        if (!spec) errors.push(`${id}: 없는 스케일 장면 ${sc.scene_id}`);
+        else if (spec.level !== sc.level) errors.push(`${id}: 장면 ${sc.scene_id}의 수준은 ${spec.level} (콘텐츠 ${sc.level})`);
+        if (sc.checkpoint_id && !kit.paths.findCheckpoint(sc.checkpoint_id)) errors.push(`${id}: 없는 Checkpoint ${sc.checkpoint_id}`);
+      }
       if ((ed.transition_type || 'move') === 'move' && !path && !(target && target.checkpoint_id) && !ed.checkpoint_id) {
         errors.push(`${id}: 이동(move) Edge인데 Path·Checkpoint가 없습니다 (이동 없는 구간은 transition_type "jump")`);
       }
@@ -294,6 +309,8 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     if (options.cameraMode !== 'auto') return;
     const d = options.reducedMotion ? 0 : Math.round(700 / options.cameraSpeed);
     if (options.reducedMotion && !structureId) return;
+    const sp = engine.scale.currentSpec;
+    if (sp && sp.level !== 'ORGAN') { engine.overview(d); return; }   // 개념 장면: 기관 구조 대신 장면 정면(교환 부위 전체)
     if (structureId && engine.kind === 'anatomy') await engine.focusStructure(structureId, d);
     else engine.focusActor(actorId(), null, d);
   }
@@ -393,6 +410,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
   function pause() {
     if (!sm.can('pause')) return false;
     engine.kit.motion.pauseAll();
+    engine.scale.pause();
     engine.camera.stopFollow();
     session.hold('pause');
     sm.to('paused', 'user');
@@ -404,6 +422,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     if (!sm.can('resume')) return false;
     const back = sm.beforePause || 'waiting_input';
     engine.kit.motion.resumeAll();
+    engine.scale.resume();
     if (back === 'transitioning' && options.cameraMode === 'auto' && !options.reducedMotion) engine.camera.startFollow(actorId());
     session.release('pause');
     sm.to(back, 'resume');
@@ -429,6 +448,12 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     if (r === STALE) return false;
     view = r.view;
     if (r.checkpoint_id) {
+      // 마지막 정상 위치가 다른 스케일 장면이면 그 장면으로 먼저 돌아간다 (즉시 전환)
+      const sid = engine.scale.sceneOfCheckpoint(r.checkpoint_id);
+      if (sid && sid !== engine.scale.current) {
+        const spec = engine.scale.get(sid);
+        await engine.runner.run([{ action: 'scale_change', target: actorId(), level: spec.level, scene_id: sid, checkpoint_id: r.checkpoint_id, duration: 0, wait: true }]);
+      }
       await engine.runner.run([{ action: 'actor_place_at_checkpoint', target: actorId(), checkpoint_id: r.checkpoint_id }]);
     } else {
       await engine.resetMotion();
@@ -458,6 +483,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (k === 'showPath') engine.kit.paths.setShowPaths(!!v);
       if (k === 'cameraMode' && v === 'free') engine.camera.stopFollow();
       if (k === 'reducedMotion' && v) engine.camera.stopFollow();
+      if (k === 'reducedMotion') engine.scale.setReducedMotion(!!v);
       emit('options');
     },
     onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },

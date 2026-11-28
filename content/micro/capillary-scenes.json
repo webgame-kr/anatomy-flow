@@ -1,0 +1,690 @@
+{
+ "version": 1,
+ "description": "STEP 04-A 미세 구조 개념 장면. 해부 모델이 아니라 교육용으로 직접 만든 단순 형태다(CONCEPTUAL). 크기는 일반 참고 수치(강의자료에서 확인하지 않음: 적혈구 약 7.8 µm, 모세혈관 지름 약 5~10 µm, 폐포 지름 약 200~300 µm)이고 모양은 단순화했다.",
+ "scenes": [
+  {
+   "scene_id": "micro.pulmonary",
+   "level": "TISSUE",
+   "mode": "pulmonary",
+   "title_ko": "폐포와 폐 모세혈관 (개념 모델)",
+   "verification_status": "CONCEPTUAL",
+   "origin": [
+    40,
+    0,
+    0
+   ],
+   "backdrop_radius": 6,
+   "background": "#1b2030",
+   "unit_note": "1 장면 m ≈ 실제 130 µm. 적혈구(7.8 µm)·모세혈관 지름(약 10 µm)·폐포 지름(약 260 µm)의 상대 크기만 맞췄다.",
+   "magnification_note": "기관 장면보다 약 7,700배 확대. 기체 입자는 실제 분자보다 훨씬 크게 그렸다(보이게 하려는 표시).",
+   "notes": "해부 모델에 폐포·모세혈관이 없어 직접 만든 단순 형태다. 실제 폐포는 여러 모세혈관 그물에 둘러싸여 있고, 혈관 하나가 폐포를 감싸는 모양이 아니다.",
+   "actor_display_size": 0.06,
+   "follow": {
+    "distance": 0.32,
+    "height": 0.09,
+    "side": 0,
+    "smooth": 5
+   },
+   "view_direction": [
+    0,
+    0.15,
+    1
+   ],
+   "capillary": {
+    "radius": 0.04,
+    "color": "#d65a5a",
+    "points": [
+     [
+      -1.3329,
+      -0.5078,
+      0
+     ],
+     [
+      -0.9829,
+      -0.3578,
+      0.0
+     ],
+     [
+      -1.046,
+      0.0,
+      0.0
+     ],
+     [
+      -0.9829,
+      0.3578,
+      0.0
+     ],
+     [
+      -0.8013,
+      0.6724,
+      0.0
+     ],
+     [
+      -0.523,
+      0.9059,
+      0.0
+     ],
+     [
+      -0.1816,
+      1.0301,
+      0.0
+     ],
+     [
+      0.1816,
+      1.0301,
+      0.0
+     ],
+     [
+      0.523,
+      0.9059,
+      0.0
+     ],
+     [
+      0.8013,
+      0.6724,
+      0.0
+     ],
+     [
+      0.9829,
+      0.3578,
+      0.0
+     ],
+     [
+      1.046,
+      0.0,
+      0.0
+     ],
+     [
+      0.9829,
+      -0.3578,
+      0.0
+     ],
+     [
+      1.3329,
+      -0.5078,
+      0
+     ]
+    ]
+   },
+   "structures": [
+    {
+     "id": "alveolus",
+     "label": "폐포",
+     "shape": "sphere",
+     "center": [
+      0,
+      0,
+      0
+     ],
+     "radius": 1.0,
+     "color": "#9fd3ff",
+     "opacity": 0.28
+    }
+   ],
+   "gases": [
+    {
+     "id": "o2",
+     "label": "O₂",
+     "color": "#4fc3f7",
+     "count": 10,
+     "size": 0.014,
+     "speed": 0.32,
+     "from": [
+      [
+       0.39,
+       0.6755,
+       0.02
+      ],
+      [
+       -0.39,
+       0.6755,
+       0.02
+      ]
+     ],
+     "to": [
+      [
+       0.523,
+       0.9059,
+       0.02
+      ],
+      [
+       -0.523,
+       0.9059,
+       0.02
+      ]
+     ],
+     "direction_ko": "폐포 → 혈액"
+    },
+    {
+     "id": "co2",
+     "label": "CO₂",
+     "color": "#ffb74d",
+     "count": 10,
+     "size": 0.014,
+     "speed": 0.32,
+     "from": [
+      [
+       0.4421,
+       0.948,
+       -0.02
+      ],
+      [
+       -0.6,
+       0.8568,
+       -0.02
+      ]
+     ],
+     "to": [
+      [
+       0.3296,
+       0.7069,
+       -0.02
+      ],
+      [
+       -0.4474,
+       0.6389,
+       -0.02
+      ]
+     ],
+     "direction_ko": "혈액 → 폐포"
+    }
+   ],
+   "labels": [
+    {
+     "text": "폐포 (공기)",
+     "position": [
+      0,
+      0.35,
+      0
+     ],
+     "kind": "struct"
+    },
+    {
+     "text": "폐 모세혈관",
+     "position": [
+      -1.0098,
+      0.583,
+      0.0
+     ],
+     "kind": "struct"
+    },
+    {
+     "text": "O₂ → 혈액",
+     "position": [
+      0.1181,
+      0.6697,
+      0.02
+     ],
+     "kind": "o2"
+    },
+    {
+     "text": "CO₂ → 폐포",
+     "position": [
+      -0.2329,
+      0.8693,
+      -0.02
+     ],
+     "kind": "co2"
+    },
+    {
+     "text": "들어옴 (폐동맥 쪽)",
+     "position": [
+      -1.3329,
+      -0.6278,
+      0
+     ],
+     "kind": "io"
+    },
+    {
+     "text": "나감 (심장 쪽으로)",
+     "position": [
+      1.3329,
+      -0.6278,
+      0
+     ],
+     "kind": "io"
+    }
+   ],
+   "path": {
+    "path_id": "micro.pcap",
+    "name_ko": "폐 모세혈관 (개념)",
+    "default_speed": 0.25,
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.pcap_in",
+      "path_progress": 0.0,
+      "stop_on_arrival": false,
+      "label": "모세혈관 입구 (폐동맥 쪽)",
+      "anatomical_id": null
+     },
+     {
+      "checkpoint_id": "cp.pcap_exchange",
+      "path_progress": 0.5,
+      "stop_on_arrival": true,
+      "label": "기체 교환 (폐포 옆)",
+      "anatomical_id": null
+     },
+     {
+      "checkpoint_id": "cp.pcap_out",
+      "path_progress": 1.0,
+      "stop_on_arrival": true,
+      "label": "모세혈관 출구",
+      "anatomical_id": null
+     }
+    ]
+   }
+  },
+  {
+   "scene_id": "micro.systemic",
+   "level": "TISSUE",
+   "mode": "systemic",
+   "title_ko": "조직 모세혈관 (개념 모델)",
+   "verification_status": "CONCEPTUAL",
+   "origin": [
+    60,
+    0,
+    0
+   ],
+   "backdrop_radius": 6,
+   "background": "#221d24",
+   "unit_note": "1 장면 m ≈ 실제 130 µm. 적혈구·모세혈관·세포(약 20 µm)의 상대 크기만 맞췄다.",
+   "magnification_note": "기관 장면보다 약 7,700배 확대. 기체 입자는 실제 분자보다 훨씬 크게 그렸다.",
+   "notes": "특정 장기의 조직이 아니라 온몸 조직의 모세혈관을 단순화한 개념 형태다.",
+   "actor_display_size": 0.06,
+   "follow": {
+    "distance": 0.32,
+    "height": 0.09,
+    "side": 0,
+    "smooth": 5
+   },
+   "view_direction": [
+    0,
+    0.2,
+    1
+   ],
+   "capillary": {
+    "radius": 0.04,
+    "color": "#d65a5a",
+    "points": [
+     [
+      -1.3,
+      0.0,
+      0
+     ],
+     [
+      -1.1,
+      0.0313,
+      0
+     ],
+     [
+      -0.9,
+      0.039,
+      0
+     ],
+     [
+      -0.7,
+      0.0171,
+      0
+     ],
+     [
+      -0.5,
+      -0.0177,
+      0
+     ],
+     [
+      -0.3,
+      -0.0391,
+      0
+     ],
+     [
+      -0.1,
+      -0.0309,
+      0
+     ],
+     [
+      0.1,
+      0.0007,
+      0
+     ],
+     [
+      0.3,
+      0.0317,
+      0
+     ],
+     [
+      0.5,
+      0.0388,
+      0
+     ],
+     [
+      0.7,
+      0.0165,
+      0
+     ],
+     [
+      0.9,
+      -0.0183,
+      0
+     ],
+     [
+      1.1,
+      -0.0392,
+      0
+     ],
+     [
+      1.3,
+      -0.0305,
+      0
+     ]
+    ]
+   },
+   "structures": [
+    {
+     "id": "tissue_cells",
+     "label": "조직 세포",
+     "shape": "cells",
+     "color": "#c9a3d9",
+     "opacity": 0.85,
+     "cells": [
+      {
+       "center": [
+        -1.0,
+        0.27,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        -0.6,
+        0.37,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        -0.2,
+        0.27,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        0.2,
+        0.37,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        0.6,
+        0.27,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        1.0,
+        0.37,
+        0.0
+       ],
+       "size": [
+        0.17,
+        0.13,
+        0.15
+       ]
+      },
+      {
+       "center": [
+        -0.8,
+        -0.36,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      },
+      {
+       "center": [
+        -0.4,
+        -0.28,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      },
+      {
+       "center": [
+        0.0,
+        -0.36,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      },
+      {
+       "center": [
+        0.4,
+        -0.28,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      },
+      {
+       "center": [
+        0.8,
+        -0.36,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      },
+      {
+       "center": [
+        1.2,
+        -0.28,
+        0.02
+       ],
+       "size": [
+        0.16,
+        0.12,
+        0.14
+       ]
+      }
+     ]
+    }
+   ],
+   "gases": [
+    {
+     "id": "o2",
+     "label": "O₂",
+     "color": "#4fc3f7",
+     "count": 10,
+     "size": 0.014,
+     "speed": 0.32,
+     "from": [
+      [
+       -0.6,
+       0.02,
+       0.03
+      ],
+      [
+       0.6,
+       0.02,
+       0.03
+      ]
+     ],
+     "to": [
+      [
+       -0.6,
+       0.27,
+       0.03
+      ],
+      [
+       0.6,
+       0.27,
+       0.03
+      ]
+     ],
+     "direction_ko": "혈액 → 조직"
+    },
+    {
+     "id": "co2",
+     "label": "CO₂",
+     "color": "#ffb74d",
+     "count": 10,
+     "size": 0.014,
+     "speed": 0.32,
+     "from": [
+      [
+       -0.6,
+       -0.27,
+       0.03
+      ],
+      [
+       0.6,
+       -0.27,
+       0.03
+      ]
+     ],
+     "to": [
+      [
+       -0.6,
+       -0.02,
+       0.03
+      ],
+      [
+       0.6,
+       -0.02,
+       0.03
+      ]
+     ],
+     "direction_ko": "조직 → 혈액"
+    }
+   ],
+   "labels": [
+    {
+     "text": "조직 세포",
+     "position": [
+      0,
+      0.5,
+      0
+     ],
+     "kind": "struct"
+    },
+    {
+     "text": "조직 모세혈관",
+     "position": [
+      -0.9,
+      0.12,
+      0
+     ],
+     "kind": "struct"
+    },
+    {
+     "text": "O₂ → 조직",
+     "position": [
+      0.75,
+      0.16,
+      0.03
+     ],
+     "kind": "o2"
+    },
+    {
+     "text": "CO₂ → 혈액",
+     "position": [
+      0.75,
+      -0.16,
+      0.03
+     ],
+     "kind": "co2"
+    },
+    {
+     "text": "들어옴 (동맥 쪽)",
+     "position": [
+      -1.3,
+      -0.12,
+      0
+     ],
+     "kind": "io"
+    },
+    {
+     "text": "나감 (정맥 쪽)",
+     "position": [
+      1.3,
+      -0.12,
+      0
+     ],
+     "kind": "io"
+    }
+   ],
+   "path": {
+    "path_id": "micro.scap",
+    "name_ko": "조직 모세혈관 (개념)",
+    "default_speed": 0.25,
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.scap_in",
+      "path_progress": 0.0,
+      "stop_on_arrival": false,
+      "label": "모세혈관 입구 (동맥 쪽)",
+      "anatomical_id": null
+     },
+     {
+      "checkpoint_id": "cp.scap_exchange",
+      "path_progress": 0.5,
+      "stop_on_arrival": true,
+      "label": "기체 교환 (조직 옆)",
+      "anatomical_id": null
+     },
+     {
+      "checkpoint_id": "cp.scap_out",
+      "path_progress": 1.0,
+      "stop_on_arrival": true,
+      "label": "모세혈관 출구 (정맥 쪽)",
+      "anatomical_id": null
+     }
+    ]
+   }
+  }
+ ]
+}

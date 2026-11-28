@@ -13,7 +13,12 @@
 
 import * as THREE from 'three';
 
-export const PATH_STATUS = ['TEST_PATH', 'APPROXIMATE', 'PENDING', 'VERIFIED_GEOMETRY'];
+// 경로 검증 상태 (STEP 04-A)
+//   PENDING: 경로 없음·작성 중 / APPROXIMATE: Anchor 평균을 이은 근사 / GEOMETRY_CHECKED: 기하 검사 통과(메시 밖 0%, 연결·순서 정상)
+//   ANATOMY_REVIEWED: 전공자 검토 완료(사람만 올린다) / CONCEPTUAL: 해부 모델이 없는 개념 장면 경로 / TEST_PATH: 엔진 시험용
+//   VERIFIED_GEOMETRY(STEP 03-C 이름)는 GEOMETRY_CHECKED로 읽는다.
+export const PATH_STATUS = ['PENDING', 'APPROXIMATE', 'GEOMETRY_CHECKED', 'ANATOMY_REVIEWED', 'CONCEPTUAL', 'TEST_PATH'];
+const STATUS_ALIAS = { VERIFIED_GEOMETRY: 'GEOMETRY_CHECKED' };
 const REQUIRED = ['path_id', 'points'];
 const isNum = (n) => typeof n === 'number' && Number.isFinite(n);
 const isVec3 = (v) => Array.isArray(v) && v.length === 3 && v.every(isNum);
@@ -226,9 +231,11 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
       default_duration: isNum(raw.default_duration) ? raw.default_duration : null,
       default_speed: isNum(raw.default_speed) ? raw.default_speed : null,
       links: (raw.links || []).map((l) => (typeof l === 'string' ? { to: l } : { ...l })),
-      verification_status: raw.verification_status || 'PENDING',
+      verification_status: STATUS_ALIAS[raw.verification_status] || raw.verification_status || 'PENDING',
       source: raw.source || '',
       notes: raw.notes || '',
+      method: raw.method || '',
+      geometry_check: raw.geometry_check ? JSON.parse(JSON.stringify(raw.geometry_check)) : null,
     };
     return def;
   }
@@ -290,6 +297,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
       if (!p.anchor_id && p.position && !isVec3(p.position)) errors.push(`${id}: 잘못된 좌표`);
     }
     if (c.missing.length) errors.push(`${id}: 계산할 수 없는 점 ${c.missing.map((i) => i + 1).join(', ')}번`);
+    if (!PATH_STATUS.includes(def.verification_status)) warnings.push(`${id}: 알 수 없는 검증 상태 ${def.verification_status}`);
     if (c.points.length < 2) errors.push(`${id}: 점이 2개 미만`);
     else if (!(c.length > 1e-6)) errors.push(`${id}: 길이가 0인 경로`);
     if (!isNum(c.length)) errors.push(`${id}: 길이가 숫자가 아님`);
@@ -330,7 +338,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
       const out = { ...def, points: def.points.map((p) => ({ ...p })), checkpoints: def.checkpoints.map((c) => { const x = { ...c }; delete x.path_id; return x; }) };
       return out;
     });
-    return JSON.stringify({ version: 1, scene_id: sceneId || (list[0] && list[0].scene_id) || '', coordinate_note: '곡선은 장면 좌표로 계산. 점마다 anchor_id / object_local / scene 좌표계를 적는다.', paths: list, exported_at: new Date().toISOString() }, null, 2);
+    return JSON.stringify({ version: 2, scene_id: sceneId || (list[0] && list[0].scene_id) || '', coordinate_note: '곡선은 장면 좌표로 계산. 점마다 anchor_id / object_local / scene 좌표계를 적는다.', paths: list, exported_at: new Date().toISOString() }, null, 2);
   }
 
   // ---------- Waypoint 편집 ----------
@@ -339,6 +347,32 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
   function changed(id) {
     build(id);
     emit('change', { id });
+  }
+
+  // 모양이 바뀌면 이전 기하 검사·검토는 더 이상 이 경로를 설명하지 않는다 → 상태를 낮추고 표시한다
+  function edited(id) {
+    const d = def(id);
+    if (!d) return;
+    if (d.geometry_check && !d.geometry_check.stale) d.geometry_check.stale = true;
+    if (d.verification_status === 'GEOMETRY_CHECKED' || d.verification_status === 'ANATOMY_REVIEWED') {
+      d.notes = `${d.notes ? `${d.notes} ` : ''}[편집됨: ${d.verification_status}에서 APPROXIMATE로 낮춤. 기하 검사를 다시 해야 한다]`;
+      d.verification_status = 'APPROXIMATE';
+    }
+  }
+
+  // 되돌리기용: 경로 정의 전체 복사본과 복원 (Path Editor가 Undo/Redo 기록에 쓴다)
+  function snapshot(id) {
+    const d = def(id);
+    return d ? JSON.parse(JSON.stringify(d)) : null;
+  }
+  function restore(snap) {
+    if (!snap || !snap.path_id) return false;
+    const rec = paths.get(snap.path_id);
+    const d = JSON.parse(JSON.stringify(snap));
+    if (rec) rec.def = d;
+    else paths.set(d.path_id, { def: d, cache: null, view: null });
+    changed(d.path_id);
+    return true;
   }
 
   function create(raw) {
@@ -363,7 +397,9 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
   function update(id, fields) {
     const d = def(id);
     if (!d) return false;
+    const shape = ('curve_type' in fields && fields.curve_type !== d.curve_type) || ('closed' in fields && fields.closed !== d.closed);
     for (const k of ['name_ko', 'name_en', 'curve_type', 'closed', 'direction', 'default_speed', 'default_duration', 'verification_status', 'notes', 'links']) if (k in fields) d[k] = fields[k];
+    if (shape) edited(id);
     changed(id);
     return true;
   }
@@ -374,6 +410,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     if (!d) return false;
     const i = THREE.MathUtils.clamp(index, 0, d.points.length);
     d.points.splice(i, 0, point);
+    edited(id);
     changed(id);
     return i;
   }
@@ -396,6 +433,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     if (!d || index < 0 || index >= d.points.length) return false;
     d.points.splice(index, 1);
     if (selectedPath === id) selectedPoint = Math.min(selectedPoint, d.points.length - 1);
+    edited(id);
     changed(id);
     return true;
   }
@@ -407,6 +445,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     const [p] = d.points.splice(index, 1);
     d.points.splice(j, 0, p);
     if (selectedPath === id && selectedPoint === index) selectedPoint = j;
+    edited(id);
     changed(id);
     return true;
   }
@@ -424,6 +463,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     } else {
       d.points[index] = { space: 'scene', position: world.toArray().map(r6), ...(p.anchor_id ? { detached_from: p.anchor_id } : {}) };
     }
+    edited(id);
     build(id);
     emit(notify ? 'change' : 'move', { id, index });
     return true;
@@ -435,6 +475,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     const p = d.points[index];
     if (p.anchor_id) return false;
     p.position = xyz.map(r6);
+    edited(id);
     changed(id);
     return true;
   }
@@ -443,6 +484,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     const d = def(id);
     if (!d || !d.points[index] || !anchors || !anchors.get(anchorId)) return false;
     d.points[index] = { anchor_id: anchorId };
+    edited(id);
     changed(id);
     return true;
   }
@@ -593,6 +635,8 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     tangentAt,
     resolvePoint,
     create,
+    snapshot,
+    restore,
     remove,
     update,
     insertPoint,

@@ -199,7 +199,8 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
 | anchor_id | 관련 Anchor |
 | checkpoint_id | 이 노드에 도착했을 때 Actor가 있을 Checkpoint (복구 위치) |
 | scene_id, source | 장면, 출처 |
-| verification_status | `VERIFIED`, `APPROXIMATE`, `PENDING`, `CONCEPT`, `TEST` 중 하나 |
+| verification_status | 3D 표현 상태. `VERIFIED`, `APPROXIMATE`, `PENDING`, `CONCEPT`, `TEST`, (STEP 04-A) `GEOMETRY_CHECKED`, `ANATOMY_REVIEWED`, `CONCEPTUAL` 중 하나 |
+| lecture_check | (STEP 04-A, 선택) 강의자료 대조 결과 `{status: MATCH\|PARTIAL, refs: [쪽 번호], unconfirmed: [...], date}`. 3D 상태와 별개다. 원문은 적지 않는다. |
 | revisit | 순환으로 다시 온 노드 처리. `relearn`(기본)은 새 학습 시점으로 첫 시도 통계에 넣고, `review`는 복습으로 첫 시도 통계에서 뺀다. 어느 쪽이든 다시 입력해야 한다. |
 
 ### Edge (추가 필드)
@@ -208,7 +209,9 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
 | path_id | 이동 경로 |
 | checkpoint_id | 도착 Checkpoint. 없으면 도착 노드의 checkpoint_id를 쓴다. 같은 노드에 여러 경로로 들어올 때 쓴다(예: 하대정맥 → 우심방). |
 | actor_id | 이 Edge에서 움직일 Actor (없으면 콘텐츠 actor_id) |
-| transition_type | `move`(기본)는 경로를 따라 이동한다. `jump`는 이동 없이 바로 도착한다. jump는 Checkpoint가 있으면 그 위치에 놓고, 없으면 그대로 둔다. 3D 경로가 없는 PENDING 구간에 쓴다. |
+| transition_type | `move`(기본)는 경로를 따라 이동한다. `jump`는 이동 없이 바로 도착한다. jump는 Checkpoint가 있으면 그 위치에 놓고, 없으면 그대로 둔다. 3D 경로가 없는 PENDING 구간에 쓴다. `scene`(STEP 04-A)은 스케일 장면을 바꾼다(아래 표). |
+| pre_checkpoint_id | (scene) 장면을 바꾸기 전에 지금 장면에서 이동할 Checkpoint |
+| scale | (scene) `{level, scene_id, checkpoint_id}`. level은 `BODY`, `ORGAN`, `TISSUE`, `CELL`, `MOLECULAR` 중 하나. 같은 Actor를 새 장면의 checkpoint_id에 놓는다. Edge의 checkpoint_id가 있고 그것과 다르면 새 장면에서 거기까지 이동한다. |
 | events | 도착할 때 노드 이벤트보다 먼저 실행 |
 
 ### 3D 이벤트
@@ -222,6 +225,17 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
   - `parallel`(기본): 기다리지 않는다.
 - `required: true`: 실패하면 진행을 멈춘다. false면 장식용으로 보고 실패를 기록만 한다.
 - 반복 박동이나 입자처럼 끝나지 않는 연출은 parallel로 둔다.
+
+### 스케일 전환 (STEP 04-A)
+- motion_link가 scene Edge를 다음 명령으로 바꾼다.
+  1. `actor_move_to_checkpoint`(pre_checkpoint_id, 있을 때)
+  2. `scale_change` `{target, level, scene_id, checkpoint_id, duration, wait: true}`
+  3. `actor_move_to_checkpoint`(Edge checkpoint_id, 전환 위치와 다를 때)
+- JS `js/scale/scale-manager.js`가 페이드 → 장면 교체 → 같은 Actor 배치(표시 크기만 장면 값으로) → 카메라 순으로 실행한다.
+- 유지되는 것: 학습 세션, 노드, Actor ID, biological_state, 정답·오답 기록, 진행. 학습 상태는 Python에 있다.
+- 기다린 명령이 취소되면 같은 묶음의 나머지 명령(예: 이동 뒤 전환)은 실행하지 않는다. 결과는 cancelled → 재시도·복구
+- 복구할 Checkpoint가 다른 장면에 있으면 그 장면으로 먼저 즉시 전환한다.
+- 일시정지 중에는 전환 단계 사이에서 기다리고, 일시정지 중에 시작된 이동은 멈춘 채로 시작한다.
 
 ### 진행과 이동 (lesson.py)
 1. JS가 `lesson.submit(text)`를 부르면 Python이 판정한다.
@@ -259,6 +273,7 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
   - Node ID·Edge ID 중복
   - 없는 해부학 구조, Anchor, Path, Checkpoint, Actor
   - `move` Edge인데 Path와 Checkpoint가 모두 없음
+  - `scene` Edge의 없는 스케일 장면, 수준 불일치, 없는 Checkpoint(pre_checkpoint_id, scale.checkpoint_id)
   - scene 이벤트의 없는 Actor
 - 경고
   - 모델이 없는(MISSING) 구조

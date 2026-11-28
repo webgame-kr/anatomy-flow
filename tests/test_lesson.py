@@ -54,6 +54,17 @@ check('3D 별칭 필드 변환 (accepted_answers → answers, source_node → fr
 check('set_variable → set 이벤트', up['nodes'][3]['events'][0]['type'] == 'set')
 check('원본 콘텐츠는 바뀌지 않음', 'accepted_answers' in cv['nodes'][0] and 'answers' not in cv['nodes'][0])
 
+sc_bad = read('content/lessons/cardiovascular/blood-circulation.json')
+for e in sc_bad['edges']:
+    if e['edge_id'] == 'e.pt_cap':
+        e['scale'] = {'level': 'GALAXY', 'scene_id': ''}
+    if e['edge_id'] == 'e.ao_sys':
+        del e['scale']
+errs = content_loader.validate(content_loader.upgrade(sc_bad))['errors']
+check('scene 전환 검증: 수준·장면 ID·scale 누락', len([x for x in errs if 'scale' in x]) == 3)
+check('노드 상태 GEOMETRY_CHECKED·CONCEPTUAL 허용, 노드마다 lecture_check',
+      all(n.get('lecture_check', {}).get('status') in ('MATCH', 'PARTIAL') for n in cv['nodes']))
+
 bad = read('content/lessons/cardiovascular/blood-circulation.json')
 bad['nodes'][1]['verification_status'] = 'MEDICALLY_PERFECT'
 bad['edges'][0]['transition_type'] = 'teleport'
@@ -100,25 +111,53 @@ check('복구 뒤 다시 입력 가능', play('tricuspid valve')['view']['curren
 
 h = lesson.hint()
 check('힌트 사용 기록', h['ok'] and h['view']['hints'] == 1 and h['hints'][0]['node'] == 'n.rv')
-for word in ['우심실', '폐동맥판', '폐동맥', '폐 모세혈관']:
-    r = play(word)
+r = play('우심실')
+check('우심실 도착 = 폐순환 시작 (교재 p485)', r['view']['vars']['current_circulation'] == 'pulmonary')
+r = play('폐동맥반달판막')
+check('새 정답: 폐동맥반달판막', r['view']['current'] == 'n.pulm_valve')
+r = play('허파동맥줄기')
+check('새 정답: 허파동맥줄기', r['view']['current'] == 'n.pt')
+r = lesson.submit('폐 모세혈관')
+cmds = r['commands']
+check('스케일 전환: 폐 안쪽까지 이동 → scale_change(TISSUE) → 교환 지점 이동',
+      [c['action'] for c in cmds] == ['actor_move_to_checkpoint', 'scale_change', 'actor_move_to_checkpoint']
+      and cmds[0]['checkpoint_id'] == 'cp.lung_in' and cmds[1]['level'] == 'TISSUE' and cmds[1]['scene_id'] == 'micro.pulmonary'
+      and cmds[1]['checkpoint_id'] == 'cp.pcap_in' and cmds[2]['checkpoint_id'] == 'cp.pcap_exchange' and cmds[1]['wait'])
+check('스케일 전환 중에는 다른 제출 불가', lesson.submit('폐정맥')['result'] != 'correct')
+r = lesson.arrived('arrived')
 check('폐 모세혈관: 산소화 변수 + Actor 상태 명령', r['view']['vars']['oxygenation'] == 'oxygenated' and
       [e for e in r['events'] if e['type'] == 'scene'][0]['command']['action'] == 'actor_set_state')
 check('순환 구분 변수', r['view']['vars']['current_circulation'] == 'pulmonary')
 r = lesson.submit('폐정맥')
-check('PENDING 구간(jump, Checkpoint 없음) → 이동 명령 없음', r['result'] == 'correct' and r['commands'] == [])
-lesson.arrived('ok')
-for word in ['좌심방', '이첨판', '좌심실', '대동맥판', '대동맥']:
+cmds = r['commands']
+check('기관으로 돌아오기: 모세혈관 출구 이동 → scale_change(ORGAN, 폐정맥 폐 쪽), 같은 지점이면 추가 이동 없음',
+      [c['action'] for c in cmds] == ['actor_move_to_checkpoint', 'scale_change'] and cmds[0]['checkpoint_id'] == 'cp.pcap_out'
+      and cmds[1]['level'] == 'ORGAN' and cmds[1]['checkpoint_id'] == 'cp.pv_lung')
+lesson.arrived('arrived')
+r = lesson.submit('좌심방')
+check('폐정맥 → 좌심방 경로 이동', r['commands'][0]['action'] == 'actor_move_to_checkpoint' and r['commands'][0]['checkpoint_id'] == 'cp.pv_la')
+lesson.arrived('arrived')
+check('좌심방은 아직 폐순환', lesson.view()['vars']['current_circulation'] == 'pulmonary')
+for word in ['이첨판', '좌심실']:
     r = play(word)
-check('대동맥판 지나면 체순환', r['view']['vars']['current_circulation'] == 'systemic')
-r = play('전신 조직')
+check('좌심실 도착 = 체순환 시작 (교재 p485)', r['view']['vars']['current_circulation'] == 'systemic')
+r = play('대동맥반달판막')
+check('새 정답: 대동맥반달판막', r['view']['current'] == 'n.aortic_valve')
+r = lesson.submit('대동맥')
+check('대동맥 경로 이동 (내림대동맥까지)', r['commands'][0]['checkpoint_id'] == 'cp.desc_aorta')
+lesson.arrived('arrived')
+r = lesson.submit('전신 조직')
+check('조직 모세혈관 개념 장면 전환', [c['action'] for c in r['commands']] == ['scale_change', 'actor_move_to_checkpoint']
+      and r['commands'][0]['scene_id'] == 'micro.systemic')
+lesson.arrived('arrived')
+r = {'view': lesson.view()}
 check('완료', r['view']['phase'] == 'done' and r['view']['end_reason'] == 'goal' and r['view']['progress'] == 1.0)
 check('주기 변수', r['view']['vars']['completed_cycles'] == 1 and r['view']['vars']['oxygenation'] == 'deoxygenated')
 v = r['view']
 check('첫 시도 정답 수 (분기에서 1번 틀림)', v['questions'] == 16 and v['first_correct'] == 15 and v['first_accuracy'] == 93.8)
 check('전체 시도 정답률', v['correct'] == 16 and v['wrong'] == 1)
 rec = lesson.record({'session_id': 's1', 'learning_mode': 'guide', 'start_time': 't0', 'end_time': 't1', 'active_seconds': 12.34, 'completion_status': 'completed'})
-check('기록 v2 필드', rec['version'] == 2 and rec['content_version'] == '0.1.1' and rec['hint_count'] == 1 and len(rec['completed_nodes']) == 15 and rec['active_learning_time'] == 12.3)
+check('기록 v2 필드', rec['version'] == 2 and rec['content_version'] == '0.2.0' and rec['hint_count'] == 1 and len(rec['completed_nodes']) == 15 and rec['active_learning_time'] == 12.3)
 check('입력 기록', len(rec['attempted_answers']) == 17 and rec['attempted_answers'][1]['result'] == 'wrong')
 csv = lesson.records_csv([rec, {'date': '2026-11-01', 'content_id': 'old', 'correct': 3, 'wrong': 1, 'accuracy': 75.0, 'finished': True, 'seconds': 9}])
 lines = csv.strip().split('\n')

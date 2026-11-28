@@ -109,6 +109,12 @@ def submit(text):
     cmd['actor'] = edge.get('actor_id', content.get('actor_id', ''))
     cmd['checkpoint'] = edge.get('checkpoint_id', target.get('checkpoint_id', ''))   # Edge가 도착 지점을 정하면 그것
     cmd['transition'] = edge.get('transition_type', 'move')
+    # STEP 04-A: 스케일 전환 (전환 전 이동할 Checkpoint, 전환 정보)
+    cmd['pre_checkpoint'] = edge.get('pre_checkpoint_id', '')
+    scale = edge.get('scale')
+    if type(scale) == dict:
+        cmd['scale'] = {'level': scale.get('level', ''), 'scene_id': scale.get('scene_id', ''),
+                        'checkpoint_id': scale.get('checkpoint_id', '')}
     cmd['anatomical_id'] = target.get('anatomical_id', '')
     state_engine.add_log(state, '이동 시작: {} → {}'.format(edge['from'], edge['to']))
     return {'result': 'correct', 'commands': [cmd], 'view': get_view()}

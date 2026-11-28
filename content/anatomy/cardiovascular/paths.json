@@ -1,80 +1,458 @@
 {
-  "version": 1,
+  "version": 2,
   "scene_id": "anatomy_cardiovascular",
-  "description": "요구서 Scene I — 실제 BodyParts3D 심혈관 모델 위 시험 경로. 해부학적으로 검증한 혈류 경로가 아니다.",
-  "coordinate_note": "곡선은 장면 좌표(m)로 계산한다. 점은 Anchor(object-local, anchors.json)를 참조하므로 모델이 움직이면 따라간다.",
+  "description": "STEP 04-A 경로: BodyParts3D 심혈관 모델 위 내강 중심선·판막 Waypoint 경로. 기하 검사(GEOMETRY_CHECKED)만 통과했고 해부학 전문가 검토(ANATOMY_REVIEWED)는 받지 않았다.",
+  "coordinate_note": "곡선은 장면 좌표(m)로 계산한다. 중심선 점은 해당 혈관 메시의 object-local 좌표, 방·판막 점은 Anchor(anchors.json)다. 모델이 움직이면 따라간다.",
   "marker_size": 0.0012,
-  "follow": { "distance": 0.035, "height": 0.01, "side": 0, "smooth": 5 },
+  "follow": {"distance": 0.035, "height": 0.01, "side": 0, "smooth": 5},
   "paths": [
     {
-      "path_id": "cv.svc_to_ra", "name_ko": "상대정맥 → 우심방",
-      "source_anchor_id": "a.svc.lumen", "target_anchor_id": "a.ra.cavity",
-      "points": [ { "anchor_id": "a.svc.lumen" }, { "anchor_id": "a.ra.cavity" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.svc", "anchor_id": "a.svc.lumen", "anatomical_id": "cv.superior_vena_cava", "stop_on_arrival": false, "label": "상대정맥", "event_ids": ["ev.svc"] },
-        { "checkpoint_id": "cp.ra", "path_progress": 1.0, "anatomical_id": "cv.right_atrium", "stop_on_arrival": true, "label": "우심방 도착", "event_ids": ["ev.ra"] }
+      "path_id": "cv.svc_to_ra",
+      "name_ko": "상대정맥 → 우심방",
+      "target_anchor_id": "a.ra.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015556, 1.309287, 0.119659]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015214, 1.303293, 0.117178]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015319, 1.29734, 0.11633]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015411, 1.291358, 0.115787]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015399, 1.285367, 0.1154]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015379, 1.279373, 0.115102]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/superior_vena_cava", "position": [-0.015357, 1.276383, 0.114841]},
+        {"anchor_id": "a.ra.cavity"}
       ],
-      "links": [ { "to": "cv.ra_to_rv" } ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "Anchor 두 개를 잇는 곡선. 내강 통과 여부는 geometry_check와 단면으로만 확인했으며 해부학 전문가 검증을 받지 않았다."
+      "links": [
+        {"to": "cv.ra_to_rv"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {
+          "event_ids": ["ev.svc"],
+          "stop_on_arrival": false,
+          "checkpoint_id": "cp.svc",
+          "anchor_id": "a.svc.lumen",
+          "anatomical_id": "cv.superior_vena_cava",
+          "label": "상대정맥"
+        },
+        {"event_ids": ["ev.ra"], "stop_on_arrival": true, "checkpoint_id": "cp.ra", "path_progress": 1, "anatomical_id": "cv.right_atrium", "label": "우심방 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "centerline:superior_vena_cava",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 2,
+        "min_clearance_mm": 1.31,
+        "start_inside": ["superior_vena_cava"],
+        "end_inside": ["heart_cavity_right_atrium"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.079,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "상대정맥 메시 단면 중심선(3 mm 간격 추적, 6 mm로 줄임) 뒤 우심방 정점 평균으로 들어간다. 상대정맥과 우심방 메시가 겹치는 구간이 있다."
     },
     {
-      "path_id": "cv.ivc_to_ra", "name_ko": "하대정맥 → 우심방",
-      "source_anchor_id": "a.ivc.lumen", "target_anchor_id": "a.ra.cavity",
-      "points": [ { "anchor_id": "a.ivc.lumen" }, { "anchor_id": "a.ra.cavity" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.ivc", "path_progress": 0.0, "anatomical_id": "cv.inferior_vena_cava", "stop_on_arrival": false, "label": "하대정맥" },
-        { "checkpoint_id": "cp.ivc_ra", "path_progress": 1.0, "anatomical_id": "cv.right_atrium", "stop_on_arrival": true, "label": "우심방 도착" }
+      "path_id": "cv.ivc_to_ra",
+      "name_ko": "하대정맥 → 우심방",
+      "target_anchor_id": "a.ra.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.009231, 0.956726, 0.116704]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.009696, 0.968594, 0.118925]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.010174, 0.980505, 0.120325]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.010735, 0.992492, 0.120713]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.011158, 1.004483, 0.120311]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.011397, 1.016439, 0.119277]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.011683, 1.028383, 0.118154]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.011997, 1.040326, 0.117027]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.012256, 1.052267, 0.11586]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.012526, 1.06424, 0.11509]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.013093, 1.076229, 0.114941]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.013831, 1.088207, 0.115093]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.014603, 1.100183, 0.11503]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015139, 1.112169, 0.114796]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015393, 1.124167, 0.114888]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015421, 1.136167, 0.114957]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015425, 1.148167, 0.114985]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015426, 1.160167, 0.115023]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015422, 1.172167, 0.115045]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015422, 1.184167, 0.115044]},
+        {"space": "object_local", "object_id": "bp3d-cv-vena-cava/inferior_vena_cava", "position": [-0.015582, 1.190167, 0.114907]},
+        {"anchor_id": "a.ra.cavity"}
       ],
-      "links": [ { "to": "cv.ra_to_rv" } ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "하대정맥 메시의 정점 평균은 긴 관의 중간쯤이다."
+      "links": [
+        {"to": "cv.ra_to_rv"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.ivc", "path_progress": 0, "anatomical_id": "cv.inferior_vena_cava", "label": "하대정맥"},
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.ivc_ra", "path_progress": 1, "anatomical_id": "cv.right_atrium", "label": "우심방 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "centerline:inferior_vena_cava",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 4,
+        "min_clearance_mm": 0.14,
+        "start_inside": ["inferior_vena_cava"],
+        "end_inside": ["heart_cavity_right_atrium"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.2758,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "하대정맥 메시 아래 끝(모델 경계)부터 위 끝까지 단면 중심선. 실제 하대정맥은 모델보다 아래에서 시작한다."
     },
     {
-      "path_id": "cv.ra_to_rv", "name_ko": "우심방 → 삼첨판 → 우심실",
-      "source_anchor_id": "a.ra.cavity", "target_anchor_id": "a.rv.cavity",
-      "points": [ { "anchor_id": "a.ra.cavity" }, { "anchor_id": "a.tv.center" }, { "anchor_id": "a.rv.cavity" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.tricuspid", "anchor_id": "a.tv.center", "anatomical_id": "cv.valve.tricuspid", "stop_on_arrival": true, "label": "삼첨판", "event_ids": ["ev.tricuspid"] },
-        { "checkpoint_id": "cp.rv", "path_progress": 1.0, "anatomical_id": "cv.right_ventricle", "stop_on_arrival": true, "label": "우심실 도착" }
+      "path_id": "cv.ra_to_rv",
+      "name_ko": "우심방 → 삼첨판 → 우심실",
+      "source_anchor_id": "a.ra.cavity",
+      "target_anchor_id": "a.rv.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"anchor_id": "a.ra.cavity"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_tricuspid", "position": [-0.004002, 1.214637, 0.131374]},
+        {"anchor_id": "a.tv.center"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_tricuspid", "position": [0.007366, 1.21294, 0.139367]},
+        {"anchor_id": "a.rv.cavity"}
       ],
-      "links": [ { "to": "cv.rv_to_pt" } ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "판막 개폐는 표현하지 않는다. 판막 중심점은 첨판 정점의 평균이다."
+      "links": [
+        {"to": "cv.rv_to_pt"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {
+          "event_ids": ["ev.tricuspid"],
+          "stop_on_arrival": true,
+          "checkpoint_id": "cp.tricuspid",
+          "anchor_id": "a.tv.center",
+          "anatomical_id": "cv.valve.tricuspid",
+          "label": "삼첨판"
+        },
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.rv", "path_progress": 1, "anatomical_id": "cv.right_ventricle", "label": "우심실 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "waypoints:valve_center±flow(RA→RV centroid)",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 2,
+        "min_clearance_mm": 0.2,
+        "start_inside": ["heart_cavity_right_atrium"],
+        "end_inside": ["heart_cavity_right_ventricle"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.0559,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "판막 점: 삼첨판 첨판 정점 평균에서 RA→RV 내강 중심 방향으로 -6 mm, +8 mm. 첨판 모양으로 판막면 법선을 구하지 못해(얇은 축이 흐름과 87°) 내강 중심 방향을 썼다. 판막 개폐는 표현하지 않는다."
     },
     {
-      "path_id": "cv.rv_to_pt", "name_ko": "우심실 → 폐동맥판 → 폐동맥줄기",
-      "source_anchor_id": "a.rv.cavity", "target_anchor_id": "a.pt.lumen",
-      "points": [ { "anchor_id": "a.rv.cavity" }, { "anchor_id": "a.pv.center" }, { "anchor_id": "a.pt.lumen" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.pulmonary_valve", "anchor_id": "a.pv.center", "anatomical_id": "cv.valve.pulmonary", "stop_on_arrival": true, "label": "폐동맥판" },
-        { "checkpoint_id": "cp.pt", "path_progress": 1.0, "anatomical_id": "cv.pulmonary_trunk", "stop_on_arrival": true, "label": "폐동맥줄기 도착" }
+      "path_id": "cv.rv_to_pt",
+      "name_ko": "우심실 → 폐동맥판 → 폐동맥줄기",
+      "source_anchor_id": "a.rv.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"anchor_id": "a.rv.cavity"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_pulmonary", "position": [0.024744, 1.24885, 0.143464]},
+        {"anchor_id": "a.pv.center"},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.032421, 1.263582, 0.151176]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.032, 1.265767, 0.145361]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.028396, 1.268462, 0.140546]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.028159, 1.271563, 0.135021]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.028619, 1.275789, 0.130471]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.028311, 1.278814, 0.125232]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.028003, 1.283338, 0.121025]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.025918, 1.289569, 0.119497]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.018738, 1.291542, 0.116758]}
       ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "폐동맥줄기 정점 평균에서 끝난다. 폐 안쪽 경로는 폐 실질 모델이 없어 만들지 않았다."
+      "links": [
+        {"to": "cv.pt_to_lung"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {
+          "event_ids": [],
+          "stop_on_arrival": true,
+          "checkpoint_id": "cp.pulmonary_valve",
+          "anchor_id": "a.pv.center",
+          "anatomical_id": "cv.valve.pulmonary",
+          "label": "폐동맥판"
+        },
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.pt", "path_progress": 1, "anatomical_id": "cv.pulmonary_trunk", "label": "폐동맥줄기 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "waypoints:valve normal + centerline:pulmonary_trunk",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 7,
+        "min_clearance_mm": 0.09,
+        "start_inside": ["heart_cavity_right_ventricle"],
+        "end_inside": ["pulmonary_trunk", "right_pulmonary_artery"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.0954,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "폐동맥판 얇은 축(흐름과 7°) 방향 -6 mm 점, 판막 중심, 폐동맥줄기 단면 중심선. 끝은 폐동맥 갈림 부위다."
     },
     {
-      "path_id": "cv.la_to_lv", "name_ko": "좌심방 → 승모판 → 좌심실",
-      "source_anchor_id": "a.la.cavity", "target_anchor_id": "a.lv.cavity",
-      "points": [ { "anchor_id": "a.la.cavity" }, { "anchor_id": "a.mv.center" }, { "anchor_id": "a.lv.cavity" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.la", "path_progress": 0.0, "anatomical_id": "cv.left_atrium", "stop_on_arrival": false, "label": "좌심방" },
-        { "checkpoint_id": "cp.mitral", "anchor_id": "a.mv.center", "anatomical_id": "cv.valve.mitral", "stop_on_arrival": true, "label": "승모판" },
-        { "checkpoint_id": "cp.lv", "path_progress": 1.0, "anatomical_id": "cv.left_ventricle", "stop_on_arrival": true, "label": "좌심실 도착" }
+      "path_id": "cv.pt_to_lung",
+      "name_ko": "폐동맥줄기 → 오른폐동맥 → 폐 안쪽",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk", "position": [0.018738, 1.291542, 0.116758]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [0.014028, 1.287744, 0.109723]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [0.006656, 1.284785, 0.104789]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.00057, 1.281803, 0.099845]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.006022, 1.275425, 0.095601]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.014874, 1.271947, 0.094452]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.024132, 1.275333, 0.094692]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.027313, 1.285994, 0.092426]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_pulmonary_artery", "position": [-0.031901, 1.290355, 0.092294]}
       ],
-      "links": [ { "to": "cv.lv_to_av" } ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "BodyParts3D 승모판 개념에는 대동맥판 첨판 2개가 섞여 있어(STEP 03-A 기록) 03-A에서 이름 필터로 분리했다. 중심점 위치를 단면으로 확인해야 한다."
+      "links": [],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.rpa", "path_progress": 0.2, "anatomical_id": "cv.right_pulmonary_artery", "label": "오른폐동맥"},
+        {
+          "event_ids": [],
+          "stop_on_arrival": true,
+          "checkpoint_id": "cp.lung_in",
+          "path_progress": 1,
+          "anatomical_id": "cv.right_lung",
+          "label": "폐 안쪽 (모세혈관 확대 장면 입구)"
+        }
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "centerline:right_pulmonary_artery (main branch toward right lung)",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 8,
+        "min_clearance_mm": 0.01,
+        "start_inside": ["pulmonary_trunk", "right_pulmonary_artery"],
+        "end_inside": [],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [],
+        "length_m": 0.0751,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "오른폐동맥 메시 단면 중심선. x=-3.2 cm(오른폐동맥 첫 큰 가지 앞)에서 멈춘다. 그 뒤는 가지가 갈라져 단면 중심이 내강 밖으로 나가(기하 검사 메시 밖 4~14%) 쓰지 않았다. 폐 실질·모세혈관 모델이 없어 여기서 개념 확대 장면(CONCEPTUAL)으로 넘어간다."
     },
     {
-      "path_id": "cv.lv_to_av", "name_ko": "좌심실 → 대동맥판",
-      "source_anchor_id": "a.lv.cavity", "target_anchor_id": "a.av.center",
-      "points": [ { "anchor_id": "a.lv.cavity" }, { "anchor_id": "a.av.center" } ],
-      "checkpoints": [
-        { "checkpoint_id": "cp.aortic_valve", "path_progress": 1.0, "anatomical_id": "cv.valve.aortic", "stop_on_arrival": true, "label": "대동맥판 도착" }
+      "path_id": "cv.pv_to_la",
+      "name_ko": "폐정맥(오른위폐정맥) → 좌심방",
+      "target_anchor_id": "a.la.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.044456, 1.207328, 0.12771]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.042906, 1.213106, 0.120476]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.042806, 1.218504, 0.112235]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.040474, 1.223828, 0.104547]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.037253, 1.231384, 0.098821]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.033193, 1.23935, 0.095819]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.0241, 1.241712, 0.092664]},
+        {"space": "object_local", "object_id": "bp3d-cv-pulmonary-vessels/right_superior_pulmonary_vein", "position": [-0.017983, 1.24067, 0.092558]},
+        {"anchor_id": "a.la.cavity"}
       ],
-      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
-      "notes": "대동맥은 한 메시(상행·궁·하행)라 정점 평균이 내강 밖이다. 대동맥 안쪽 경로는 중심선 Anchor가 생긴 뒤 만든다."
+      "links": [
+        {"to": "cv.la_to_lv"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.pv_lung", "path_progress": 0, "anatomical_id": "cv.pulmonary_veins", "label": "폐정맥 (폐 쪽)"},
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.pv_la", "path_progress": 1, "anatomical_id": "cv.left_atrium", "label": "좌심방 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "centerline:right_superior_pulmonary_vein (traced from atrial end, reversed)",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 11,
+        "min_clearance_mm": 0.02,
+        "start_inside": [],
+        "end_inside": ["heart_cavity_left_atrium"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.1017,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "오른위폐정맥 메시를 좌심방 쪽 끝에서 폐 쪽으로 추적한 뒤 뒤집었다. 폐 쪽 끝 가지 합류부(단면 반지름 4.5~7.7 mm로 커지는 곳)는 메시 밖으로 나가 잘라냈다. 오른가운데엽 정맥 가지일 수 있다(미확인). 폐정맥 4개 중 1개만 경로로 만들었다."
+    },
+    {
+      "path_id": "cv.la_to_lv",
+      "name_ko": "좌심방 → 승모판 → 좌심실",
+      "source_anchor_id": "a.la.cavity",
+      "target_anchor_id": "a.lv.cavity",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"anchor_id": "a.la.cavity"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_mitral", "position": [0.030283, 1.219828, 0.105044]},
+        {"anchor_id": "a.mv.center"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_mitral", "position": [0.036413, 1.211946, 0.114858]},
+        {"anchor_id": "a.lv.cavity"}
+      ],
+      "links": [
+        {"to": "cv.lv_to_av"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.la", "path_progress": 0, "anatomical_id": "cv.left_atrium", "label": "좌심방"},
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.mitral", "anchor_id": "a.mv.center", "anatomical_id": "cv.valve.mitral", "label": "승모판"},
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.lv", "path_progress": 1, "anatomical_id": "cv.left_ventricle", "label": "좌심실 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "waypoints:valve_center±flow(LA→LV centroid)",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 4,
+        "min_clearance_mm": 0.06,
+        "start_inside": ["heart_cavity_left_atrium"],
+        "end_inside": ["heart_cavity_left_ventricle"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.0549,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "판막 점: 승모판 첨판 정점 평균에서 LA→LV 내강 중심 방향 -6 mm, +8 mm. 승모판 메시에는 03-A에서 분리한 첨판만 있다."
+    },
+    {
+      "path_id": "cv.lv_to_av",
+      "name_ko": "좌심실 → 대동맥판",
+      "source_anchor_id": "a.lv.cavity",
+      "target_anchor_id": "a.av.center",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"anchor_id": "a.lv.cavity"},
+        {"space": "object_local", "object_id": "bp3d-cv-heart/heart_valve_aortic", "position": [0.023452, 1.239784, 0.119862]},
+        {"anchor_id": "a.av.center"}
+      ],
+      "links": [
+        {"to": "cv.aorta"}
+      ],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.aortic_valve", "path_progress": 1, "anatomical_id": "cv.valve.aortic", "label": "대동맥판 도착"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "waypoints:valve normal",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 4,
+        "min_clearance_mm": 0,
+        "start_inside": ["heart_cavity_left_ventricle"],
+        "end_inside": ["heart_valve_aortic", "aorta", "heart_cavity_left_ventricle"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [0],
+        "length_m": 0.0271,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "대동맥판 얇은 축(흐름과 6°) 방향 -6 mm 점과 판막 중심. 좌심실 정점 평균 근처에서 승모판 메시와 겹치는 표본이 있다."
+    },
+    {
+      "path_id": "cv.aorta",
+      "name_ko": "대동맥판 → 오름대동맥 → 대동맥활 → 내림대동맥",
+      "source_anchor_id": "a.av.center",
+      "curve_type": "catmull_rom",
+      "points": [
+        {"anchor_id": "a.av.center"},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.011003, 1.257569, 0.122428]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.007234, 1.268737, 0.124906]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.00682, 1.281084, 0.124553]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.006846, 1.293036, 0.121106]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.011698, 1.30171, 0.113236]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.016596, 1.305387, 0.10231]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.020398, 1.304897, 0.090614]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.022939, 1.301187, 0.079262]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.022297, 1.293451, 0.069363]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.022414, 1.282403, 0.063398]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.021675, 1.270464, 0.060105]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.021253, 1.258508, 0.058859]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.020765, 1.246488, 0.059064]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.020077, 1.234583, 0.060665]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.01904, 1.222937, 0.063479]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.017904, 1.211518, 0.067024]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.016785, 1.200219, 0.070916]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.015633, 1.188984, 0.074975]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.014492, 1.177739, 0.079004]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.013485, 1.16643, 0.082891]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.012554, 1.155053, 0.086596]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.011621, 1.143643, 0.090194]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.009771, 1.131865, 0.092376]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.009865, 1.120351, 0.097236]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.009271, 1.108854, 0.100626]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.008761, 1.097319, 0.103899]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.008355, 1.085731, 0.106991]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.008034, 1.07414, 0.11008]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.007737, 1.062555, 0.113195]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.00739, 1.050945, 0.116211]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.007018, 1.039255, 0.118903]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.006672, 1.027475, 0.12118]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.006396, 1.015595, 0.122886]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.006222, 1.003629, 0.123868]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.006044, 0.991633, 0.124301]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.005849, 0.979635, 0.124477]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.00567, 0.967636, 0.124341]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.005573, 0.95565, 0.123677]},
+        {"space": "object_local", "object_id": "bp3d-cv-aorta/aorta", "position": [0.005663, 0.947679, 0.122844]}
+      ],
+      "links": [],
+      "default_speed": 0.02,
+      "checkpoints": [
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.asc_aorta", "path_progress": 0.06, "anatomical_id": "cv.aorta", "label": "오름대동맥"},
+        {"event_ids": [], "stop_on_arrival": false, "checkpoint_id": "cp.aortic_arch", "path_progress": 0.175, "anatomical_id": "cv.aorta", "label": "대동맥활"},
+        {"event_ids": [], "stop_on_arrival": true, "checkpoint_id": "cp.desc_aorta", "path_progress": 1, "anatomical_id": "cv.aorta", "label": "내림대동맥"}
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "method": "centerline:aorta (from aortic valve)",
+      "geometry_check": {
+        "date": "2026-11-28",
+        "samples": 81,
+        "outside_ratio": 0,
+        "enclosed_ratio": 1,
+        "surface_crossings": 10,
+        "min_clearance_mm": 0.16,
+        "start_inside": ["heart_valve_aortic", "aorta", "heart_cavity_left_ventricle"],
+        "end_inside": ["aorta"],
+        "checkpoint_order_ok": true,
+        "link_gap_mm": [],
+        "length_m": 0.4737,
+        "note": "표면 메시 기하 근거일 뿐 해부학적 검증이 아니다"
+      },
+      "source": "BodyParts3D 4.0 (CC BY 4.0) 메시 기하에서 계산",
+      "notes": "대동맥 메시(오름·활·내림 한 덩어리) 단면 중심선. 대동맥판에서 시작해 모델 아래 끝(y 0.948 m)까지. 활에서 갈라지는 큰 가지로는 들어가지 않는다. 대동맥활 Checkpoint는 경로의 가장 높은 점(진행률 0.175)이다."
     }
-  ]
+  ],
+  "previous_version": "paths.v1-approx.json (STEP 03-C, Anchor 정점 평균을 이은 APPROXIMATE 경로)",
+  "generator": "js/motion/centerline-tracer.js (단면 중심 행진) + 판막 중심 ±6~8 mm Waypoint, 검사: js/motion/path-geometry-check.js"
 }

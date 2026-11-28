@@ -1,209 +1,737 @@
 {
   "version": 2,
   "id": "cv.blood_circulation",
-  "content_version": "0.1.1",
+  "content_version": "0.2.0",
   "title": "혈액순환: 정맥 환류에서 체순환까지",
   "system": "cardiovascular",
-  "scene": { "type": "anatomy", "url": "content/anatomy/cardiovascular/scene.json" },
+  "scene": {
+    "type": "anatomy",
+    "url": "content/anatomy/cardiovascular/scene.json",
+    "micro": "content/micro/capillary-scenes.json"
+  },
   "actor_id": "rbc_01",
   "start": "n.venous_return",
   "max_steps": 60,
-  "options": { "ignore_spaces": true },
-  "variables": { "oxygenation": "deoxygenated", "current_circulation": "systemic", "current_structure": "", "completed_cycles": 0 },
-  "verification_note": "3D 이동 경로는 BodyParts3D 모델 위의 근사 경로(APPROXIMATE)이며 해부학적으로 검증되지 않았다. 폐 모세혈관·폐정맥·대동맥 이후 구간은 경로가 없어(PENDING) 이동 없이 개념으로만 진행한다. 질문과 설명은 이 프로젝트에서 직접 작성했다.",
+  "options": {
+    "ignore_spaces": true
+  },
+  "variables": {
+    "oxygenation": "deoxygenated",
+    "current_circulation": "systemic",
+    "current_structure": "",
+    "completed_cycles": 0
+  },
+  "verification_note": "3D 이동 경로는 BodyParts3D 모델의 내강 중심선·판막 Waypoint로 만들었고 기하 검사만 통과했다(GEOMETRY_CHECKED). 해부학 전문가 검토(ANATOMY_REVIEWED)는 받지 않았다. 폐 모세혈관과 조직 모세혈관은 해부 모델이 없어 직접 만든 개념 장면(CONCEPTUAL)으로 확대해 보여 준다. 강의자료 대조(lecture_check)는 용어·설명의 근거이며 3D 경로 검증과 별개다. 질문과 설명은 이 프로젝트에서 직접 작성했다.",
   "source": "직접 작성. 개념 확인: OpenStax Anatomy and Physiology 2e, 19장(심장)·20장(혈관과 순환). 2026-11-28 로컬 강의자료(건강사정 심장과 혈관, 약리학 심혈관계 약물, 기본간호학 산소화 요구)와 순서·용어를 대조했다(docs/development/CONTENT_REVIEW_cardiovascular.md). 문장을 옮기지 않았다.",
   "nodes": [
     {
-      "node_id": "n.venous_return", "name_ko": "정맥 환류", "name_en": "venous return",
-      "accepted_answers": ["정맥 환류", "정맥 귀환", "venous return"],
+      "node_id": "n.venous_return",
+      "name_ko": "정맥 환류",
+      "name_en": "venous return",
+      "accepted_answers": [
+        "정맥 환류",
+        "정맥 귀환",
+        "venous return"
+      ],
       "prompt": "전신 조직을 지나며 산소를 내준 혈액이 정맥을 따라 심장으로 돌아오는 것을 무엇이라 할까요?",
       "reason_prompt": "조직에서 산소를 쓰고 난 혈액은 다음에 어디로 가야 다시 산소를 받을 수 있을까요? 그 출발이 되는 흐름의 이름은?",
       "explanation": "정맥 환류는 전신의 정맥혈이 대정맥을 거쳐 우심방으로 돌아오는 흐름입니다. 다음 단계에서 상대정맥과 하대정맥 중 따라갈 경로를 고릅니다. 실제 몸에서는 두 대정맥으로 동시에 들어오며, 여기서는 하나를 골라 따라갈 뿐입니다.",
       "hint": "정맥으로 '돌아오는' 흐름입니다. 네 글자 + 두 글자.",
-      "verification_status": "CONCEPT"
+      "verification_status": "CONCEPT",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "PH9 p36",
+          "교재 p615"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.svc", "name_ko": "상대정맥", "name_en": "superior vena cava",
-      "accepted_answers": ["상대정맥", "위대정맥", "superior vena cava", "SVC"],
+      "node_id": "n.svc",
+      "name_ko": "상대정맥",
+      "name_en": "superior vena cava",
+      "accepted_answers": [
+        "상대정맥",
+        "위대정맥",
+        "superior vena cava",
+        "SVC"
+      ],
       "prompt": "머리·목·팔의 정맥혈을 모아 우심방으로 보내는 큰 정맥은?",
       "reason_prompt": "몸의 위쪽(머리, 팔)에서 돌아오는 혈액은 어떤 대정맥으로 모일까요?",
       "explanation": "상대정맥은 횡격막 위쪽 몸의 정맥혈을 모아 우심방 위쪽으로 들어갑니다.",
       "hint": "위쪽에서 내려오는 대정맥 (위대정맥이라고도 함)",
-      "anatomical_id": "cv.superior_vena_cava", "anchor_id": "a.svc.lumen", "checkpoint_id": "cp.svc",
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.superior_vena_cava",
+      "anchor_id": "a.svc.lumen",
+      "checkpoint_id": "cp.svc",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "HA6 p2",
+          "HA6 p5"
+        ],
+        "unconfirmed": [
+          "배액 부위(횡격막 위쪽 몸)",
+          "약어 SVC"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.ivc", "name_ko": "하대정맥", "name_en": "inferior vena cava",
-      "accepted_answers": ["하대정맥", "아래대정맥", "inferior vena cava", "IVC"],
+      "node_id": "n.ivc",
+      "name_ko": "하대정맥",
+      "name_en": "inferior vena cava",
+      "accepted_answers": [
+        "하대정맥",
+        "아래대정맥",
+        "inferior vena cava",
+        "IVC"
+      ],
       "prompt": "다리·배·골반의 정맥혈을 모아 우심방으로 보내는 큰 정맥은?",
       "reason_prompt": "몸의 아래쪽에서 돌아오는 혈액은 어떤 대정맥으로 모일까요?",
       "explanation": "하대정맥은 횡격막 아래쪽 몸의 정맥혈을 모아 우심방 아래쪽으로 들어갑니다.",
       "hint": "아래쪽에서 올라오는 대정맥 (아래대정맥이라고도 함)",
-      "anatomical_id": "cv.inferior_vena_cava", "anchor_id": "a.ivc.lumen", "checkpoint_id": "cp.ivc",
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.inferior_vena_cava",
+      "anchor_id": "a.ivc.lumen",
+      "checkpoint_id": "cp.ivc",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "HA6 p5"
+        ],
+        "unconfirmed": [
+          "배액 부위(횡격막 아래쪽 몸)",
+          "약어 IVC"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.ra", "name_ko": "우심방", "name_en": "right atrium",
-      "accepted_answers": ["우심방", "오른심방", "right atrium", "RA"],
+      "node_id": "n.ra",
+      "name_ko": "우심방",
+      "name_en": "right atrium",
+      "accepted_answers": [
+        "우심방",
+        "오른심방",
+        "right atrium",
+        "RA"
+      ],
       "prompt": "대정맥의 혈액을 받아들이는 심장의 방은?",
       "reason_prompt": "대정맥으로 돌아온 혈액이 심장에서 가장 먼저 모이는 방은 어디일까요?",
-      "explanation": "우심방은 상대정맥·하대정맥(그리고 관상정맥동)의 혈액을 받아 우심실로 보냅니다.",
+      "explanation": "우심방은 상대정맥·하대정맥과 심장정맥굴(관상정맥동)의 혈액을 받아 우심실로 보냅니다.",
       "hint": "오른쪽 + 혈액을 '받는' 위쪽 방",
-      "anatomical_id": "cv.right_atrium", "anchor_id": "a.ra.cavity", "checkpoint_id": "cp.ra",
-      "events": [ { "type": "set_variable", "var": "current_structure", "value": "우심방" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.right_atrium",
+      "anchor_id": "a.ra.cavity",
+      "checkpoint_id": "cp.ra",
+      "events": [
+        {
+          "type": "set_variable",
+          "var": "current_structure",
+          "value": "우심방"
+        }
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "HA6 p5",
+          "교재 p611"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.tricuspid", "name_ko": "삼첨판", "name_en": "tricuspid valve",
-      "accepted_answers": ["삼첨판", "삼첨판막", "오른방실판막", "우방실판", "tricuspid valve", "tricuspid"],
+      "node_id": "n.tricuspid",
+      "name_ko": "삼첨판",
+      "name_en": "tricuspid valve",
+      "accepted_answers": [
+        "삼첨판",
+        "삼첨판막",
+        "오른방실판막",
+        "우방실판",
+        "tricuspid valve",
+        "tricuspid"
+      ],
       "prompt": "우심방과 우심실 사이에서 역류를 막는 판막은?",
       "reason_prompt": "우심방에서 우심실로 간 혈액이 다시 우심방으로 돌아가지 않게 막는 구조는?",
       "explanation": "삼첨판은 첨판이 세 개인 오른쪽 방실판막입니다. 심실이 수축할 때 닫혀 우심방으로의 역류를 막습니다. 이 게임은 판막이 열리고 닫히는 동작은 표현하지 않습니다.",
       "hint": "첨판이 세 개 (오른쪽 방실판막)",
-      "anatomical_id": "cv.valve.tricuspid", "anchor_id": "a.tv.center", "checkpoint_id": "cp.tricuspid",
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.valve.tricuspid",
+      "anchor_id": "a.tv.center",
+      "checkpoint_id": "cp.tricuspid",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "HA6 p3",
+          "HA6 p16",
+          "교재 p610",
+          "교재 p614"
+        ],
+        "unconfirmed": [
+          "첨판 수 3(그림으로만 확인)"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.rv", "name_ko": "우심실", "name_en": "right ventricle",
-      "accepted_answers": ["우심실", "오른심실", "right ventricle", "RV"],
+      "node_id": "n.rv",
+      "name_ko": "우심실",
+      "name_en": "right ventricle",
+      "accepted_answers": [
+        "우심실",
+        "오른심실",
+        "right ventricle",
+        "RV"
+      ],
       "prompt": "혈액을 폐동맥으로 내보내는 심장의 방은?",
       "reason_prompt": "삼첨판을 지난 혈액은 어떤 방이 수축해야 폐로 보내질까요?",
       "explanation": "우심실은 수축해 혈액을 폐동맥판 너머 폐동맥으로 보냅니다. 이 모델에는 심실 근육 벽이 없어 내강(빈 공간)만 표시됩니다.",
       "hint": "오른쪽 + 혈액을 '내보내는' 아래쪽 방",
-      "anatomical_id": "cv.right_ventricle", "anchor_id": "a.rv.cavity", "checkpoint_id": "cp.rv",
-      "events": [ { "type": "set_variable", "var": "current_structure", "value": "우심실" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.right_ventricle",
+      "anchor_id": "a.rv.cavity",
+      "checkpoint_id": "cp.rv",
+      "events": [
+        {
+          "type": "set_variable",
+          "var": "current_circulation",
+          "value": "pulmonary"
+        },
+        {
+          "type": "set_variable",
+          "var": "current_structure",
+          "value": "우심실"
+        }
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "HA6 p5",
+          "교재 p485"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.pulm_valve", "name_ko": "폐동맥판", "name_en": "pulmonary valve",
-      "accepted_answers": ["폐동맥판", "허파동맥판막", "폐동맥판막", "pulmonary valve", "pulmonic valve"],
+      "node_id": "n.pulm_valve",
+      "name_ko": "폐동맥판",
+      "name_en": "pulmonary valve",
+      "accepted_answers": [
+        "폐동맥판",
+        "허파동맥판막",
+        "폐동맥판막",
+        "pulmonary valve",
+        "pulmonic valve",
+        "폐동맥반달판막",
+        "허파동맥반달판막"
+      ],
       "prompt": "우심실과 폐동맥 사이의 반월판은?",
       "reason_prompt": "폐로 보낸 혈액이 우심실로 되돌아오지 않게 막는 판막은?",
       "explanation": "폐동맥판은 반달 모양 첨판 세 개로 된 반월판입니다. 우심실이 이완할 때 닫혀 폐동맥의 혈액이 되돌아오지 않게 합니다.",
       "hint": "폐로 가는 동맥 입구의 판막",
-      "anatomical_id": "cv.valve.pulmonary", "anchor_id": "a.pv.center", "checkpoint_id": "cp.pulmonary_valve",
-      "events": [ { "type": "set_variable", "var": "current_circulation", "value": "pulmonary" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.valve.pulmonary",
+      "anchor_id": "a.pv.center",
+      "checkpoint_id": "cp.pulmonary_valve",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "HA6 p3",
+          "HA6 p16",
+          "교재 p610",
+          "교재 p614"
+        ],
+        "unconfirmed": [
+          "폐동맥판 첨판 수 3"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.pt", "name_ko": "폐동맥", "name_en": "pulmonary trunk",
-      "accepted_answers": ["폐동맥", "폐동맥줄기", "폐동맥간", "허파동맥", "pulmonary trunk", "pulmonary artery"],
+      "node_id": "n.pt",
+      "name_ko": "폐동맥",
+      "name_en": "pulmonary trunk",
+      "accepted_answers": [
+        "폐동맥",
+        "폐동맥줄기",
+        "폐동맥간",
+        "허파동맥",
+        "pulmonary trunk",
+        "pulmonary artery",
+        "허파동맥줄기"
+      ],
       "prompt": "산소가 적은 혈액을 폐로 보내는 동맥은?",
       "reason_prompt": "'동맥'은 심장에서 나가는 혈관입니다. 산소가 적은 혈액이 폐로 가려면 어떤 동맥을 지날까요?",
       "explanation": "폐동맥(줄기)은 우심실에서 나와 좌우 폐동맥으로 갈라집니다. 이름은 동맥이지만 산소가 적은 혈액이 흐릅니다. 동맥과 정맥은 혈액의 산소량이 아니라 흐름 방향(심장에서 나감/들어옴)으로 나뉩니다.",
       "hint": "폐로 가는 '동맥' (심장에서 나가는 방향)",
-      "anatomical_id": "cv.pulmonary_trunk", "anchor_id": "a.pt.lumen", "checkpoint_id": "cp.pt",
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.pulmonary_trunk",
+      "anchor_id": "a.pt.lumen",
+      "checkpoint_id": "cp.pt",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "교재 p485",
+          "HA6 p24"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.pulm_cap", "name_ko": "폐 모세혈관", "name_en": "pulmonary capillaries",
-      "accepted_answers": ["폐 모세혈관", "폐포 모세혈관", "허파 모세혈관", "pulmonary capillaries", "pulmonary capillary"],
+      "node_id": "n.pulm_cap",
+      "name_ko": "폐 모세혈관",
+      "name_en": "pulmonary capillaries",
+      "accepted_answers": [
+        "폐 모세혈관",
+        "폐포 모세혈관",
+        "허파 모세혈관",
+        "pulmonary capillaries",
+        "pulmonary capillary"
+      ],
       "prompt": "폐포를 둘러싸고 가스 교환이 일어나는 가는 혈관은?",
       "reason_prompt": "혈액이 이산화탄소를 내보내고 산소를 받으려면 폐포와 아주 가까운 어떤 혈관을 지나야 할까요?",
-      "explanation": "폐 모세혈관에서 확산으로 산소가 혈액으로 들어오고 이산화탄소가 폐포로 나갑니다. 여기부터 혈액은 산소가 많은 상태가 됩니다. 색 변화는 교육용 구분일 뿐이며 혈액은 산소 상태와 관계없이 붉은색입니다. 이 구간은 3D 모델(폐 실질·모세혈관)이 없어 이동 없이 개념으로만 진행합니다.",
+      "explanation": "폐 모세혈관에서 분압 차이에 따른 확산으로 산소가 폐포에서 혈액으로 들어오고 이산화탄소가 혈액에서 폐포로 나갑니다. 여기부터 혈액은 산소가 많은 상태가 됩니다. 색 변화는 교육용 구분일 뿐이며 혈액은 산소 상태와 관계없이 붉은색입니다. 폐포·모세혈관은 해부 모델이 없어 직접 만든 개념 확대 장면으로 보여 줍니다.",
       "hint": "폐포를 감싸는 아주 가는 혈관",
       "anatomical_id": "cv.right_lung",
       "events": [
-        { "type": "set_variable", "var": "oxygenation", "value": "oxygenated" },
-        { "type": "scene", "command": { "action": "actor_set_state", "target": "rbc_01", "value": { "oxygenation": "oxygenated" } }, "mode": "parallel" }
+        {
+          "type": "set_variable",
+          "var": "oxygenation",
+          "value": "oxygenated"
+        },
+        {
+          "type": "scene",
+          "command": {
+            "action": "actor_set_state",
+            "target": "rbc_01",
+            "value": {
+              "oxygenation": "oxygenated"
+            }
+          },
+          "mode": "parallel"
+        }
       ],
-      "verification_status": "PENDING"
+      "verification_status": "CONCEPTUAL",
+      "checkpoint_id": "cp.pcap_exchange",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "교재 p485",
+          "OX p6"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.pulm_veins", "name_ko": "폐정맥", "name_en": "pulmonary veins",
-      "accepted_answers": ["폐정맥", "허파정맥", "pulmonary veins", "pulmonary vein"],
+      "node_id": "n.pulm_veins",
+      "name_ko": "폐정맥",
+      "name_en": "pulmonary veins",
+      "accepted_answers": [
+        "폐정맥",
+        "허파정맥",
+        "pulmonary veins",
+        "pulmonary vein"
+      ],
       "prompt": "산소가 많은 혈액을 폐에서 좌심방으로 보내는 혈관은?",
       "reason_prompt": "'정맥'은 심장으로 들어오는 혈관입니다. 폐에서 산소를 받은 혈액은 어떤 정맥으로 심장에 돌아올까요?",
-      "explanation": "폐정맥(보통 좌우 2개씩 4개)은 산소가 많은 혈액을 좌심방으로 보냅니다. 이름은 정맥이지만 산소가 많은 혈액이 흐릅니다. 폐정맥 모델은 있지만 폐 안쪽에서 좌심방까지의 이동 경로는 아직 없어(PENDING) 좌심방으로 바로 넘어갑니다.",
+      "explanation": "폐정맥(보통 4개)은 산소가 많은 혈액을 좌심방으로 보냅니다. 이름은 정맥이지만 산소가 많은 혈액이 흐릅니다. 3D에서는 오른위폐정맥 하나의 중심선을 따라 좌심방으로 들어갑니다.",
       "hint": "폐에서 심장으로 '들어오는' 혈관",
       "anatomical_id": "cv.pulmonary_veins",
-      "verification_status": "PENDING"
+      "verification_status": "GEOMETRY_CHECKED",
+      "checkpoint_id": "cp.pv_lung",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "교재 p485",
+          "HA6 p25"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.la", "name_ko": "좌심방", "name_en": "left atrium",
-      "accepted_answers": ["좌심방", "왼심방", "left atrium", "LA"],
+      "node_id": "n.la",
+      "name_ko": "좌심방",
+      "name_en": "left atrium",
+      "accepted_answers": [
+        "좌심방",
+        "왼심방",
+        "left atrium",
+        "LA"
+      ],
       "prompt": "폐정맥의 혈액을 받아들이는 심장의 방은?",
       "reason_prompt": "폐에서 돌아온 산소가 많은 혈액이 심장에서 처음 모이는 방은?",
       "explanation": "좌심방은 폐정맥에서 산소가 많은 혈액을 받아 좌심실로 보냅니다.",
       "hint": "왼쪽 + 혈액을 '받는' 위쪽 방",
-      "anatomical_id": "cv.left_atrium", "anchor_id": "a.la.cavity", "checkpoint_id": "cp.la",
-      "events": [ { "type": "set_variable", "var": "current_structure", "value": "좌심방" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.left_atrium",
+      "anchor_id": "a.la.cavity",
+      "checkpoint_id": "cp.la",
+      "events": [
+        {
+          "type": "set_variable",
+          "var": "current_structure",
+          "value": "좌심방"
+        }
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "교재 p485",
+          "HA6 p5"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.mitral", "name_ko": "승모판", "name_en": "mitral valve",
-      "accepted_answers": ["승모판", "승모판막", "이첨판", "왼방실판막", "좌방실판", "mitral valve", "bicuspid valve", "mitral"],
+      "node_id": "n.mitral",
+      "name_ko": "승모판",
+      "name_en": "mitral valve",
+      "accepted_answers": [
+        "승모판",
+        "승모판막",
+        "이첨판",
+        "왼방실판막",
+        "좌방실판",
+        "mitral valve",
+        "bicuspid valve",
+        "mitral"
+      ],
       "prompt": "좌심방과 좌심실 사이에서 역류를 막는 판막은?",
       "reason_prompt": "좌심실이 강하게 수축할 때 혈액이 좌심방으로 되돌아가지 않게 막는 판막은?",
-      "explanation": "승모판(이첨판)은 첨판이 두 개인 왼쪽 방실판막입니다. 좌심실이 수축할 때 닫힙니다.",
+      "explanation": "승모판(이첨판)은 왼쪽 방실판막입니다. 좌심실이 수축할 때 닫혀 좌심방으로의 역류를 막고, 이때 나는 소리가 제1심음의 주된 성분입니다. 이 게임은 판막이 열리고 닫히는 동작은 표현하지 않습니다.",
       "hint": "첨판이 두 개 (왼쪽 방실판막)",
-      "anatomical_id": "cv.valve.mitral", "anchor_id": "a.mv.center", "checkpoint_id": "cp.mitral",
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.valve.mitral",
+      "anchor_id": "a.mv.center",
+      "checkpoint_id": "cp.mitral",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "HA6 p3",
+          "HA6 p16",
+          "HA6 p17",
+          "교재 p610"
+        ],
+        "unconfirmed": [
+          "동의어 이첨판",
+          "첨판 수 2"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.lv", "name_ko": "좌심실", "name_en": "left ventricle",
-      "accepted_answers": ["좌심실", "왼심실", "left ventricle", "LV"],
+      "node_id": "n.lv",
+      "name_ko": "좌심실",
+      "name_en": "left ventricle",
+      "accepted_answers": [
+        "좌심실",
+        "왼심실",
+        "left ventricle",
+        "LV"
+      ],
       "prompt": "혈액을 대동맥으로 내보내 온몸으로 보내는 심장의 방은?",
       "reason_prompt": "온몸으로 혈액을 보내려면 가장 큰 압력이 필요합니다. 이 일을 맡는 방은?",
       "explanation": "좌심실은 체순환 전체로 혈액을 보내므로 벽이 가장 두껍습니다. 이 모델에는 심실 근육 벽이 없어 내강만 표시됩니다.",
       "hint": "왼쪽 + 혈액을 '내보내는' 아래쪽 방",
-      "anatomical_id": "cv.left_ventricle", "anchor_id": "a.lv.cavity", "checkpoint_id": "cp.lv",
-      "events": [ { "type": "set_variable", "var": "current_structure", "value": "좌심실" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.left_ventricle",
+      "anchor_id": "a.lv.cavity",
+      "checkpoint_id": "cp.lv",
+      "events": [
+        {
+          "type": "set_variable",
+          "var": "current_circulation",
+          "value": "systemic"
+        },
+        {
+          "type": "set_variable",
+          "var": "current_structure",
+          "value": "좌심실"
+        }
+      ],
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "PARTIAL",
+        "refs": [
+          "교재 p614",
+          "교재 p615",
+          "HA6 p12"
+        ],
+        "unconfirmed": [
+          "좌심실 벽이 가장 두껍다"
+        ],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.aortic_valve", "name_ko": "대동맥판", "name_en": "aortic valve",
-      "accepted_answers": ["대동맥판", "대동맥판막", "aortic valve"],
+      "node_id": "n.aortic_valve",
+      "name_ko": "대동맥판",
+      "name_en": "aortic valve",
+      "accepted_answers": [
+        "대동맥판",
+        "대동맥판막",
+        "aortic valve",
+        "대동맥반달판막"
+      ],
       "prompt": "좌심실과 대동맥 사이의 반월판은?",
       "reason_prompt": "대동맥으로 나간 혈액이 좌심실로 되돌아오지 않게 막는 판막은?",
-      "explanation": "대동맥판은 반월판으로, 좌심실이 이완할 때 닫혀 대동맥의 혈액이 역류하지 않게 합니다.",
+      "explanation": "대동맥판(대동맥반달판막)은 반월판으로, 좌심실이 이완할 때 닫혀 대동맥의 혈액이 역류하지 않게 합니다. 대동맥판과 폐동맥판이 닫힐 때 제2심음이 납니다.",
       "hint": "온몸으로 가는 가장 큰 동맥 입구의 판막",
-      "anatomical_id": "cv.valve.aortic", "anchor_id": "a.av.center", "checkpoint_id": "cp.aortic_valve",
-      "events": [ { "type": "set_variable", "var": "current_circulation", "value": "systemic" } ],
-      "verification_status": "APPROXIMATE"
+      "anatomical_id": "cv.valve.aortic",
+      "anchor_id": "a.av.center",
+      "checkpoint_id": "cp.aortic_valve",
+      "verification_status": "GEOMETRY_CHECKED",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "HA6 p3",
+          "HA6 p16",
+          "교재 p610",
+          "교재 p614"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.aorta", "name_ko": "대동맥", "name_en": "aorta",
-      "accepted_answers": ["대동맥", "aorta"],
+      "node_id": "n.aorta",
+      "name_ko": "대동맥",
+      "name_en": "aorta",
+      "accepted_answers": [
+        "대동맥",
+        "aorta"
+      ],
       "prompt": "좌심실의 혈액을 온몸으로 보내는 가장 큰 동맥은?",
       "reason_prompt": "대동맥판을 지난 산소가 많은 혈액이 온몸으로 퍼지기 전에 지나는 가장 큰 혈관은?",
-      "explanation": "대동맥은 상행대동맥·대동맥궁·하행대동맥으로 이어지며 온몸의 동맥으로 갈라집니다. 대동맥 안쪽 이동 경로는 아직 없어(PENDING) 이동 없이 진행합니다.",
+      "explanation": "대동맥은 오름대동맥(상행대동맥) → 대동맥활(대동맥궁) → 내림대동맥(하행대동맥)으로 이어지며 온몸의 동맥으로 갈라집니다. 3D에서는 대동맥판에서 내림대동맥 아래쪽까지 대동맥 안쪽 중심선을 따라갑니다(큰 가지로는 들어가지 않습니다).",
       "hint": "가장 큰 동맥",
       "anatomical_id": "cv.aorta",
-      "verification_status": "PENDING"
+      "verification_status": "GEOMETRY_CHECKED",
+      "checkpoint_id": "cp.desc_aorta",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "HA6 그림 9-1",
+          "교재 p615"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     },
     {
-      "node_id": "n.systemic", "name_ko": "전신 조직", "name_en": "systemic tissues",
-      "accepted_answers": ["전신 조직", "온몸 조직", "체순환 모세혈관", "systemic tissues", "systemic capillaries"],
+      "node_id": "n.systemic",
+      "name_ko": "전신 조직",
+      "name_en": "systemic tissues",
+      "accepted_answers": [
+        "전신 조직",
+        "온몸 조직",
+        "체순환 모세혈관",
+        "systemic tissues",
+        "systemic capillaries"
+      ],
       "prompt": "동맥혈이 산소를 내주고 이산화탄소를 받는 곳은? (체순환의 끝)",
       "reason_prompt": "대동맥에서 갈라진 동맥은 결국 어디에서 산소를 내주게 될까요?",
-      "explanation": "전신 조직의 모세혈관에서 산소를 내주고 이산화탄소를 받은 혈액은 다시 정맥을 따라 심장으로 돌아갑니다(정맥 환류). 이로써 혈액순환 한 바퀴를 마칩니다.",
+      "explanation": "전신 조직의 모세혈관에서 산소를 내주고 이산화탄소를 받은 혈액은 다시 정맥을 따라 심장으로 돌아갑니다(정맥 환류). 이로써 혈액순환 한 바퀴를 마칩니다. 조직 모세혈관은 직접 만든 개념 확대 장면이며, 대동맥에서 조직까지의 작은 동맥은 3D로 따라가지 않습니다.",
       "hint": "온몸의 '조직'",
       "events": [
-        { "type": "set_variable", "var": "oxygenation", "value": "deoxygenated" },
-        { "type": "add", "var": "completed_cycles", "value": 1 },
-        { "type": "scene", "command": { "action": "actor_set_state", "target": "rbc_01", "value": { "oxygenation": "deoxygenated" } }, "mode": "parallel" }
+        {
+          "type": "set_variable",
+          "var": "oxygenation",
+          "value": "deoxygenated"
+        },
+        {
+          "type": "add",
+          "var": "completed_cycles",
+          "value": 1
+        },
+        {
+          "type": "scene",
+          "command": {
+            "action": "actor_set_state",
+            "target": "rbc_01",
+            "value": {
+              "oxygenation": "deoxygenated"
+            }
+          },
+          "mode": "parallel"
+        }
       ],
-      "verification_status": "CONCEPT"
+      "verification_status": "CONCEPTUAL",
+      "checkpoint_id": "cp.scap_exchange",
+      "lecture_check": {
+        "status": "MATCH",
+        "refs": [
+          "HA6 p23",
+          "HA6 p26"
+        ],
+        "unconfirmed": [],
+        "date": "2026-11-28"
+      }
     }
   ],
   "edges": [
-    { "edge_id": "e.vr_svc", "source_node": "n.venous_return", "target_node": "n.svc", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.vr_ivc", "source_node": "n.venous_return", "target_node": "n.ivc", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.svc_ra", "source_node": "n.svc", "target_node": "n.ra", "path_id": "cv.svc_to_ra", "checkpoint_id": "cp.ra", "duration": 2500 },
-    { "edge_id": "e.ivc_ra", "source_node": "n.ivc", "target_node": "n.ra", "path_id": "cv.ivc_to_ra", "checkpoint_id": "cp.ivc_ra", "duration": 3500 },
-    { "edge_id": "e.ra_tv", "source_node": "n.ra", "target_node": "n.tricuspid", "path_id": "cv.ra_to_rv", "duration": 1800 },
-    { "edge_id": "e.tv_rv", "source_node": "n.tricuspid", "target_node": "n.rv", "path_id": "cv.ra_to_rv", "duration": 1800 },
-    { "edge_id": "e.rv_pv", "source_node": "n.rv", "target_node": "n.pulm_valve", "path_id": "cv.rv_to_pt", "duration": 2000 },
-    { "edge_id": "e.pv_pt", "source_node": "n.pulm_valve", "target_node": "n.pt", "path_id": "cv.rv_to_pt", "duration": 1500 },
-    { "edge_id": "e.pt_cap", "source_node": "n.pt", "target_node": "n.pulm_cap", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.cap_pvn", "source_node": "n.pulm_cap", "target_node": "n.pulm_veins", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.pvn_la", "source_node": "n.pulm_veins", "target_node": "n.la", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.la_mv", "source_node": "n.la", "target_node": "n.mitral", "path_id": "cv.la_to_lv", "duration": 2500 },
-    { "edge_id": "e.mv_lv", "source_node": "n.mitral", "target_node": "n.lv", "path_id": "cv.la_to_lv", "duration": 1500 },
-    { "edge_id": "e.lv_av", "source_node": "n.lv", "target_node": "n.aortic_valve", "path_id": "cv.lv_to_av", "duration": 1800 },
-    { "edge_id": "e.av_ao", "source_node": "n.aortic_valve", "target_node": "n.aorta", "transition_type": "jump", "duration": 600 },
-    { "edge_id": "e.ao_sys", "source_node": "n.aorta", "target_node": "n.systemic", "transition_type": "jump", "duration": 600 }
+    {
+      "edge_id": "e.vr_svc",
+      "source_node": "n.venous_return",
+      "target_node": "n.svc",
+      "transition_type": "jump",
+      "duration": 600
+    },
+    {
+      "edge_id": "e.vr_ivc",
+      "source_node": "n.venous_return",
+      "target_node": "n.ivc",
+      "transition_type": "jump",
+      "duration": 600
+    },
+    {
+      "edge_id": "e.svc_ra",
+      "source_node": "n.svc",
+      "target_node": "n.ra",
+      "path_id": "cv.svc_to_ra",
+      "checkpoint_id": "cp.ra",
+      "duration": 2500
+    },
+    {
+      "edge_id": "e.ivc_ra",
+      "source_node": "n.ivc",
+      "target_node": "n.ra",
+      "path_id": "cv.ivc_to_ra",
+      "checkpoint_id": "cp.ivc_ra",
+      "duration": 3500
+    },
+    {
+      "edge_id": "e.ra_tv",
+      "source_node": "n.ra",
+      "target_node": "n.tricuspid",
+      "path_id": "cv.ra_to_rv",
+      "duration": 1800
+    },
+    {
+      "edge_id": "e.tv_rv",
+      "source_node": "n.tricuspid",
+      "target_node": "n.rv",
+      "path_id": "cv.ra_to_rv",
+      "duration": 1800
+    },
+    {
+      "edge_id": "e.rv_pv",
+      "source_node": "n.rv",
+      "target_node": "n.pulm_valve",
+      "path_id": "cv.rv_to_pt",
+      "duration": 2000
+    },
+    {
+      "edge_id": "e.pv_pt",
+      "source_node": "n.pulm_valve",
+      "target_node": "n.pt",
+      "path_id": "cv.rv_to_pt",
+      "duration": 1500
+    },
+    {
+      "edge_id": "e.pt_cap",
+      "source_node": "n.pt",
+      "target_node": "n.pulm_cap",
+      "transition_type": "scene",
+      "duration": 2500,
+      "pre_checkpoint_id": "cp.lung_in",
+      "scale": {
+        "level": "TISSUE",
+        "scene_id": "micro.pulmonary",
+        "checkpoint_id": "cp.pcap_in"
+      },
+      "checkpoint_id": "cp.pcap_exchange"
+    },
+    {
+      "edge_id": "e.cap_pvn",
+      "source_node": "n.pulm_cap",
+      "target_node": "n.pulm_veins",
+      "transition_type": "scene",
+      "duration": 2000,
+      "pre_checkpoint_id": "cp.pcap_out",
+      "scale": {
+        "level": "ORGAN",
+        "scene_id": "anatomy_cardiovascular",
+        "checkpoint_id": "cp.pv_lung"
+      }
+    },
+    {
+      "edge_id": "e.pvn_la",
+      "source_node": "n.pulm_veins",
+      "target_node": "n.la",
+      "transition_type": "move",
+      "duration": 3000,
+      "path_id": "cv.pv_to_la",
+      "checkpoint_id": "cp.pv_la"
+    },
+    {
+      "edge_id": "e.la_mv",
+      "source_node": "n.la",
+      "target_node": "n.mitral",
+      "path_id": "cv.la_to_lv",
+      "duration": 2500
+    },
+    {
+      "edge_id": "e.mv_lv",
+      "source_node": "n.mitral",
+      "target_node": "n.lv",
+      "path_id": "cv.la_to_lv",
+      "duration": 1500
+    },
+    {
+      "edge_id": "e.lv_av",
+      "source_node": "n.lv",
+      "target_node": "n.aortic_valve",
+      "path_id": "cv.lv_to_av",
+      "duration": 1800
+    },
+    {
+      "edge_id": "e.av_ao",
+      "source_node": "n.aortic_valve",
+      "target_node": "n.aorta",
+      "transition_type": "move",
+      "duration": 5000,
+      "path_id": "cv.aorta",
+      "checkpoint_id": "cp.desc_aorta"
+    },
+    {
+      "edge_id": "e.ao_sys",
+      "source_node": "n.aorta",
+      "target_node": "n.systemic",
+      "transition_type": "scene",
+      "duration": 2500,
+      "scale": {
+        "level": "TISSUE",
+        "scene_id": "micro.systemic",
+        "checkpoint_id": "cp.scap_in"
+      },
+      "checkpoint_id": "cp.scap_exchange"
+    }
   ],
-  "complete": { "node": "n.systemic" }
+  "complete": {
+    "node": "n.systemic"
+  },
+  "lecture_check_note": "lecture_check: 로컬 강의자료·교재와 용어·설명을 대조한 결과(MATCH 일치 / PARTIAL 일부 미확인). 쪽 번호만 적고 원문은 옮기지 않는다. 3D 경로 상태(verification_status)와 별개다. 약칭: HA6 건강사정 6장, PH9 약리 9주차, OX 기본간호학 산소화, 교재 성인간호학 상권.",
+  "changelog": [
+    {
+      "version": "0.2.0",
+      "date": "2026-11-28",
+      "changes": [
+        "정답 추가: 폐동맥반달판막·허파동맥반달판막(n.pulm_valve), 허파동맥줄기(n.pt), 대동맥반달판막(n.aortic_valve) — HA6 그림 9-2",
+        "순환 경계: 우심실 도착 때 pulmonary, 좌심실 도착 때 systemic (교재 p485). 판막에서 바꾸던 것을 옮김",
+        "설명: 심장정맥굴(n.ra, 교재 p611), 오름대동맥·대동맥활·내림대동맥(n.aorta, HA6 그림 9-1), 제1심음(n.mitral, HA6 p17), 제2심음(n.aortic_valve, 교재 p614)",
+        "3D: 폐동맥→폐(cv.pt_to_lung), 폐정맥→좌심방(cv.pv_to_la), 대동맥(cv.aorta) 경로, 폐·조직 모세혈관 개념 장면 전환(transition_type scene)",
+        "노드마다 lecture_check(강의 대조)와 verification_status(3D 경로 상태)를 따로 적음"
+      ]
+    }
+  ]
 }

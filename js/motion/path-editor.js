@@ -7,7 +7,9 @@
 import * as THREE from 'three';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { ACTOR_MODELS } from './actor-manager.js';
-import { checkPathGeometry } from './path-geometry-check.js';
+import { checkPathGeometryAsync } from './path-geometry-check.js';
+import { PATH_STATUS } from './path-engine.js';
+import { worldTriangles, traceCenterline, resample } from './centerline-tracer.js';
 
 const STATE_KO = { idle: '대기', moving: '이동 중', paused: '일시정지', waiting_at_checkpoint: 'Checkpoint 대기', completed: '완료', cancelled: '취소' };
 
@@ -17,6 +19,100 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
   let enabled = true;
   let errors = 0;
   let lastErrors = [];
+  const lastGeometry = new Map();
+
+  // ---------- 되돌리기 (STEP 04-A) ----------
+  // 편집 하나 = {id, before, after} (경로 정의 전체 복사본). 드래그는 시작·끝을 한 번으로 묶는다.
+  const history = { undo: [], redo: [], limit: 100 };
+  function pushHistory(id, before) {
+    const after = paths.snapshot(id);
+    if (!before || !after || JSON.stringify(before) === JSON.stringify(after)) return;
+    history.undo.push({ id, before, after });
+    if (history.undo.length > history.limit) history.undo.shift();
+    history.redo.length = 0;
+  }
+  // 편집 동작을 감싼다: 선택 경로의 이전 상태를 기록한 뒤 실행
+  const ed = (fn) => (...args) => {
+    const id = paths.selected;
+    const before = id ? paths.snapshot(id) : null;
+    const r = fn(...args);
+    if (id) pushHistory(id, before);
+    return r;
+  };
+  function undo() {
+    const h = history.undo.pop();
+    if (!h) { log('되돌릴 편집이 없습니다', 'warn'); return; }
+    paths.restore(h.before);
+    history.redo.push(h);
+    paths.select(h.id, Math.min(paths.selectedPoint, paths.get(h.id).points.length - 1));
+    log(`되돌리기: ${h.id}`);
+    render();
+  }
+  function redo() {
+    const h = history.redo.pop();
+    if (!h) { log('다시 할 편집이 없습니다', 'warn'); return; }
+    paths.restore(h.after);
+    history.undo.push(h);
+    log(`다시 하기: ${h.id}`);
+    render();
+  }
+
+  // ---------- 이전 버전 비교 (STEP 04-A) ----------
+  // 비교용 경로 JSON(예: paths.v1-approx.json)의 같은 ID 경로를 회색 점선으로 겹쳐 보여 준다.
+  let compareDoc = null;
+  const compareGroup = new THREE.Group();
+  compareGroup.name = 'path-compare';
+  scene.add(compareGroup);
+  const compareMat = new THREE.LineDashedMaterial({ color: 0x8a8f99, dashSize: 0.002, gapSize: 0.0015, depthTest: false, transparent: true, opacity: 0.9 });
+  function clearCompare() {
+    for (const c of [...compareGroup.children]) { compareGroup.remove(c); c.geometry.dispose(); }
+  }
+  function renderCompare() {
+    clearCompare();
+    const id = paths.selected;
+    if (!compareDoc || !id) return null;
+    const old = (compareDoc.paths || []).find((p) => p.path_id === id);
+    if (!old) return { missing: true };
+    const pts = [];
+    const all = [...(old.source_anchor_id && !(old.points[0] && old.points[0].anchor_id === old.source_anchor_id) ? [{ anchor_id: old.source_anchor_id }] : []),
+      ...old.points, ...(old.target_anchor_id && !(old.points.at(-1) && old.points.at(-1).anchor_id === old.target_anchor_id) ? [{ anchor_id: old.target_anchor_id }] : [])];
+    for (const p of all) { const w = paths.resolvePoint(p); if (w) pts.push(w.clone()); }
+    if (pts.length < 2) return { missing: true };
+    const curve = old.curve_type === 'linear' ? null : new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve ? curve.getSpacedPoints(120) : pts), compareMat);
+    line.computeLineDistances();
+    line.renderOrder = 998;
+    compareGroup.add(line);
+    // 새 경로와의 최대 거리 (새 경로 표본 → 옛 곡선 표본 최근접)
+    const c = paths.cache(id);
+    const oldS = curve ? curve.getSpacedPoints(200) : pts;
+    let maxD = 0;
+    for (const q of c.curve.getSpacedPoints(100)) {
+      let best = Infinity;
+      for (const o of oldS) best = Math.min(best, o.distanceToSquared(q));
+      maxD = Math.max(maxD, Math.sqrt(best));
+    }
+    return { old_status: old.verification_status, old_length: curve ? curve.getLength() : null, max_deviation_m: maxD };
+  }
+
+  // 기하 검사에서 문제가 난 표본 위치 표시 (빨간 점, 레지스트리 밖)
+  const flagGroup = new THREE.Group();
+  flagGroup.name = 'geometry-flags';
+  scene.add(flagGroup);
+  const flagGeo = new THREE.SphereGeometry(1, 10, 8);
+  const flagMat = new THREE.MeshBasicMaterial({ color: 0xff3b30, depthTest: false, transparent: true, opacity: 0.9 });
+  function showFlags(g) {
+    for (const c of [...flagGroup.children]) flagGroup.remove(c);
+    if (!g || !g.flagged) return;
+    const r = paths.markerSize * 0.6;
+    for (const f of g.flagged) {
+      const m = new THREE.Mesh(flagGeo, flagMat);
+      m.position.fromArray(f.position);
+      m.scale.setScalar(r);
+      m.renderOrder = 999;
+      flagGroup.add(m);
+    }
+  }
 
   // ---------- TransformControls (Waypoint 이동) ----------
   const proxy = new THREE.Object3D();
@@ -25,9 +121,16 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
   const tc = new TransformControls(camera3d, renderer.domElement);
   tc.setSize(0.7);
   let lastDrag = 0;
+  let dragBefore = null;
   tc.addEventListener('dragging-changed', (e) => {
     controls.enabled = !e.value;
-    if (!e.value) { lastDrag = performance.now(); renderPoints(); renderStatus(); }
+    if (e.value) dragBefore = paths.selected ? paths.snapshot(paths.selected) : null;
+    if (!e.value) {
+      lastDrag = performance.now();
+      if (paths.selected && dragBefore) pushHistory(paths.selected, dragBefore);
+      dragBefore = null;
+      renderPoints(); renderProps(); renderStatus();
+    }
   });
   tc.addEventListener('objectChange', () => {
     const id = paths.selected;
@@ -124,6 +227,41 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
   const r6 = el('div', 'row'); const lab = el('label', 'chk'); lab.append(cpFocus, document.createTextNode(' Checkpoint 도착 시 초점')); r6.appendChild(lab);
   sPlay.append(r1, r2, r3, r4, r5, r6);
 
+  // 편집 기록·비교
+  const sHist = section('편집 기록 · 이전 버전 비교');
+  const histInfo = el('span', 'muted');
+  const rh = el('div', 'row btns');
+  rh.append(btn('↶ 되돌리기', undo), btn('↷ 다시 하기', redo), histInfo);
+  const cmpIn = el('input'); cmpIn.type = 'file'; cmpIn.accept = '.json,application/json';
+  const cmpLab = el('label', 'btn file-btn', '비교 JSON 파일'); cmpLab.appendChild(cmpIn);
+  cmpIn.addEventListener('change', async () => {
+    const f = cmpIn.files[0]; cmpIn.value = '';
+    if (!f) return;
+    try { compareDoc = JSON.parse(await f.text()); log(`비교 경로 불러옴: ${f.name} (${(compareDoc.paths || []).length}개)`); renderProps(); } catch (err) { log(`비교 JSON 오류: ${err.message}`, 'error'); }
+  });
+  const rc2 = el('div', 'row btns');
+  rc2.append(btn('이전 버전 불러오기', async () => {
+    const prev = kit.data && kit.data.previous_version;
+    const base = kit.url;
+    if (!prev || !base) { log('이 경로 데이터에는 previous_version이 없습니다. 파일로 고르세요.', 'warn'); return; }
+    const file = String(prev).split(' ')[0];
+    try {
+      compareDoc = await (await fetch(new URL(file, new URL(base, location.href)), { cache: 'no-cache' })).json();
+      log(`비교 경로 불러옴: ${file} (${(compareDoc.paths || []).length}개)`);
+      renderProps();
+    } catch (err) { log(`이전 버전을 읽지 못했습니다: ${err.message}`, 'error'); }
+  }), cmpLab, btn('비교 끄기', () => { compareDoc = null; clearCompare(); renderProps(); }));
+  sHist.append(rh, rc2);
+  const onKey = (ev) => {
+    if (!enabled || container.offsetParent === null) return;
+    const t = ev.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+    const k = ev.key.toLowerCase();
+    if ((ev.ctrlKey || ev.metaKey) && k === 'z' && !ev.shiftKey) { ev.preventDefault(); undo(); }
+    else if ((ev.ctrlKey || ev.metaKey) && (k === 'y' || (k === 'z' && ev.shiftKey))) { ev.preventDefault(); redo(); }
+  };
+  window.addEventListener('keydown', onKey);
+
   // 경로 목록
   const sPaths = section('경로 (Path Hierarchy)');
   const pathList = el('ul', 'pe-list');
@@ -153,8 +291,8 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
   const cpList = el('ul', 'pe-list');
   const cpBtns = el('div', 'row btns');
   cpBtns.append(
-    btn('+ Actor 위치에', () => addCpAt('actor')),
-    btn('+ 선택 Waypoint에', () => addCpAt('point')),
+    btn('+ Actor 위치에', ed(() => addCpAt('actor'))),
+    btn('+ 선택 Waypoint에', ed(() => addCpAt('point'))),
   );
   sCps.append(cpBtns, cpList);
 
@@ -184,13 +322,26 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
     log(`경로 ${paths.ids().length}개 내보냄`);
   }), fileLab, btn('기술 검증', () => { const r = paths.validateAll(); report(r); }));
   if (registry) {
-    rf.appendChild(btn('기하 검사 (선택 경로)', () => {
+    let checking = false;
+    const geoBtn = btn('기하 검사 (선택 경로)', async () => {
       const id = paths.selected;
       if (!id) { log('경로를 고르세요', 'warn'); return; }
-      const t0 = performance.now();
-      const g = checkPathGeometry({ paths, registry, pathId: id });
-      log(`기하 검사 ${id} (${Math.round(performance.now() - t0)}ms): 메시 밖 ${(g.outside_ratio * 100).toFixed(0)}% · ${g.runs.map((r) => `${(r.from * 100).toFixed(0)}% ${r.inside}`).join(' | ')} — ${g.note}`, g.outside_ratio > 0 ? 'warn' : '');
-    }));
+      if (checking) return;
+      checking = true;
+      geoBtn.disabled = true;
+      try {
+        const g = await checkPathGeometryAsync({ paths, registry, pathId: id, onProgress: (f) => { geoBtn.textContent = `기하 검사 ${(f * 100).toFixed(0)}%`; } });
+        lastGeometry.set(id, g);
+        showFlags(g);
+        log(`기하 검사 ${id} (${g.ms}ms, 최대 정지 ${g.blocked_max_ms}ms${g.cached ? ', 캐시' : ''}): 메시 밖 ${(g.outside_ratio * 100).toFixed(0)}% · 관통 ${g.crossings} · ${g.runs.map((r) => `${(r.from * 100).toFixed(0)}% ${r.inside}`).join(' | ')} — ${g.note}`, g.outside_ratio > 0 ? 'warn' : '');
+        renderProps();
+      } finally {
+        checking = false;
+        geoBtn.disabled = false;
+        geoBtn.textContent = '기하 검사 (선택 경로)';
+      }
+    });
+    rf.appendChild(geoBtn);
   }
   sFile.appendChild(rf);
 
@@ -235,6 +386,32 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
     if (pathId) motion.setPath(spec.actor_id, pathId, { progress });
     if (following) cameraCtl.startFollow(spec.actor_id);
     log(`Actor 모델 변경: ${spec.actor_id} → ${modelId}`);
+  }
+
+  function fillCenterline(id) {
+    const d = paths.get(id);
+    const i = paths.selectedPoint;
+    const p = d && d.points[i];
+    if (!p || p.space !== 'object_local' || !registry.has(p.object_id)) { log('혈관 메시에 붙은 점(object_local)을 고르세요', 'warn'); return; }
+    const meshes = registry.meshesOf(p.object_id);
+    if (!meshes.length) { log(`메시 없음: ${p.object_id}`, 'warn'); return; }
+    const start = paths.resolvePoint(p).clone();
+    const next = d.points[i + 1] ? paths.resolvePoint(d.points[i + 1]) : null;
+    const dir = next ? next.clone().sub(start) : paths.tangentAt(id, Math.min(paths.length(id), 0.0001));
+    if (!dir || dir.lengthSq() === 0) { log('진행 방향을 정할 수 없습니다 (다음 점이 필요)', 'warn'); return; }
+    const t0 = performance.now();
+    const r = traceCenterline({ tris: worldTriangles(meshes), start, dir, step: 0.003, maxRadius: 0.02, maxSteps: 300, minVerts: 4, stopNear: next ? { point: next, distance: 0.004 } : null });
+    const pts = resample(r.points.slice(1), 0.006);
+    const obj = registry.get(p.object_id).object3D;
+    obj.updateWorldMatrix(true, false);
+    let k = i + 1;
+    for (const q of pts) {
+      const local = obj.worldToLocal(new THREE.Vector3(...q)).toArray().map((n) => Math.round(n * 1e6) / 1e6);
+      paths.insertPoint(id, k, { space: 'object_local', object_id: p.object_id, position: local });
+      k += 1;
+    }
+    log(`중심선 Waypoint ${pts.length}개 삽입 (${p.object_id}, 추적 ${fmtLen(r.length)}, 멈춘 이유 ${r.stop_reason}, ${Math.round(performance.now() - t0)}ms). 기하 검사를 다시 하세요.`);
+    render();
   }
 
   function newPath() {
@@ -320,7 +497,12 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
       const name = btn(`${d.name_ko}`, () => { paths.select(d.path_id, -1); const a = cur(); if (a && !a.path_id) motion.setPath(a.actor_id, d.path_id); render(); }, 'nm');
       name.title = `${d.path_id} · ${d.verification_status}`;
       const meta = el('span', 'muted', `${fmtLen(paths.length(d.path_id))}${d.closed ? ' · 순환' : ''}${d.links.length ? ` → ${d.links.map((l) => l.to).join(' | ')}` : ''}`);
-      row.append(eye, name, meta);
+      const st = el('span', `vs ${d.verification_status}`, d.verification_status);
+      const g = lastGeometry.get(d.path_id);
+      const v = paths.validatePath(d.path_id);
+      if (v.errors.length || (g && g.outside_ratio > 0)) row.classList.add('err');
+      st.title = `${d.verification_status}${d.geometry_check && d.geometry_check.stale ? ' · 편집 뒤 기하 검사 안 함' : ''}${g ? ` · 이번 검사 메시 밖 ${(g.outside_ratio * 100).toFixed(0)}%` : ''}${v.errors.length ? ` · 오류 ${v.errors.length}` : ''}`;
+      row.append(eye, name, st, meta);
       li.appendChild(row);
       pathList.appendChild(li);
     }
@@ -349,17 +531,34 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
     const ct = el('select');
     for (const [v, t] of [['catmull_rom', '곡선 (Catmull-Rom)'], ['linear', '직선 구간']]) { const o = el('option', '', t); o.value = v; ct.appendChild(o); }
     ct.value = d.curve_type;
-    ct.addEventListener('change', () => { paths.update(id, { curve_type: ct.value }); render(); });
+    ct.addEventListener('change', ed(() => { paths.update(id, { curve_type: ct.value }); render(); }));
     kv('곡선', ct);
     const cl = el('input'); cl.type = 'checkbox'; cl.checked = d.closed;
-    cl.addEventListener('change', () => { paths.update(id, { closed: cl.checked }); render(); });
+    cl.addEventListener('change', ed(() => { paths.update(id, { closed: cl.checked }); render(); }));
     kv('순환', cl);
     if (anchors) {
-      kv('시작 Anchor', anchorSelect(d.source_anchor_id, (v) => setEndAnchor(id, 'start', v)));
-      kv('종료 Anchor', anchorSelect(d.target_anchor_id, (v) => setEndAnchor(id, 'end', v)));
+      kv('시작 Anchor', anchorSelect(d.source_anchor_id, ed((v) => setEndAnchor(id, 'start', v))));
+      kv('종료 Anchor', anchorSelect(d.target_anchor_id, ed((v) => setEndAnchor(id, 'end', v))));
     }
     kv('길이', fmtLen(paths.length(id)));
-    kv('검증 상태', d.verification_status);
+    const vs = el('select');
+    for (const k of PATH_STATUS) { const o = el('option', '', k); o.value = k; vs.appendChild(o); }
+    if (!PATH_STATUS.includes(d.verification_status)) { const o = el('option', '', d.verification_status); o.value = d.verification_status; vs.appendChild(o); }
+    vs.value = d.verification_status;
+    vs.title = 'ANATOMY_REVIEWED는 전공자 검토를 받은 뒤에만 고른다. 기하 검사로 올리지 않는다.';
+    vs.addEventListener('change', ed(() => {
+      if (vs.value === 'ANATOMY_REVIEWED' && !window.confirm('전공자 검토를 받은 경로인가요? 기하 검사만으로는 ANATOMY_REVIEWED가 아닙니다.')) { vs.value = d.verification_status; return; }
+      paths.update(id, { verification_status: vs.value });
+      renderPaths();
+    }));
+    kv('검증 상태', vs);
+    if (d.geometry_check) kv('저장된 기하 검사', `${d.geometry_check.date || ''} · 메시 밖 ${((d.geometry_check.outside_ratio || 0) * 100).toFixed(0)}%${d.geometry_check.stale ? ' · 편집 뒤 다시 검사 필요' : ''}`);
+    if (d.method) kv('만든 방법', d.method);
+    const cmp = renderCompare();
+    if (cmp) kv('이전 버전', cmp.missing ? '같은 ID 경로 없음' : `${cmp.old_status} · 길이 ${fmtLen(cmp.old_length)} → ${fmtLen(paths.length(id))} · 최대 차이 ${fmtLen(cmp.max_deviation_m)}`);
+    const g = lastGeometry.get(id);
+    kv('기하 검사', g ? `메시 밖 ${(g.outside_ratio * 100).toFixed(0)}% · 관통 ${g.crossings} · 표시 ${g.flagged.length}점` : '(실행 안 함)');
+    showFlags(g || null);
     const v = paths.validatePath(id);
     kv('기술 검사', v.errors.length ? v.errors.join(' / ') : (v.warnings.length ? v.warnings.join(' / ') : '문제 없음'));
     props.appendChild(dl);
@@ -396,21 +595,25 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
       const row = el('div', `pe-row${i === paths.selectedPoint ? ' active' : ''}`);
       const nm = btn(pointLabel(p), () => { paths.select(id, i); if (!paths.showHandles) { showH.checked = true; paths.setShowHandles(true); } render(); }, 'nm');
       row.append(nm,
-        btn('↑', () => { paths.movePoint(id, i, -1); render(); }, 'mini'),
-        btn('↓', () => { paths.movePoint(id, i, 1); render(); }, 'mini'),
-        btn('+', () => { if (i < d.points.length - 1) { const k = paths.insertMidpoint(id, i); paths.select(id, k); render(); } }, 'mini'),
-        btn('✕', () => { paths.removePoint(id, i); render(); }, 'mini danger'));
+        btn('↑', ed(() => { paths.movePoint(id, i, -1); render(); }), 'mini'),
+        btn('↓', ed(() => { paths.movePoint(id, i, 1); render(); }), 'mini'),
+        btn('+', ed(() => { if (i < d.points.length - 1) { const k = paths.insertMidpoint(id, i); paths.select(id, k); render(); } }), 'mini'),
+        btn('✕', ed(() => { paths.removePoint(id, i); render(); }), 'mini danger'));
       row.children[3].title = '다음 점과의 중간에 삽입';
       li.appendChild(row);
       ptList.appendChild(li);
     });
     const add = el('div', 'row btns');
-    add.append(btn('+ 카메라 초점 위치에 추가', () => {
+    add.append(btn('+ 카메라 초점 위치에 추가', ed(() => {
       const t = controls.target;
       const k = paths.insertPoint(id, d.points.length, { space: 'scene', position: [t.x, t.y, t.z].map((n) => Math.round(n * 1e6) / 1e6) });
       paths.select(id, k);
       render();
-    }));
+    })));
+    if (registry) {
+      // 반자동: 선택한 점(혈관 메시의 object_local 점)에서 다음 점 방향으로 단면 중심선을 따라가 Waypoint를 채운다
+      add.append(btn('단면 중심선으로 채우기', ed(() => fillCenterline(id))));
+    }
     ptInspector.appendChild(add);
     const i = paths.selectedPoint;
     const p = d.points[i];
@@ -425,7 +628,7 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
         inp.addEventListener('change', () => {
           const all = [...g.querySelectorAll('input')].map((x) => Number(x.value));
           if (!all.every(Number.isFinite)) { log('좌표는 숫자여야 합니다', 'warn'); return; }
-          onSet(all);
+          ed(() => onSet(all))();
           render();
         });
         g.appendChild(inp);
@@ -437,7 +640,7 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
     if (p.space === 'object_local') ptInspector.appendChild(xyz('로컬', p.position, (v) => paths.setPointLocal(id, i, v)));
     if (anchors) {
       const r = el('div', 'row');
-      r.append(el('span', 'muted', 'Anchor로 지정'), anchorSelect(p.anchor_id, (v) => { if (v) paths.setPointAnchor(id, i, v); render(); }));
+      r.append(el('span', 'muted', 'Anchor로 지정'), anchorSelect(p.anchor_id, ed((v) => { if (v) paths.setPointAnchor(id, i, v); render(); })));
       ptInspector.appendChild(r);
     }
   }
@@ -450,7 +653,7 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
       const li = el('li');
       const row = el('div', 'pe-row');
       const stop = el('input'); stop.type = 'checkbox'; stop.checked = !!cp.stop_on_arrival; stop.title = '도착 시 정지';
-      stop.addEventListener('change', () => { paths.updateCheckpoint(id, cp.checkpoint_id, { stop_on_arrival: stop.checked }); renderCps(); });
+      stop.addEventListener('change', ed(() => { paths.updateCheckpoint(id, cp.checkpoint_id, { stop_on_arrival: stop.checked }); renderCps(); }));
       const pct = cp.distance !== null ? `${((cp.distance / paths.length(id)) * 100).toFixed(1)}%` : '위치 오류';
       const nm = btn(`${cp.label || cp.checkpoint_id}`, () => {
         const a = cur();
@@ -458,7 +661,7 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
       }, 'nm');
       nm.title = `${cp.checkpoint_id} · ${cp.anatomical_id || ''} · 클릭: Actor를 이 Checkpoint까지 이동`;
       row.append(stop, nm, el('span', 'muted', `${pct}${cp.trigger && cp.trigger !== 'both' ? ` · ${cp.trigger === 'forward' ? '정방향' : '역방향'}만` : ''}`),
-        btn('✕', () => { paths.removeCheckpoint(id, cp.checkpoint_id); renderCps(); }, 'mini danger'));
+        btn('✕', ed(() => { paths.removeCheckpoint(id, cp.checkpoint_id); renderCps(); }), 'mini danger'));
       li.appendChild(row);
       cpList.appendChild(li);
     }
@@ -480,6 +683,7 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
     ];
     status.innerHTML = '';
     for (const [k, v] of rows) status.append(el('dt', '', k), el('dd', '', v));
+    histInfo.textContent = `되돌리기 ${history.undo.length} · 다시 ${history.redo.length}`;
     if (a && document.activeElement !== speed) { speed.value = String(Math.log10(a.speed)); speedVal.textContent = fmtSpeed(a.speed); }
     showH.checked = paths.showHandles;
     showP.checked = paths.showPaths;
@@ -526,6 +730,10 @@ export function createPathEditor({ container, kit, camera3d, renderer, controls,
       if (!on) { tc.detach(); paths.setShowHandles(false); showH.checked = false; }
     },
     selectActor(id) { actorId = id; render(); },
+    undo,
+    redo,
+    get history() { return { undo: history.undo.length, redo: history.redo.length }; },
+    setCompare(doc) { compareDoc = doc; renderProps(); },
     setCheckpointFocus(fn) { focusHandler = fn; },
     get actorId() { return actorId; },
     gizmo: tc,

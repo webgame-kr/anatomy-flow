@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 03-D(Play 화면과 Python 학습 엔진 연결)까지 완료했다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
+현재 단계는 STEP 04-A(중심선 경로, 경로 검증 상태, 다중 스케일 개념 장면, 심장 내부 보기)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -175,8 +175,28 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **공개 금지:** `references/`(분석 문서와 `_text/` 추출본 포함)는 Git에서 제외된다. 강의 문장이나 상세 추출 내용을 공개 문서(`docs/`, `content/`, 커밋 메시지)에 옮기지 않는다. 공개 문서에는 쪽 번호와 일치 여부만 적는다.
 - **검증 상태의 범위:** 강의자료와 대조한 것은 용어와 설명의 근거일 뿐이다. 3D 경로의 해부학적 검증(VERIFIED)으로 올리지 않는다.
 
+## 해부학 정확도와 다중 스케일 (STEP 04-A, 2026-11-28)
+- **경로 상태:** `PENDING`, `APPROXIMATE`, `GEOMETRY_CHECKED`, `ANATOMY_REVIEWED`, `CONCEPTUAL`(+ `TEST_PATH`). 정의는 `docs/development/MOTION_DATA_SPEC.md` 2장에 있다.
+  - GEOMETRY_CHECKED는 기하 검사 결과로만 올린다.
+  - ANATOMY_REVIEWED는 사람(전공자 검토)만 올린다. 기하 검사나 강의 대조로 올리지 않는다.
+  - 점을 편집하면 path-engine이 자동으로 APPROXIMATE로 내린다. 이 동작을 없애지 않는다.
+- **경로 만들기:** 혈관은 `js/motion/centerline-tracer.js`(단면 중심선), 판막은 중심 ±6~8 mm Waypoint로 만든다. 만든 뒤 `checkPathGeometryAsync`로 검사하고, 결과를 `geometry_check`에 저장한다. 메시 밖 표본이 있으면 잘라내거나 고치고, 이유를 `notes`에 적는다.
+- **기하 검사:** `checkPathGeometryAsync`(삼각형 격자 색인, 8 ms 단위로 나눠 실행, 캐시)만 쓴다. 동기 `checkPathGeometry`는 없앴다. 화면을 멈추는 검사를 다시 만들지 않는다.
+- **이전 경로:** `paths.v1-approx.json`은 비교용 기록이다. 게임에서 불러오지 않는다.
+- **다중 스케일:** `js/scale/scale-manager.js`
+  - 장면을 바꿀 때 Actor를 새로 만들지 않는다. 같은 Actor를 옮기고 표시 크기만 바꾼다.
+  - 학습 상태는 Python에 있다. 스케일 관리자는 학습 규칙을 모른다.
+  - 콘텐츠는 Edge `transition_type: "scene"`과 `scale`로 연결한다(FLOW_SPEC 6장).
+- **개념 장면:** `content/micro/*.json`
+  - 해부 모델이 없는 구조는 이렇게 만들고 `CONCEPTUAL`과 화면 배지로 표시한다. 실제 해부학 모델이라고 쓰지 않는다.
+  - 암기·추론 모드에서 정답이 드러나지 않게 라벨에 다음 노드 이름을 쓰지 않는다.
+- **명령 묶음:** command-runner에서 `wait` 명령이 cancelled면 나머지를 실행하지 않는다. 이동 뒤 전환이 따로 실행되면 학습 상태와 화면이 어긋난다.
+- **일시정지:** `motion.pauseAll()` 중에 시작된 이동은 멈춘 채로 시작한다(gameHold). `cancelAll()`이 이를 푼다.
+- **단면:** clipping-controller는 기본으로 `actor` type을 자르지 않는다. Play 보기 모드(`engine.setViewMode`)는 바꿀 때마다 `clipping.reset()`으로 재질을 되돌린다.
+- **테스트:** 이동·명령을 바꾸면 `tests/motion-tests.html`(32개), `python tests/test_motion_commands.py`(37개), `python tests/test_lesson.py`(63개)를 실행한다.
+
 ## STEP 04 방향
 1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
-2. 내강 중심선으로 경로를 만들어 APPROXIMATE 경로를 검증 가능한 경로로 바꾼다. 폐정맥, 대동맥, 폐 순환 구간을 만든다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
+2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. 남은 것은 전공자 경로 검토와 나머지 폐정맥·대동맥 가지다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
 3. 생리적 형태 변화(심장 박동, 판막 개폐)는 라이선스가 확인된 모델이나 자체 제작 애니메이션으로 한다. 끝나지 않는 연출은 parallel 이벤트로 둔다.
 4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.
