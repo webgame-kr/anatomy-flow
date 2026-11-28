@@ -1,0 +1,101 @@
+{
+  "system": "cardiovascular",
+  "tree": "partof",
+  "output_dir": "assets/anatomy/cardiovascular",
+  "description": "STEP 03-A 심혈관계 시범 변환. 모든 파트는 PART-OF 트리(partof_BP3D_4.0_obj_99.zip)에서 가져온다. 한 element는 한 파트에만 들어간다(먼저 나온 파트 우선).",
+  "transform": {
+    "source": "BodyParts3D OBJ: mm, +X = 환자 왼쪽, -Y = 앞(anterior), +Z = 위(superior) — 측정으로 확인",
+    "blender_import": "obj_import forward_axis=Y, up_axis=Z (Blender 좌표 = OBJ 좌표, 축 변환 없음)",
+    "scale": 0.001,
+    "export": "glTF export_yup=True 한 번만: glTF (x, y, z) = (X, Z, -Y) × 0.001",
+    "recentering": "없음 — 모든 파일이 같은 원점(BodyParts3D 원점)을 쓴다"
+  },
+  "materials": {
+    "heart_wall": { "color": "#8b3a3a", "roughness": 0.6, "note": "심장 벽: 적갈색" },
+    "heart_cavity": { "color": "#c97b7b", "roughness": 0.7, "note": "심장 내강(혈액이 차는 공간의 형태): 옅은 적색" },
+    "valve": { "color": "#e8d5b0", "roughness": 0.5, "note": "판막: 옅은 베이지" },
+    "papillary": { "color": "#a34d4d", "roughness": 0.6, "note": "유두근" },
+    "fibrous": { "color": "#d9c7a8", "roughness": 0.6, "note": "섬유 골격" },
+    "systemic_artery": { "color": "#d23c3c", "roughness": 0.45, "note": "체순환 동맥(대동맥·관상동맥): 교육용 빨강" },
+    "systemic_vein": { "color": "#3c62c8", "roughness": 0.45, "note": "체순환 정맥(대정맥·심장 정맥): 교육용 파랑" },
+    "pulmonary_artery": { "color": "#6f4fc0", "roughness": 0.45, "note": "폐동맥: 보라 — 동맥이지만 산소가 적은 혈액이 흐르므로 체동맥과 구분" },
+    "pulmonary_vein": { "color": "#e06c8a", "roughness": 0.45, "note": "폐정맥: 분홍빛 빨강 — 정맥이지만 산소가 많은 혈액이 흐르므로 체정맥과 구분" },
+    "airway": { "color": "#f2b5bf", "roughness": 0.7, "note": "기관지 가지(폐): 부드러운 분홍" },
+    "other": { "color": "#b9a8a0", "roughness": 0.6, "note": "분류 밖 element" }
+  },
+  "assets": [
+    {
+      "asset_id": "bp3d-cv-heart",
+      "file": "heart.glb",
+      "display_name": "Heart (심장)",
+      "parts": [
+        { "id": "heart_wall_right_atrium", "name": "Wall of right atrium", "concept": "FMA9457", "material": "heart_wall" },
+        { "id": "heart_wall_left_atrium", "name": "Wall of left atrium", "concept": "FMA9531", "material": "heart_wall" },
+        { "id": "heart_cavity_right_atrium", "name": "Cavity of right atrium", "concept": "FMA11359", "material": "heart_cavity" },
+        { "id": "heart_cavity_right_ventricle", "name": "Cavity of right ventricle", "concept": "FMA9291", "material": "heart_cavity" },
+        { "id": "heart_cavity_left_atrium", "name": "Cavity of left atrium", "concept": "FMA9465", "material": "heart_cavity" },
+        { "id": "heart_cavity_left_ventricle", "name": "Cavity of left ventricle", "concept": "FMA9466", "material": "heart_cavity" },
+        { "id": "heart_valve_tricuspid", "name": "Tricuspid valve", "concept": "FMA7234", "material": "valve" },
+        { "id": "heart_valve_pulmonary", "name": "Pulmonary valve", "concept": "FMA7246", "material": "valve" },
+        { "id": "heart_valve_aortic", "name": "Aortic valve", "concept": "FMA7236", "material": "valve" },
+        { "id": "heart_valve_mitral", "name": "Mitral valve", "rest_of": "FMA7235", "keywords": ["mitral"], "material": "valve",
+          "note": "원본 FMA7235 'mitral valve'에는 대동맥판 첨 2개(FJ2426, FJ2431)가 함께 들어 있어, 이름에 mitral이 든 element만 쓴다" },
+        { "id": "heart_papillary_muscles", "name": "Papillary muscles", "rest_of": "FMA7088", "keywords": ["papillary"], "material": "papillary",
+          "note": "원본 'wall of right/left ventricle'(FMA9533/FMA9556)은 유두근(+승모판 후엽)만 담고 있어 벽 파트로 쓰지 않는다" },
+        { "id": "heart_coronary_veins", "name": "Cardiac veins & coronary sinus", "rest_of": "FMA7088", "keywords": ["vein", "sinus"], "material": "systemic_vein" },
+        { "id": "heart_coronary_arteries", "name": "Coronary arteries", "rest_of": "FMA7088", "keywords": ["artery", "branch"], "material": "systemic_artery" },
+        { "id": "heart_other", "name": "Other heart elements", "rest_of": "FMA7088", "keywords": [], "material": "other" }
+      ]
+    },
+    {
+      "asset_id": "bp3d-cv-aorta",
+      "file": "aorta.glb",
+      "display_name": "Aorta (대동맥)",
+      "parts": [
+        { "id": "aorta", "name": "Aorta", "concept": "FMA3734", "material": "systemic_artery" }
+      ]
+    },
+    {
+      "asset_id": "bp3d-cv-vena-cava",
+      "file": "vena-cava.glb",
+      "display_name": "Venae cavae (대정맥)",
+      "parts": [
+        { "id": "superior_vena_cava", "name": "Superior vena cava", "concept": "FMA4720", "material": "systemic_vein" },
+        { "id": "inferior_vena_cava", "name": "Inferior vena cava", "concept": "FMA10951", "material": "systemic_vein" }
+      ]
+    },
+    {
+      "asset_id": "bp3d-cv-pulmonary-vessels",
+      "file": "pulmonary-vessels.glb",
+      "display_name": "Pulmonary vessels (폐혈관)",
+      "parts": [
+        { "id": "pulmonary_trunk", "name": "Pulmonary trunk", "concept": "FMA8612", "material": "pulmonary_artery" },
+        { "id": "right_pulmonary_artery", "name": "Right pulmonary artery", "concept": "FMA50872", "material": "pulmonary_artery" },
+        { "id": "left_pulmonary_artery", "name": "Left pulmonary artery", "concept": "FMA50873", "material": "pulmonary_artery" },
+        { "id": "right_superior_pulmonary_vein", "name": "Right superior pulmonary vein", "concept": "FMA49914", "material": "pulmonary_vein" },
+        { "id": "right_inferior_pulmonary_vein", "name": "Right inferior pulmonary vein", "concept": "FMA49911", "material": "pulmonary_vein" },
+        { "id": "left_superior_pulmonary_vein", "name": "Left superior pulmonary vein", "concept": "FMA49916", "material": "pulmonary_vein" },
+        { "id": "left_inferior_pulmonary_vein", "name": "Left inferior pulmonary vein", "concept": "FMA49913", "material": "pulmonary_vein" },
+        { "id": "left_lung_other_pulmonary_arteries", "name": "Left lung — other arteries (lingular)", "rest_of": "FMA7310", "keywords": ["artery"], "material": "pulmonary_artery" },
+        { "id": "left_lung_other_pulmonary_veins", "name": "Left lung — other veins (lingular)", "rest_of": "FMA7310", "keywords": ["vein"], "material": "pulmonary_vein" },
+        { "id": "right_lung_other_pulmonary_arteries", "name": "Right lung — other arteries", "rest_of": "FMA7309", "keywords": ["artery"], "material": "pulmonary_artery" },
+        { "id": "right_lung_other_pulmonary_veins", "name": "Right lung — other veins", "rest_of": "FMA7309", "keywords": ["vein"], "material": "pulmonary_vein" }
+      ]
+    },
+    {
+      "asset_id": "bp3d-cv-lungs-airways",
+      "file": "lungs-airways.glb",
+      "display_name": "Lungs — bronchial trees (폐 기관지 가지)",
+      "note": "BodyParts3D 4.0에는 폐 실질·겉면 메시가 없다. 폐(FMA7309/7310)를 이루는 element 중 기관지 가지만 넣는다(폐혈관은 pulmonary-vessels.glb).",
+      "parts": [
+        { "id": "right_lung_bronchial_tree", "name": "Right lung — bronchial tree", "rest_of": "FMA7309", "keywords": ["bronch"], "material": "airway" },
+        { "id": "left_lung_bronchial_tree", "name": "Left lung — bronchial tree", "rest_of": "FMA7310", "keywords": ["bronch"], "material": "airway" }
+      ]
+    }
+  ],
+  "preview": {
+    "asset_id": "bp3d-cv-preview",
+    "file": "cardiovascular-preview.glb",
+    "display_name": "Cardiovascular preview (심혈관계 통합)"
+  }
+}

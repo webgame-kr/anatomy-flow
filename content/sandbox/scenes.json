@@ -11,7 +11,13 @@
       "url": "assets/test-models/DamagedHelmet.glb",
       "license": "CC-BY-4.0 + CC-BY-NC-4.0 (local only, not deployed)",
       "public": false
-    }
+    },
+    "bp3d-cv-heart": { "url": "assets/anatomy/cardiovascular/heart.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true },
+    "bp3d-cv-aorta": { "url": "assets/anatomy/cardiovascular/aorta.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true },
+    "bp3d-cv-vena-cava": { "url": "assets/anatomy/cardiovascular/vena-cava.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true },
+    "bp3d-cv-pulmonary-vessels": { "url": "assets/anatomy/cardiovascular/pulmonary-vessels.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true },
+    "bp3d-cv-lungs-airways": { "url": "assets/anatomy/cardiovascular/lungs-airways.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true },
+    "bp3d-cv-preview": { "url": "assets/anatomy/cardiovascular/cardiovascular-preview.glb", "license": "CC-BY-4.0 BodyParts3D (derived)", "public": true }
   },
   "scenes": [
     {
@@ -103,6 +109,38 @@
         { "id": "cube_01", "kind": "box", "name": "cube_01", "position": [-2.2, 0.5, 0], "color": "#9aa4b2" },
         { "id": "cylinder_01", "kind": "cylinder", "name": "cylinder_01", "position": [2.2, 0.75, 0], "scale": [0.8, 1.5, 0.8], "color": "#f5a00a" }
       ]
+    },
+    {
+      "scene_id": "scene_e",
+      "scene_name": "E — Anatomy: 개별 GLB 5개",
+      "description": "BodyParts3D 심혈관계 개별 GLB를 각각 불러와 원본 상대 위치가 맞는지 확인",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0.55, 1.35, 0.75], "target": [0.005, 1.15, 0.1], "fov": 40 },
+      "lighting": "soft",
+      "background": "#eef1f5",
+      "credits": "3D 모델: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형: 파트 결합·단위·축 변환·재질)",
+      "assets": [
+        { "asset_id": "bp3d-cv-heart", "display_name": "Heart (심장)" },
+        { "asset_id": "bp3d-cv-aorta", "display_name": "Aorta (대동맥)" },
+        { "asset_id": "bp3d-cv-vena-cava", "display_name": "Venae cavae (대정맥)" },
+        { "asset_id": "bp3d-cv-pulmonary-vessels", "display_name": "Pulmonary vessels (폐혈관)" },
+        { "asset_id": "bp3d-cv-lungs-airways", "display_name": "Lungs — bronchial trees (기관지 가지)" }
+      ],
+      "objects": []
+    },
+    {
+      "scene_id": "scene_f",
+      "scene_name": "F — Anatomy: 통합 GLB",
+      "description": "같은 모델을 통합 파일 하나로 불러와 개별 GLB와 좌표가 같은지 확인",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0.55, 1.35, 0.75], "target": [0.005, 1.15, 0.1], "fov": 40 },
+      "lighting": "soft",
+      "background": "#eef1f5",
+      "credits": "3D 모델: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형: 파트 결합·단위·축 변환·재질)",
+      "assets": [
+        { "asset_id": "bp3d-cv-preview", "display_name": "Cardiovascular preview (심혈관계 통합)" }
+      ],
+      "objects": []
     }
   ]
 }

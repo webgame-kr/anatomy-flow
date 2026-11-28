@@ -1,0 +1,1388 @@
+{
+  "asset_id": "bp3d-cv-preview",
+  "display_name": "Cardiovascular preview (심혈관계 통합)",
+  "file": "assets/anatomy/cardiovascular/cardiovascular-preview.glb",
+  "original_name": "aorta; aortic valve; cavity of left atrium; cavity of left ventricle; cavity of right atrium; cavity of right ventricle; heart; inferior vena cava; left inferior pulmonary vein; left lung; left pulmonary artery; left superior pulmonary vein; mitral valve; pulmonary trunk; pulmonary valve; right inferior pulmonary vein; right lung; right pulmonary artery; right superior pulmonary vein; superior vena cava; tricuspid valve; wall of left atrium; wall of right atrium",
+  "concept_id": [
+    "FMA9457",
+    "FMA9531",
+    "FMA11359",
+    "FMA9291",
+    "FMA9465",
+    "FMA9466",
+    "FMA7234",
+    "FMA7246",
+    "FMA7236",
+    "FMA7235",
+    "FMA7088",
+    "FMA7088",
+    "FMA7088",
+    "FMA3734",
+    "FMA4720",
+    "FMA10951",
+    "FMA8612",
+    "FMA50872",
+    "FMA50873",
+    "FMA49914",
+    "FMA49911",
+    "FMA49916",
+    "FMA49913",
+    "FMA7310",
+    "FMA7309",
+    "FMA7310"
+  ],
+  "representation_id": [
+    "BP9921",
+    "BP10221",
+    "BP9906",
+    "BP10208",
+    "BP9925",
+    "BP10057",
+    "BP9830",
+    "BP9868",
+    "BP9447",
+    "BP9455",
+    "BP9305",
+    "BP9305",
+    "BP9305",
+    "BP10374",
+    "BP10386",
+    "BP10397",
+    "BP9912",
+    "BP9427",
+    "BP9414",
+    "BP9365",
+    "BP9407",
+    "BP9499",
+    "BP9712",
+    "BP9417",
+    "BP9359",
+    "BP9417"
+  ],
+  "element_file_ids": {
+    "heart_wall_right_atrium": [
+      "FJ2439"
+    ],
+    "heart_wall_left_atrium": [
+      "FJ2438"
+    ],
+    "heart_cavity_right_atrium": [
+      "FJ2424"
+    ],
+    "heart_cavity_right_ventricle": [
+      "FJ2423"
+    ],
+    "heart_cavity_left_atrium": [
+      "FJ2425"
+    ],
+    "heart_cavity_left_ventricle": [
+      "FJ2422"
+    ],
+    "heart_valve_tricuspid": [
+      "FJ2421",
+      "FJ2433",
+      "FJ2436"
+    ],
+    "heart_valve_pulmonary": [
+      "FJ2417",
+      "FJ2427",
+      "FJ2434"
+    ],
+    "heart_valve_aortic": [
+      "FJ2426",
+      "FJ2431",
+      "FJ2435"
+    ],
+    "heart_valve_mitral": [
+      "FJ2420",
+      "FJ2432"
+    ],
+    "heart_papillary_muscles": [
+      "FJ2418",
+      "FJ2419",
+      "FJ2429",
+      "FJ2430",
+      "FJ2437"
+    ],
+    "heart_coronary_veins": [
+      "FJ2655",
+      "FJ2656",
+      "FJ2724",
+      "FJ2727",
+      "FJ2728",
+      "FJ2729",
+      "FJ2731"
+    ],
+    "heart_coronary_arteries": [
+      "FJ2631",
+      "FJ2632",
+      "FJ2633",
+      "FJ2634",
+      "FJ2635",
+      "FJ2636",
+      "FJ2637",
+      "FJ2638",
+      "FJ2639",
+      "FJ2640",
+      "FJ2641",
+      "FJ2642",
+      "FJ2643",
+      "FJ2644",
+      "FJ2645",
+      "FJ2646",
+      "FJ2647",
+      "FJ2648",
+      "FJ2649",
+      "FJ2650",
+      "FJ2651",
+      "FJ2652",
+      "FJ2653",
+      "FJ2654",
+      "FJ2667",
+      "FJ2668",
+      "FJ2670",
+      "FJ2671",
+      "FJ2672",
+      "FJ2673",
+      "FJ2674",
+      "FJ2675",
+      "FJ2676",
+      "FJ2677",
+      "FJ2692",
+      "FJ2693",
+      "FJ2694",
+      "FJ2695",
+      "FJ2696",
+      "FJ2697",
+      "FJ2698",
+      "FJ2699",
+      "FJ2700",
+      "FJ2714",
+      "FJ2715",
+      "FJ2716",
+      "FJ2717",
+      "FJ2718",
+      "FJ2719",
+      "FJ2720",
+      "FJ2721",
+      "FJ2722",
+      "FJ2723",
+      "FJ2737"
+    ],
+    "aorta": [
+      "FJ1931",
+      "FJ1932",
+      "FJ3411",
+      "FJ3413",
+      "FJ3427"
+    ],
+    "superior_vena_cava": [
+      "FJ3645"
+    ],
+    "inferior_vena_cava": [
+      "FJ3441",
+      "FJ3659"
+    ],
+    "pulmonary_trunk": [
+      "FJ2966"
+    ],
+    "right_pulmonary_artery": [
+      "FJ2041",
+      "FJ2044",
+      "FJ2967",
+      "FJ2968",
+      "FJ2969",
+      "FJ2970",
+      "FJ2971",
+      "FJ2972",
+      "FJ2973",
+      "FJ2974",
+      "FJ2975",
+      "FJ2976",
+      "FJ2977",
+      "FJ2978",
+      "FJ2979",
+      "FJ2980",
+      "FJ2981",
+      "FJ2982",
+      "FJ2983",
+      "FJ2984",
+      "FJ2985",
+      "FJ2986",
+      "FJ2987",
+      "FJ2988",
+      "FJ2989",
+      "FJ2990",
+      "FJ2991",
+      "FJ2992",
+      "FJ2993",
+      "FJ2994",
+      "FJ2995",
+      "FJ2996",
+      "FJ2997",
+      "FJ2998",
+      "FJ2999",
+      "FJ3000",
+      "FJ3001",
+      "FJ3002",
+      "FJ3003",
+      "FJ3004",
+      "FJ3005",
+      "FJ3006",
+      "FJ3007",
+      "FJ3008",
+      "FJ3009",
+      "FJ3010",
+      "FJ3011",
+      "FJ3012",
+      "FJ3013",
+      "FJ3014",
+      "FJ3015",
+      "FJ3016",
+      "FJ3017",
+      "FJ3018",
+      "FJ3019"
+    ],
+    "left_pulmonary_artery": [
+      "FJ2881",
+      "FJ2882",
+      "FJ2883",
+      "FJ2884",
+      "FJ2885",
+      "FJ2886",
+      "FJ2887",
+      "FJ2888",
+      "FJ2889",
+      "FJ2890",
+      "FJ2891",
+      "FJ2892",
+      "FJ2893",
+      "FJ2894",
+      "FJ2895",
+      "FJ2902",
+      "FJ2903",
+      "FJ2904",
+      "FJ2905",
+      "FJ2906",
+      "FJ2907",
+      "FJ2908",
+      "FJ2909",
+      "FJ2910",
+      "FJ2911",
+      "FJ2912",
+      "FJ2913",
+      "FJ2914",
+      "FJ2915",
+      "FJ2916",
+      "FJ2917",
+      "FJ2918",
+      "FJ2919",
+      "FJ2920",
+      "FJ2921",
+      "FJ2922",
+      "FJ2923",
+      "FJ2924"
+    ],
+    "right_superior_pulmonary_vein": [
+      "FJ3020",
+      "FJ3021",
+      "FJ3022",
+      "FJ3023",
+      "FJ3024",
+      "FJ3025",
+      "FJ3026",
+      "FJ3027",
+      "FJ3028",
+      "FJ3029",
+      "FJ3030",
+      "FJ3031",
+      "FJ3032",
+      "FJ3033",
+      "FJ3034",
+      "FJ3035",
+      "FJ3036",
+      "FJ3037",
+      "FJ3038",
+      "FJ3039",
+      "FJ3042",
+      "FJ3053",
+      "FJ3064",
+      "FJ3067",
+      "FJ3068",
+      "FJ3069",
+      "FJ3070"
+    ],
+    "right_inferior_pulmonary_vein": [
+      "FJ3040",
+      "FJ3041",
+      "FJ3043",
+      "FJ3044",
+      "FJ3045",
+      "FJ3046",
+      "FJ3047",
+      "FJ3048",
+      "FJ3049",
+      "FJ3050",
+      "FJ3051",
+      "FJ3052",
+      "FJ3054",
+      "FJ3055",
+      "FJ3056",
+      "FJ3057",
+      "FJ3058",
+      "FJ3059",
+      "FJ3060",
+      "FJ3061",
+      "FJ3062",
+      "FJ3063",
+      "FJ3065",
+      "FJ3066"
+    ],
+    "left_superior_pulmonary_vein": [
+      "FJ2925",
+      "FJ2926",
+      "FJ2927",
+      "FJ2928",
+      "FJ2929",
+      "FJ2930",
+      "FJ2931",
+      "FJ2932",
+      "FJ2933",
+      "FJ2934",
+      "FJ2935",
+      "FJ2936",
+      "FJ2937",
+      "FJ2938",
+      "FJ2939",
+      "FJ2940",
+      "FJ2941",
+      "FJ2942",
+      "FJ2943",
+      "FJ2947",
+      "FJ2958",
+      "FJ2961",
+      "FJ2962",
+      "FJ2963",
+      "FJ2964",
+      "FJ2965"
+    ],
+    "left_inferior_pulmonary_vein": [
+      "FJ2944",
+      "FJ2945",
+      "FJ2946",
+      "FJ2948",
+      "FJ2949",
+      "FJ2950",
+      "FJ2951",
+      "FJ2952",
+      "FJ2953",
+      "FJ2954",
+      "FJ2955",
+      "FJ2956",
+      "FJ2957",
+      "FJ2959",
+      "FJ2960"
+    ],
+    "left_lung_other_pulmonary_arteries": [
+      "FJ2896",
+      "FJ2897",
+      "FJ2898",
+      "FJ2899",
+      "FJ2900",
+      "FJ2901"
+    ],
+    "right_lung_bronchial_tree": [
+      "FJ2449",
+      "FJ2451",
+      "FJ2452",
+      "FJ2453",
+      "FJ2454",
+      "FJ2455",
+      "FJ2456",
+      "FJ2457",
+      "FJ2458",
+      "FJ2459",
+      "FJ2470",
+      "FJ2481",
+      "FJ2486",
+      "FJ2487",
+      "FJ2488",
+      "FJ2489",
+      "FJ2490",
+      "FJ2491",
+      "FJ2492",
+      "FJ2493",
+      "FJ2494",
+      "FJ2495",
+      "FJ2496",
+      "FJ2497",
+      "FJ2498",
+      "FJ2499",
+      "FJ2500",
+      "FJ2501",
+      "FJ2502",
+      "FJ2503",
+      "FJ2504",
+      "FJ2505",
+      "FJ2506",
+      "FJ2507",
+      "FJ2508",
+      "FJ2509",
+      "FJ2510",
+      "FJ2511",
+      "FJ2512",
+      "FJ2513",
+      "FJ2514",
+      "FJ2515",
+      "FJ2516",
+      "FJ2517",
+      "FJ2518",
+      "FJ2519",
+      "FJ2520",
+      "FJ2521",
+      "FJ2522",
+      "FJ2523",
+      "FJ2524",
+      "FJ2525",
+      "FJ2526"
+    ],
+    "left_lung_bronchial_tree": [
+      "FJ2441",
+      "FJ2442",
+      "FJ2443",
+      "FJ2444",
+      "FJ2445",
+      "FJ2446",
+      "FJ2447",
+      "FJ2448",
+      "FJ2460",
+      "FJ2461",
+      "FJ2462",
+      "FJ2463",
+      "FJ2464",
+      "FJ2465",
+      "FJ2466",
+      "FJ2467",
+      "FJ2468",
+      "FJ2469",
+      "FJ2471",
+      "FJ2472",
+      "FJ2473",
+      "FJ2474",
+      "FJ2475",
+      "FJ2476",
+      "FJ2477",
+      "FJ2478",
+      "FJ2479",
+      "FJ2480",
+      "FJ2482",
+      "FJ2483",
+      "FJ2484",
+      "FJ2485",
+      "FJ2527",
+      "FJ2528",
+      "FJ2529",
+      "FJ2530",
+      "FJ2531",
+      "FJ2532",
+      "FJ2533",
+      "FJ2534",
+      "FJ2535",
+      "FJ2536",
+      "FJ2537",
+      "FJ2538",
+      "FJ2540"
+    ]
+  },
+  "source_archive": "partof_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 26,
+  "triangle_count": 241446,
+  "bounding_box": {
+    "min": [
+      -0.11654,
+      0.94678,
+      0.02031
+    ],
+    "max": [
+      0.12543,
+      1.35594,
+      0.17787
+    ],
+    "size": [
+      0.24197,
+      0.40916,
+      0.15756
+    ]
+  },
+  "file_size": 4875284,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "All assets of this system in one file, identical coordinates",
+  "parts": [
+    {
+      "id": "heart_wall_right_atrium",
+      "name": "Wall of right atrium",
+      "concept_id": "FMA9457",
+      "concept_name": "wall of right atrium",
+      "material": "heart_wall",
+      "element_count": 1,
+      "triangles": 17784,
+      "mesh_check": {
+        "non_manifold_edges": 1826,
+        "boundary_edges": 1826,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.0363,
+          1.18308,
+          0.09635
+        ],
+        "max": [
+          0.00678,
+          1.2795,
+          0.16265
+        ],
+        "size": [
+          0.04308,
+          0.09642,
+          0.0663
+        ]
+      }
+    },
+    {
+      "id": "heart_wall_left_atrium",
+      "name": "Wall of left atrium",
+      "concept_id": "FMA9531",
+      "concept_name": "wall of left atrium",
+      "material": "heart_wall",
+      "element_count": 1,
+      "triangles": 7544,
+      "mesh_check": {
+        "non_manifold_edges": 1102,
+        "boundary_edges": 1102,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02288,
+          1.19943,
+          0.07017
+        ],
+        "max": [
+          0.06324,
+          1.2724,
+          0.15115
+        ],
+        "size": [
+          0.08612,
+          0.07297,
+          0.08098
+        ]
+      }
+    },
+    {
+      "id": "heart_cavity_right_atrium",
+      "name": "Cavity of right atrium",
+      "concept_id": "FMA11359",
+      "concept_name": "cavity of right atrium",
+      "material": "heart_cavity",
+      "element_count": 1,
+      "triangles": 2244,
+      "mesh_check": {
+        "non_manifold_edges": 146,
+        "boundary_edges": 146,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.0342,
+          1.18526,
+          0.09244
+        ],
+        "max": [
+          0.00319,
+          1.27752,
+          0.15357
+        ],
+        "size": [
+          0.03739,
+          0.09226,
+          0.06113
+        ]
+      }
+    },
+    {
+      "id": "heart_cavity_right_ventricle",
+      "name": "Cavity of right ventricle",
+      "concept_id": "FMA9291",
+      "concept_name": "cavity of right ventricle",
+      "material": "heart_cavity",
+      "element_count": 1,
+      "triangles": 1918,
+      "mesh_check": {
+        "non_manifold_edges": 34,
+        "boundary_edges": 34,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.01885,
+          1.17948,
+          0.1152
+        ],
+        "max": [
+          0.05266,
+          1.26003,
+          0.17342
+        ],
+        "size": [
+          0.07151,
+          0.08055,
+          0.05822
+        ]
+      }
+    },
+    {
+      "id": "heart_cavity_left_atrium",
+      "name": "Cavity of left atrium",
+      "concept_id": "FMA9465",
+      "concept_name": "cavity of left atrium",
+      "material": "heart_cavity",
+      "element_count": 1,
+      "triangles": 1064,
+      "mesh_check": {
+        "non_manifold_edges": 126,
+        "boundary_edges": 126,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02038,
+          1.20645,
+          0.07099
+        ],
+        "max": [
+          0.04832,
+          1.26829,
+          0.12676
+        ],
+        "size": [
+          0.06871,
+          0.06184,
+          0.05577
+        ]
+      }
+    },
+    {
+      "id": "heart_cavity_left_ventricle",
+      "name": "Cavity of left ventricle",
+      "concept_id": "FMA9466",
+      "concept_name": "cavity of left ventricle",
+      "material": "heart_cavity",
+      "element_count": 1,
+      "triangles": 1722,
+      "mesh_check": {
+        "non_manifold_edges": 42,
+        "boundary_edges": 42,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.00647,
+          1.18407,
+          0.0864
+        ],
+        "max": [
+          0.07025,
+          1.25155,
+          0.15852
+        ],
+        "size": [
+          0.06378,
+          0.06748,
+          0.07212
+        ]
+      }
+    },
+    {
+      "id": "heart_valve_tricuspid",
+      "name": "Tricuspid valve",
+      "concept_id": "FMA7234",
+      "concept_name": "tricuspid valve",
+      "material": "valve",
+      "element_count": 3,
+      "triangles": 17612,
+      "mesh_check": {
+        "non_manifold_edges": 1928,
+        "boundary_edges": 1928,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02108,
+          1.18864,
+          0.11357
+        ],
+        "max": [
+          0.0295,
+          1.23648,
+          0.15631
+        ],
+        "size": [
+          0.05058,
+          0.04784,
+          0.04274
+        ]
+      }
+    },
+    {
+      "id": "heart_valve_pulmonary",
+      "name": "Pulmonary valve",
+      "concept_id": "FMA7246",
+      "concept_name": "pulmonary valve",
+      "material": "valve",
+      "element_count": 3,
+      "triangles": 3638,
+      "mesh_check": {
+        "non_manifold_edges": 400,
+        "boundary_edges": 400,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.00877,
+          1.2449,
+          0.1276
+        ],
+        "max": [
+          0.04092,
+          1.26527,
+          0.15958
+        ],
+        "size": [
+          0.03215,
+          0.02037,
+          0.03198
+        ]
+      }
+    },
+    {
+      "id": "heart_valve_aortic",
+      "name": "Aortic valve",
+      "concept_id": "FMA7236",
+      "concept_name": "aortic valve",
+      "material": "valve",
+      "element_count": 3,
+      "triangles": 2150,
+      "mesh_check": {
+        "non_manifold_edges": 320,
+        "boundary_edges": 320,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.00567,
+          1.23341,
+          0.10483
+        ],
+        "max": [
+          0.03239,
+          1.25508,
+          0.13244
+        ],
+        "size": [
+          0.02672,
+          0.02167,
+          0.02761
+        ]
+      }
+    },
+    {
+      "id": "heart_valve_mitral",
+      "name": "Mitral valve",
+      "concept_id": "FMA7235",
+      "concept_name": "mitral valve",
+      "material": "valve",
+      "element_count": 2,
+      "triangles": 11378,
+      "mesh_check": {
+        "non_manifold_edges": 2058,
+        "boundary_edges": 2058,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.01172,
+          1.1996,
+          0.08544
+        ],
+        "max": [
+          0.06285,
+          1.23592,
+          0.14163
+        ],
+        "size": [
+          0.05113,
+          0.03632,
+          0.05618
+        ]
+      }
+    },
+    {
+      "id": "heart_papillary_muscles",
+      "name": "Papillary muscles",
+      "concept_id": "FMA7088",
+      "concept_name": "heart",
+      "material": "papillary",
+      "element_count": 5,
+      "triangles": 4014,
+      "mesh_check": {
+        "non_manifold_edges": 1254,
+        "boundary_edges": 1254,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.00716,
+          1.17844,
+          0.10477
+        ],
+        "max": [
+          0.07454,
+          1.24017,
+          0.17271
+        ],
+        "size": [
+          0.06738,
+          0.06173,
+          0.06794
+        ]
+      }
+    },
+    {
+      "id": "heart_coronary_veins",
+      "name": "Cardiac veins & coronary sinus",
+      "concept_id": "FMA7088",
+      "concept_name": "heart",
+      "material": "systemic_vein",
+      "element_count": 7,
+      "triangles": 4386,
+      "mesh_check": {
+        "non_manifold_edges": 648,
+        "boundary_edges": 648,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02084,
+          1.1787,
+          0.08111
+        ],
+        "max": [
+          0.05483,
+          1.25346,
+          0.17241
+        ],
+        "size": [
+          0.07567,
+          0.07476,
+          0.0913
+        ]
+      }
+    },
+    {
+      "id": "heart_coronary_arteries",
+      "name": "Coronary arteries",
+      "concept_id": "FMA7088",
+      "concept_name": "heart",
+      "material": "systemic_artery",
+      "element_count": 54,
+      "triangles": 27348,
+      "mesh_check": {
+        "non_manifold_edges": 8330,
+        "boundary_edges": 8330,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02175,
+          1.17492,
+          0.08698
+        ],
+        "max": [
+          0.07939,
+          1.26107,
+          0.17652
+        ],
+        "size": [
+          0.10114,
+          0.08615,
+          0.08954
+        ]
+      }
+    },
+    {
+      "id": "aorta",
+      "name": "Aorta",
+      "concept_id": "FMA3734",
+      "concept_name": "aorta",
+      "material": "systemic_artery",
+      "element_count": 5,
+      "triangles": 10188,
+      "mesh_check": {
+        "non_manifold_edges": 670,
+        "boundary_edges": 670,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.00683,
+          0.94678,
+          0.04509
+        ],
+        "max": [
+          0.03484,
+          1.31709,
+          0.13744
+        ],
+        "size": [
+          0.04167,
+          0.37031,
+          0.09235
+        ]
+      }
+    },
+    {
+      "id": "superior_vena_cava",
+      "name": "Superior vena cava",
+      "concept_id": "FMA4720",
+      "concept_name": "superior vena cava",
+      "material": "systemic_vein",
+      "element_count": 1,
+      "triangles": 598,
+      "mesh_check": {
+        "non_manifold_edges": 48,
+        "boundary_edges": 48,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02663,
+          1.27481,
+          0.10359
+        ],
+        "max": [
+          -0.00411,
+          1.30981,
+          0.12728
+        ],
+        "size": [
+          0.02253,
+          0.035,
+          0.02369
+        ]
+      }
+    },
+    {
+      "id": "inferior_vena_cava",
+      "name": "Inferior vena cava",
+      "concept_id": "FMA10951",
+      "concept_name": "inferior vena cava",
+      "material": "systemic_vein",
+      "element_count": 2,
+      "triangles": 3080,
+      "mesh_check": {
+        "non_manifold_edges": 412,
+        "boundary_edges": 412,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02683,
+          0.95089,
+          0.10355
+        ],
+        "max": [
+          -0.00206,
+          1.19053,
+          0.12879
+        ],
+        "size": [
+          0.02477,
+          0.23964,
+          0.02524
+        ]
+      }
+    },
+    {
+      "id": "pulmonary_trunk",
+      "name": "Pulmonary trunk",
+      "concept_id": "FMA8612",
+      "concept_name": "pulmonary trunk",
+      "material": "pulmonary_artery",
+      "element_count": 1,
+      "triangles": 1302,
+      "mesh_check": {
+        "non_manifold_edges": 390,
+        "boundary_edges": 390,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.01127,
+          1.2565,
+          0.11652
+        ],
+        "max": [
+          0.04208,
+          1.29361,
+          0.15886
+        ],
+        "size": [
+          0.0308,
+          0.03711,
+          0.04235
+        ]
+      }
+    },
+    {
+      "id": "right_pulmonary_artery",
+      "name": "Right pulmonary artery",
+      "concept_id": "FMA50872",
+      "concept_name": "right pulmonary artery",
+      "material": "pulmonary_artery",
+      "element_count": 55,
+      "triangles": 19962,
+      "mesh_check": {
+        "non_manifold_edges": 4406,
+        "boundary_edges": 4406,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.1143,
+          1.01459,
+          0.02094
+        ],
+        "max": [
+          0.03694,
+          1.34802,
+          0.17176
+        ],
+        "size": [
+          0.15124,
+          0.33343,
+          0.15081
+        ]
+      }
+    },
+    {
+      "id": "left_pulmonary_artery",
+      "name": "Left pulmonary artery",
+      "concept_id": "FMA50873",
+      "concept_name": "left pulmonary artery",
+      "material": "pulmonary_artery",
+      "element_count": 38,
+      "triangles": 22926,
+      "mesh_check": {
+        "non_manifold_edges": 2520,
+        "boundary_edges": 2520,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.01475,
+          1.12311,
+          0.02208
+        ],
+        "max": [
+          0.12543,
+          1.34856,
+          0.16069
+        ],
+        "size": [
+          0.11068,
+          0.22545,
+          0.13862
+        ]
+      }
+    },
+    {
+      "id": "right_superior_pulmonary_vein",
+      "name": "Right superior pulmonary vein",
+      "concept_id": "FMA49914",
+      "concept_name": "right superior pulmonary vein",
+      "material": "pulmonary_vein",
+      "element_count": 27,
+      "triangles": 6746,
+      "mesh_check": {
+        "non_manifold_edges": 954,
+        "boundary_edges": 954,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.10753,
+          1.19232,
+          0.04998
+        ],
+        "max": [
+          -0.01402,
+          1.34637,
+          0.16905
+        ],
+        "size": [
+          0.09351,
+          0.15405,
+          0.11907
+        ]
+      }
+    },
+    {
+      "id": "right_inferior_pulmonary_vein",
+      "name": "Right inferior pulmonary vein",
+      "concept_id": "FMA49911",
+      "concept_name": "right inferior pulmonary vein",
+      "material": "pulmonary_vein",
+      "element_count": 24,
+      "triangles": 5524,
+      "mesh_check": {
+        "non_manifold_edges": 1016,
+        "boundary_edges": 1016,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.11385,
+          1.13449,
+          0.03101
+        ],
+        "max": [
+          -0.00628,
+          1.25356,
+          0.08902
+        ],
+        "size": [
+          0.10756,
+          0.11907,
+          0.05802
+        ]
+      }
+    },
+    {
+      "id": "left_superior_pulmonary_vein",
+      "name": "Left superior pulmonary vein",
+      "concept_id": "FMA49916",
+      "concept_name": "left superior pulmonary vein",
+      "material": "pulmonary_vein",
+      "element_count": 26,
+      "triangles": 6722,
+      "mesh_check": {
+        "non_manifold_edges": 1076,
+        "boundary_edges": 1076,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.02712,
+          1.17451,
+          0.02537
+        ],
+        "max": [
+          0.09515,
+          1.35594,
+          0.15796
+        ],
+        "size": [
+          0.06803,
+          0.18143,
+          0.13259
+        ]
+      }
+    },
+    {
+      "id": "left_inferior_pulmonary_vein",
+      "name": "Left inferior pulmonary vein",
+      "concept_id": "FMA49913",
+      "concept_name": "left inferior pulmonary vein",
+      "material": "pulmonary_vein",
+      "element_count": 15,
+      "triangles": 4554,
+      "mesh_check": {
+        "non_manifold_edges": 504,
+        "boundary_edges": 504,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.03285,
+          1.12702,
+          0.02348
+        ],
+        "max": [
+          0.11931,
+          1.23636,
+          0.13372
+        ],
+        "size": [
+          0.08646,
+          0.10934,
+          0.11024
+        ]
+      }
+    },
+    {
+      "id": "left_lung_other_pulmonary_arteries",
+      "name": "Left lung — other arteries (lingular)",
+      "concept_id": "FMA7310",
+      "concept_name": "left lung",
+      "material": "pulmonary_artery",
+      "element_count": 6,
+      "triangles": 4176,
+      "mesh_check": {
+        "non_manifold_edges": 474,
+        "boundary_edges": 474,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.04801,
+          1.17949,
+          0.06293
+        ],
+        "max": [
+          0.11111,
+          1.27079,
+          0.17114
+        ],
+        "size": [
+          0.06309,
+          0.0913,
+          0.10821
+        ]
+      }
+    },
+    {
+      "id": "right_lung_bronchial_tree",
+      "name": "Right lung — bronchial tree",
+      "concept_id": "FMA7309",
+      "concept_name": "right lung",
+      "material": "airway",
+      "element_count": 53,
+      "triangles": 42278,
+      "mesh_check": {
+        "non_manifold_edges": 7108,
+        "boundary_edges": 7108,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.11654,
+          1.13571,
+          0.02417
+        ],
+        "max": [
+          -0.00874,
+          1.34785,
+          0.17381
+        ],
+        "size": [
+          0.1078,
+          0.21214,
+          0.14964
+        ]
+      }
+    },
+    {
+      "id": "left_lung_bronchial_tree",
+      "name": "Left lung — bronchial tree",
+      "concept_id": "FMA7310",
+      "concept_name": "left lung",
+      "material": "airway",
+      "element_count": 45,
+      "triangles": 10588,
+      "mesh_check": {
+        "non_manifold_edges": 3330,
+        "boundary_edges": 3330,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.02319,
+          1.12485,
+          0.02031
+        ],
+        "max": [
+          0.12288,
+          1.35314,
+          0.17787
+        ],
+        "size": [
+          0.09969,
+          0.22829,
+          0.15756
+        ]
+      }
+    }
+  ]
+}

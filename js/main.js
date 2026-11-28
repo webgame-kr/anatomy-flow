@@ -200,6 +200,9 @@ function wireUi(e) {
       $('btn-reset').disabled = false;
       $('btn-back').disabled = e.scenes.historySize === 0;
       clipUi.sync();
+      // 장면에 외부 모델 출처 표기가 있으면 화면에 표시 (CC BY 출처 표시)
+      $('credits').hidden = !data.scene.credits;
+      $('credits').textContent = data.scene.credits || '';
       log(`장면 준비: ${data.scene.scene_name} · 객체 ${e.registry.size}개`);
       onSceneReady(data.scene);
     }

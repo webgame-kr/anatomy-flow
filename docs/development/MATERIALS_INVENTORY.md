@@ -18,6 +18,9 @@
 | 성인간호학 (교재 상권 2종 + 추가자료 2종) | `references/nursing/adult-health/` | 4 |
 | BodyParts3D 원본 ZIP (is-a, part-of) | `raw-models/bodyparts3d/archives/` | 2 |
 | BodyParts3D 메타데이터 (2026-11-28 공식 페이지에서 다운로드) | `raw-models/bodyparts3d/metadata/` | 6 |
+| BodyParts3D 공식 README (`README_e.html`, 2026-11-28) | `raw-models/bodyparts3d/metadata/` | 1 |
+| STEP 03-A 선택 추출 OBJ (PART-OF, 심혈관계) + `manifest.csv` (원본 ZIP·CRC·SHA-256) | `raw-models/bodyparts3d/extracted/partof/` | 381 |
+| 검색 색인 (`isa_index.json`, `partof_index.json`, 도구가 다시 만듦) | `raw-models/bodyparts3d/index/` | 2 |
 | 테스트 모델 DamagedHelmet | `assets/test-models/` (라이선스 확인 전 Git 제외) | 1 |
 
 파일명은 `번호_제목.pdf` 형식으로 정리했습니다(공백과 쉼표는 `_`로 바꿈).

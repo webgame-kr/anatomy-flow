@@ -1,0 +1,122 @@
+{
+  "asset_id": "bp3d-cv-vena-cava",
+  "display_name": "Venae cavae (대정맥)",
+  "file": "assets/anatomy/cardiovascular/vena-cava.glb",
+  "original_name": "inferior vena cava; superior vena cava",
+  "concept_id": [
+    "FMA4720",
+    "FMA10951"
+  ],
+  "representation_id": [
+    "BP10386",
+    "BP10397"
+  ],
+  "element_file_ids": {
+    "superior_vena_cava": [
+      "FJ3645"
+    ],
+    "inferior_vena_cava": [
+      "FJ3441",
+      "FJ3659"
+    ]
+  },
+  "source_archive": "partof_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 2,
+  "triangle_count": 3678,
+  "bounding_box": {
+    "min": [
+      -0.02683,
+      0.95089,
+      0.10355
+    ],
+    "max": [
+      -0.00206,
+      1.30981,
+      0.12879
+    ],
+    "size": [
+      0.02477,
+      0.35892,
+      0.02524
+    ]
+  },
+  "file_size": 74192,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "superior_vena_cava",
+      "name": "Superior vena cava",
+      "concept_id": "FMA4720",
+      "concept_name": "superior vena cava",
+      "material": "systemic_vein",
+      "element_count": 1,
+      "triangles": 598,
+      "mesh_check": {
+        "non_manifold_edges": 48,
+        "boundary_edges": 48,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02663,
+          1.27481,
+          0.10359
+        ],
+        "max": [
+          -0.00411,
+          1.30981,
+          0.12728
+        ],
+        "size": [
+          0.02253,
+          0.035,
+          0.02369
+        ]
+      }
+    },
+    {
+      "id": "inferior_vena_cava",
+      "name": "Inferior vena cava",
+      "concept_id": "FMA10951",
+      "concept_name": "inferior vena cava",
+      "material": "systemic_vein",
+      "element_count": 2,
+      "triangles": 3080,
+      "mesh_check": {
+        "non_manifold_edges": 412,
+        "boundary_edges": 412,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02683,
+          0.95089,
+          0.10355
+        ],
+        "max": [
+          -0.00206,
+          1.19053,
+          0.12879
+        ],
+        "size": [
+          0.02477,
+          0.23964,
+          0.02524
+        ]
+      }
+    }
+  ]
+}

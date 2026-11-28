@@ -67,6 +67,8 @@ code { background: var(--bg); padding: 1px 4px; border-radius: 4px; }
 .viewport { position: relative; min-height: 0; overflow: hidden; }
 .viewport canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 .hud { position: absolute; left: 8px; bottom: 8px; font-size: 11px; color: var(--muted); background: rgba(255, 255, 255, .85); padding: 3px 7px; border-radius: 6px; pointer-events: none; max-width: calc(100% - 16px); }
+.credits { position: absolute; left: 8px; right: 8px; bottom: 30px; font-size: 11px; color: var(--muted); background: rgba(255, 255, 255, .85); padding: 3px 7px; border-radius: 6px; pointer-events: none; }
+.credits[hidden] { display: none; }
 .hover-tip { position: absolute; left: 8px; top: 8px; font-size: 12px; background: rgba(29, 35, 48, .85); color: #fff; padding: 3px 8px; border-radius: 6px; pointer-events: none; }
 .debug-box { position: absolute; right: 8px; top: 8px; font: 11px/1.45 ui-monospace, Consolas, monospace; background: rgba(255, 255, 255, .92); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; max-width: min(360px, calc(100% - 16px)); white-space: pre-wrap; pointer-events: none; }
 .fatal { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 24px; background: var(--bg); }

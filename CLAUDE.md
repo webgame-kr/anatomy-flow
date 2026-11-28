@@ -83,8 +83,23 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 실제 혈액순환·소화 과정, 3D 곡선 경로 이동, 타이핑 게임 진행, 심장 수축·판막, 대규모 의료 모델 변환, FLOW Studio 에디터, 학습 기록 분석, 로그인, 멀티플레이.
 단면(clipping)은 표면 Mesh를 자를 뿐이다. 원본에 없는 내부 구조(판막, 심방, 심실 등)를 만들어 내지 않는다. 그런 구조가 필요하면 검증된 모델을 쓴다.
 
-## STEP 03 방향
-1. BodyParts3D 부위 명칭표(`isa/partof_parts_list_e.txt`)를 확보한다. 그다음 심혈관계 몇 개 부위만 Blender 스크립트로 GLB로 바꾸고(Z-up → Y-up, mm → m) 자산 대장에 등록한다.
-2. 3차원 경로: CatmullRomCurve3로 경로를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다.
+## 해부학 자산 파이프라인 (STEP 03-A, 2026-11-28)
+- **도구 위치:** `tools/asset-processing/`(검색·조사·계획·추출·등록)과 `tools/blender/bp3d_to_glb.py`(변환). 문서는 `docs/development/bp3d/ANATOMY_PIPELINE.md`에 있다.
+- **수업 범위 밖:** 이 도구들은 개발 도구라 zipfile, json, csv, argparse, pathlib, hashlib, bpy를 쓴다. 게임 로직 `py/`의 문법 제한(강의 범위)은 그대로 지킨다. 둘을 섞지 않는다.
+- **OBJ 찾기:** OBJ 파일명은 element file ID(`FJ…`)다. FMA ID나 BP ID로 OBJ를 찾지 않는다. COMPOUND는 `*_element_parts.txt`로 풀고, IS-A와 PART-OF 트리는 병합하지 않는다.
+- **좌표:** 장기별 중심 정렬과 크기 정규화를 하지 않는다.
+  - OBJ는 `forward_axis=Y, up_axis=Z`로 축 변환 없이 불러온다(자체 검사 있음).
+  - mm→m는 모든 메시에 같은 배율로 적용한다.
+  - 축 변환은 glTF `export_yup`에서 한 번만 한다.
+  - 결과: glTF (x, y, z) = (X, Z, −Y) × 0.001, +X = 환자 왼쪽, +Y = 위, +Z = 앞
+- **변환 단위:** 한 element는 한 파트에만 넣는다(`bp3d_build.py plan`이 겹침을 검사). 원본 concept 이름이 내용과 다르면 element 이름 필터(`rest_of` + `keywords`)를 쓰고, 그 사실을 사양의 `note`에 남긴다.
+- **원본에 없는 구조:** 도형으로 만들어 실제 해부학 모델처럼 표시하지 않는다(현재 없음: 심실 심근 벽, 심실중격, 폐 실질).
+- **결과물 관리:** 결과 GLB마다 `*.meta.json`을 두고 `asset_registry.csv` 행을 남긴다(`bp3d_build.py register`). `verification_status`에 의학적 검증 여부를 정직하게 적는다.
+- **출처 표기:** BodyParts3D 파생 모델은 CC BY 4.0이다. 해당 장면의 `credits`로 화면에 출처를 표시하고, 수정 내역은 `assets/licenses/bodyparts3d.md`에 적는다.
+- **Z-Anatomy:** 별도 라이선스 검토 전까지 쓰지 않는다.
+
+## STEP 03-B 방향
+1. (완료: STEP 03-A) BodyParts3D 메타데이터를 확보하고 심혈관계 GLB 6개를 변환·등록했다.
+2. 3차원 경로: CatmullRomCurve3로 경로를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다. 경로는 심장 내강·혈관 모델의 실제 좌표(m, 같은 원점)를 기준으로 잡는다.
 3. `camera-controller.setFollowTarget`으로 이동 객체를 추적한다.
 4. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 `[x, y, z]`로 확장한다. 타이핑 입력(`js/shared/typing-input.js`)과 연결한다.

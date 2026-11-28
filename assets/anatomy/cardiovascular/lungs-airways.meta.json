@@ -1,0 +1,217 @@
+{
+  "asset_id": "bp3d-cv-lungs-airways",
+  "display_name": "Lungs — bronchial trees (폐 기관지 가지)",
+  "file": "assets/anatomy/cardiovascular/lungs-airways.glb",
+  "original_name": "left lung; right lung",
+  "concept_id": [
+    "FMA7309",
+    "FMA7310"
+  ],
+  "representation_id": [
+    "BP9359",
+    "BP9417"
+  ],
+  "element_file_ids": {
+    "right_lung_bronchial_tree": [
+      "FJ2449",
+      "FJ2451",
+      "FJ2452",
+      "FJ2453",
+      "FJ2454",
+      "FJ2455",
+      "FJ2456",
+      "FJ2457",
+      "FJ2458",
+      "FJ2459",
+      "FJ2470",
+      "FJ2481",
+      "FJ2486",
+      "FJ2487",
+      "FJ2488",
+      "FJ2489",
+      "FJ2490",
+      "FJ2491",
+      "FJ2492",
+      "FJ2493",
+      "FJ2494",
+      "FJ2495",
+      "FJ2496",
+      "FJ2497",
+      "FJ2498",
+      "FJ2499",
+      "FJ2500",
+      "FJ2501",
+      "FJ2502",
+      "FJ2503",
+      "FJ2504",
+      "FJ2505",
+      "FJ2506",
+      "FJ2507",
+      "FJ2508",
+      "FJ2509",
+      "FJ2510",
+      "FJ2511",
+      "FJ2512",
+      "FJ2513",
+      "FJ2514",
+      "FJ2515",
+      "FJ2516",
+      "FJ2517",
+      "FJ2518",
+      "FJ2519",
+      "FJ2520",
+      "FJ2521",
+      "FJ2522",
+      "FJ2523",
+      "FJ2524",
+      "FJ2525",
+      "FJ2526"
+    ],
+    "left_lung_bronchial_tree": [
+      "FJ2441",
+      "FJ2442",
+      "FJ2443",
+      "FJ2444",
+      "FJ2445",
+      "FJ2446",
+      "FJ2447",
+      "FJ2448",
+      "FJ2460",
+      "FJ2461",
+      "FJ2462",
+      "FJ2463",
+      "FJ2464",
+      "FJ2465",
+      "FJ2466",
+      "FJ2467",
+      "FJ2468",
+      "FJ2469",
+      "FJ2471",
+      "FJ2472",
+      "FJ2473",
+      "FJ2474",
+      "FJ2475",
+      "FJ2476",
+      "FJ2477",
+      "FJ2478",
+      "FJ2479",
+      "FJ2480",
+      "FJ2482",
+      "FJ2483",
+      "FJ2484",
+      "FJ2485",
+      "FJ2527",
+      "FJ2528",
+      "FJ2529",
+      "FJ2530",
+      "FJ2531",
+      "FJ2532",
+      "FJ2533",
+      "FJ2534",
+      "FJ2535",
+      "FJ2536",
+      "FJ2537",
+      "FJ2538",
+      "FJ2540"
+    ]
+  },
+  "source_archive": "partof_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 2,
+  "triangle_count": 52866,
+  "bounding_box": {
+    "min": [
+      -0.11654,
+      1.12485,
+      0.02031
+    ],
+    "max": [
+      0.12288,
+      1.35314,
+      0.17787
+    ],
+    "size": [
+      0.23942,
+      0.22829,
+      0.15756
+    ]
+  },
+  "file_size": 1095016,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "BodyParts3D 4.0에는 폐 실질·겉면 메시가 없다. 폐(FMA7309/7310)를 이루는 element 중 기관지 가지만 넣는다(폐혈관은 pulmonary-vessels.glb).",
+  "parts": [
+    {
+      "id": "right_lung_bronchial_tree",
+      "name": "Right lung — bronchial tree",
+      "concept_id": "FMA7309",
+      "concept_name": "right lung",
+      "material": "airway",
+      "element_count": 53,
+      "triangles": 42278,
+      "mesh_check": {
+        "non_manifold_edges": 7108,
+        "boundary_edges": 7108,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.11654,
+          1.13571,
+          0.02417
+        ],
+        "max": [
+          -0.00874,
+          1.34785,
+          0.17381
+        ],
+        "size": [
+          0.1078,
+          0.21214,
+          0.14964
+        ]
+      }
+    },
+    {
+      "id": "left_lung_bronchial_tree",
+      "name": "Left lung — bronchial tree",
+      "concept_id": "FMA7310",
+      "concept_name": "left lung",
+      "material": "airway",
+      "element_count": 45,
+      "triangles": 10588,
+      "mesh_check": {
+        "non_manifold_edges": 3330,
+        "boundary_edges": 3330,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.02319,
+          1.12485,
+          0.02031
+        ],
+        "max": [
+          0.12288,
+          1.35314,
+          0.17787
+        ],
+        "size": [
+          0.09969,
+          0.22829,
+          0.15756
+        ]
+      }
+    }
+  ]
+}

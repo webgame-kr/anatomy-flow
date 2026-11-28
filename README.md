@@ -2,12 +2,16 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 02 — 3D Object Management & Camera System v0.2**
-실제 인체 모델과 의료 콘텐츠는 아직 없습니다. 외부 3D 모델을 불러와 조작하고 관찰하는 범용 엔진과 개발자 Sandbox를 만들었습니다(아래 "STEP 02 엔진").
+**현재 단계: STEP 03-A — FLOW Asset Pipeline v0.3 (해부학 모델 가공)**
+BodyParts3D 원본에서 심혈관계 모델을 골라 GLB로 변환했습니다(장면 E·F). 혈액 이동과 타이핑 진행은 아직 없습니다.
 
 - STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
+- STEP 02: 객체·카메라·선택·재질·단면·장면 관리 엔진 (아래 "STEP 02 엔진")
 - 2026-11-27 개발 자료 정리: 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트 ("개발 자료와 자산 관리")
-- **다음 단계 (STEP 03):** BodyParts3D 장기 모델 시범 변환(GLB), 3D 곡선 경로 위 물질 이동, 이동 객체 추적 카메라, 보존한 진행 규칙 엔진과 타이핑 입력 연결
+- **STEP 03-A:** BodyParts3D 검색·선택 추출·Blender 변환 파이프라인. 심장, 대동맥, 대정맥, 폐혈관, 기관지 가지 GLB 6개를 원본 상대 위치 그대로 만들었습니다(`docs/development/bp3d/ANATOMY_PIPELINE.md`).
+- **다음 단계 (STEP 03-B):** 3D 곡선 경로 위 혈액 이동, 이동 객체 추적 카메라, 보존한 진행 규칙 엔진과 타이핑 입력 연결
+
+3D 해부학 모델 출처: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형 내역은 `assets/licenses/bodyparts3d.md`)
 
 배포 주소: https://webgame-kr.github.io/anatomy-flow/
 
@@ -210,6 +214,22 @@ commands = [
 
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
+
+## STEP 03-A 해부학 모델 파이프라인
+
+```powershell
+python tools/asset-processing/bp3d_catalog.py search "pulmonary vein" --tree partof
+python tools/asset-processing/survey_structures.py tools/asset-processing/targets/cardiovascular.json
+python tools/asset-processing/bp3d_build.py all tools/asset-processing/specs/cardiovascular.json
+python tools/asset-processing/test_bp3d_tools.py
+```
+
+- **필요한 원본:** `raw-models/bodyparts3d/`(Git 제외)에 원본 ZIP 2개와 메타데이터 6개가 있어야 합니다.
+- **결과물:** GLB와 `*.meta.json`은 `assets/anatomy/cardiovascular/`에 생기고, 자산 대장(`docs/references/asset_registry.csv`)이 갱신됩니다.
+- **새 계통 추가:** `tools/asset-processing/targets/`와 `specs/`에 JSON을 추가합니다. 코드는 그대로 씁니다.
+- **좌표:** 모든 GLB가 같은 원점을 씁니다. glTF (x, y, z) = (X, Z, −Y) × 0.001이고, +X = 환자 왼쪽, +Y = 위, +Z = 앞입니다. 장면 E(개별 GLB 5개)와 F(통합 GLB)에서 확인합니다.
+- **데이터 한계:** BodyParts3D 4.0에는 심실 심근 벽, 심실중격, 폐 실질 메시가 없습니다. 자세한 내용은 `docs/development/bp3d/ANATOMY_PIPELINE.md`에 있습니다.
+- **코드 범위:** 이 도구들은 개발 도구라 수업 범위 밖의 라이브러리(zipfile, json, bpy 등)를 씁니다. 게임 로직 `py/`와 분리되어 있습니다.
 
 ## 개발 자료와 자산 관리
 

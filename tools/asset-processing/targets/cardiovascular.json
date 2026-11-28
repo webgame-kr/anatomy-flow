@@ -1,0 +1,24 @@
+{
+  "system": "cardiovascular",
+  "description": "STEP 03-A 우선 조사 대상. names = 검색할 영문명(동의어·하위 구조 포함). 첫 이름이 대표명.",
+  "targets": [
+    { "key": "heart", "label": "Heart", "names": ["heart"] },
+    { "key": "right_atrium", "label": "Right atrium", "names": ["right atrium", "wall of right atrium", "cavity of right atrium"] },
+    { "key": "right_ventricle", "label": "Right ventricle", "names": ["right ventricle", "wall of right ventricle", "cavity of right ventricle"] },
+    { "key": "left_atrium", "label": "Left atrium", "names": ["left atrium", "wall of left atrium", "cavity of left atrium"] },
+    { "key": "left_ventricle", "label": "Left ventricle", "names": ["left ventricle", "wall of left ventricle", "cavity of left ventricle"] },
+    { "key": "tricuspid_valve", "label": "Tricuspid valve", "names": ["tricuspid valve", "right atrioventricular valve"] },
+    { "key": "mitral_valve", "label": "Mitral valve", "names": ["mitral valve", "left atrioventricular valve", "bicuspid valve"] },
+    { "key": "pulmonary_valve", "label": "Pulmonary valve", "names": ["pulmonary valve", "pulmonic valve"] },
+    { "key": "aortic_valve", "label": "Aortic valve", "names": ["aortic valve"] },
+    { "key": "interventricular_septum", "label": "Interventricular septum", "names": ["interventricular septum", "muscular part of interventricular septum", "membranous part of interventricular septum", "septum of heart"] },
+    { "key": "left_lung", "label": "Left lung", "names": ["left lung"] },
+    { "key": "right_lung", "label": "Right lung", "names": ["right lung"] },
+    { "key": "aorta", "label": "Aorta", "names": ["aorta", "ascending aorta", "arch of aorta", "descending aorta", "thoracic aorta", "abdominal aorta"] },
+    { "key": "superior_vena_cava", "label": "Superior vena cava", "names": ["superior vena cava"] },
+    { "key": "inferior_vena_cava", "label": "Inferior vena cava", "names": ["inferior vena cava"] },
+    { "key": "pulmonary_trunk", "label": "Pulmonary trunk", "names": ["pulmonary trunk"] },
+    { "key": "pulmonary_arteries", "label": "Pulmonary arteries", "names": ["pulmonary artery", "right pulmonary artery", "left pulmonary artery"] },
+    { "key": "pulmonary_veins", "label": "Pulmonary veins", "names": ["pulmonary vein", "right superior pulmonary vein", "right inferior pulmonary vein", "left superior pulmonary vein", "left inferior pulmonary vein"] }
+  ]
+}
