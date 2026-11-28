@@ -1,0 +1,267 @@
+{
+  "version": 1,
+  "scene_id": "anatomy_cardiovascular",
+  "coordinate_note": "position은 object(asset_id + node)의 로컬 좌표(m). 장면 좌표 = 객체 matrixWorld × position.",
+  "anchors": [
+    {
+      "anchor_id": "a.svc.lumen",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.superior_vena_cava",
+      "object": {
+        "asset_id": "bp3d-cv-vena-cava",
+        "node": "superior_vena_cava"
+      },
+      "object_id": "bp3d-cv-vena-cava/superior_vena_cava",
+      "name_ko": "상대정맥 중심",
+      "name_en": "SVC centroid",
+      "position": [
+        -0.01495,
+        1.29124,
+        0.11527
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "superior_vena_cava element 1개 정점 318개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.ivc.lumen",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.inferior_vena_cava",
+      "object": {
+        "asset_id": "bp3d-cv-vena-cava",
+        "node": "inferior_vena_cava"
+      },
+      "object_id": "bp3d-cv-vena-cava/inferior_vena_cava",
+      "name_ko": "하대정맥 중심",
+      "name_en": "IVC centroid",
+      "position": [
+        -0.01254,
+        1.06843,
+        0.11615
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "inferior_vena_cava element 2개 정점 1761개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.ra.cavity",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.right_atrium",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_cavity_right_atrium"
+      },
+      "object_id": "bp3d-cv-heart/heart_cavity_right_atrium",
+      "name_ko": "우심방 내강 중심",
+      "name_en": "RA cavity centroid",
+      "position": [
+        -0.01408,
+        1.23136,
+        0.12083
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_cavity_right_atrium element 1개 정점 1193개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.rv.cavity",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.right_ventricle",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_cavity_right_ventricle"
+      },
+      "object_id": "bp3d-cv-heart/heart_cavity_right_ventricle",
+      "name_ko": "우심실 내강 중심",
+      "name_en": "RV cavity centroid",
+      "position": [
+        0.02021,
+        1.22624,
+        0.14494
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_cavity_right_ventricle element 1개 정점 973개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.la.cavity",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.left_atrium",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_cavity_left_atrium"
+      },
+      "object_id": "bp3d-cv-heart/heart_cavity_left_atrium",
+      "name_ko": "좌심방 내강 중심",
+      "name_en": "LA cavity centroid",
+      "position": [
+        0.01881,
+        1.24362,
+        0.09301
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_cavity_left_atrium element 1개 정점 587개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.lv.cavity",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.left_ventricle",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_cavity_left_ventricle"
+      },
+      "object_id": "bp3d-cv-heart/heart_cavity_left_ventricle",
+      "name_ko": "좌심실 내강 중심",
+      "name_en": "LV cavity centroid",
+      "position": [
+        0.03537,
+        1.22233,
+        0.11952
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_cavity_left_ventricle element 1개 정점 879개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.pt.lumen",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.pulmonary_trunk",
+      "object": {
+        "asset_id": "bp3d-cv-pulmonary-vessels",
+        "node": "pulmonary_trunk"
+      },
+      "object_id": "bp3d-cv-pulmonary-vessels/pulmonary_trunk",
+      "name_ko": "폐동맥간 중심",
+      "name_en": "Pulmonary trunk centroid",
+      "position": [
+        0.02645,
+        1.2726,
+        0.13473
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "pulmonary_trunk element 1개 정점 871개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.av.center",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.valve.aortic",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_valve_aortic"
+      },
+      "object_id": "bp3d-cv-heart/heart_valve_aortic",
+      "name_ko": "대동맥판 중심",
+      "name_en": "Aortic valve centroid",
+      "position": [
+        0.02074,
+        1.24513,
+        0.12015
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_valve_aortic element 3개 정점 1249개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    }
+  ],
+  "candidates": [
+    {
+      "anatomical_id": "cv.superior_vena_cava",
+      "name_ko": "상대정맥",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.inferior_vena_cava",
+      "name_ko": "하대정맥",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.right_atrium",
+      "name_ko": "우심방",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.valve.tricuspid",
+      "name_ko": "삼첨판",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.right_ventricle",
+      "name_ko": "우심실",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.valve.pulmonary",
+      "name_ko": "폐동맥판",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.pulmonary_arteries",
+      "name_ko": "폐동맥",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.left_lung",
+      "name_ko": "폐(좌)",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.right_lung",
+      "name_ko": "폐(우)",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.pulmonary_veins",
+      "name_ko": "폐정맥",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.left_atrium",
+      "name_ko": "좌심방",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.valve.mitral",
+      "name_ko": "승모판",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.left_ventricle",
+      "name_ko": "좌심실",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.valve.aortic",
+      "name_ko": "대동맥판",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    },
+    {
+      "anatomical_id": "cv.aorta",
+      "name_ko": "대동맥",
+      "status": "PENDING",
+      "notes": "경로 제작 후보. 모델 형상을 확인한 뒤 위치를 정한다."
+    }
+  ]
+}

@@ -172,6 +172,7 @@ export function createCameraController({ camera, controls, registry }) {
     setCoordinateSystem,
     state,
     restoreState,
+    directionOf: presetDirection,       // STEP 03-B: 여러 객체 상자에 프리셋 방향을 쓰기 위해
     setFollowTarget(id) { followId = id; },
     get followTarget() { return followId; },
     get animating() { return !!anim; },

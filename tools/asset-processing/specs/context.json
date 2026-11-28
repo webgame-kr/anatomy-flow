@@ -1,0 +1,41 @@
+{
+  "system": "context",
+  "tree": "partof",
+  "output_dir": "assets/anatomy/context",
+  "description": "STEP 03-B 주변 구조: 인체 외형(skin)과 흉곽(rib cage). 심혈관계와 같은 좌표·원점을 쓴다. 무거우므로 Explorer에서 지연 로딩한다.",
+  "transform": {
+    "source": "BodyParts3D OBJ: mm, +X = 환자 왼쪽, -Y = 앞(anterior), +Z = 위(superior) — 측정으로 확인",
+    "blender_import": "obj_import forward_axis=Y, up_axis=Z (Blender 좌표 = OBJ 좌표, 축 변환 없음)",
+    "scale": 0.001,
+    "export": "glTF export_yup=True 한 번만: glTF (x, y, z) = (X, Z, -Y) × 0.001",
+    "recentering": "없음 — 모든 파일이 같은 원점(BodyParts3D 원점)을 쓴다"
+  },
+  "materials": {
+    "skin": { "color": "#e8c4a8", "roughness": 0.8, "note": "인체 외형(피부): 반투명으로 쓰는 것을 전제로 한 연한 살색" },
+    "bone": { "color": "#ece4d0", "roughness": 0.7, "note": "뼈: 상아색" },
+    "cartilage": { "color": "#c9dbe0", "roughness": 0.6, "note": "연골: 옅은 청회색" },
+    "other": { "color": "#b9a8a0", "roughness": 0.6, "note": "분류 밖 element" }
+  },
+  "assets": [
+    {
+      "asset_id": "bp3d-body-skin",
+      "file": "body-skin.glb",
+      "display_name": "Body outline — skin (인체 외형)",
+      "parts": [
+        { "id": "skin", "name": "Skin", "concept": "FMA7163", "material": "skin" }
+      ]
+    },
+    {
+      "asset_id": "bp3d-rib-cage",
+      "file": "rib-cage.glb",
+      "display_name": "Rib cage (흉곽)",
+      "parts": [
+        { "id": "sternum", "name": "Sternum", "concept": "FMA7485", "material": "bone" },
+        { "id": "costal_cartilages", "name": "Costal cartilages", "rest_of": "FMA7480", "keywords": ["cartilage"], "material": "cartilage" },
+        { "id": "left_ribs", "name": "Left ribs", "rest_of": "FMA7480", "keywords": ["left"], "material": "bone" },
+        { "id": "right_ribs", "name": "Right ribs", "rest_of": "FMA7480", "keywords": ["right"], "material": "bone" },
+        { "id": "rib_cage_other", "name": "Other rib cage elements", "rest_of": "FMA7480", "keywords": [], "material": "other" }
+      ]
+    }
+  ]
+}

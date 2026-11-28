@@ -1,0 +1,234 @@
+{
+  "asset_id": "bp3d-rib-cage",
+  "display_name": "Rib cage (흉곽)",
+  "file": "assets/anatomy/context/rib-cage.glb",
+  "original_name": "rib cage; sternum",
+  "concept_id": [
+    "FMA7485",
+    "FMA7480",
+    "FMA7480",
+    "FMA7480"
+  ],
+  "representation_id": [
+    "BP9392",
+    "BP9393",
+    "BP9393",
+    "BP9393"
+  ],
+  "element_file_ids": {
+    "sternum": [
+      "FJ3153",
+      "FJ3178",
+      "FJ3290"
+    ],
+    "costal_cartilages": [
+      "FJ3239",
+      "FJ3242",
+      "FJ3245",
+      "FJ3248",
+      "FJ3251",
+      "FJ3254",
+      "FJ3255",
+      "FJ3333",
+      "FJ3335",
+      "FJ3337",
+      "FJ3339",
+      "FJ3341",
+      "FJ3343",
+      "FJ3345"
+    ],
+    "left_ribs": [
+      "FJ3225",
+      "FJ3226",
+      "FJ3227",
+      "FJ3228",
+      "FJ3229",
+      "FJ3230",
+      "FJ3231",
+      "FJ3232",
+      "FJ3233",
+      "FJ3234",
+      "FJ3235",
+      "FJ3236"
+    ],
+    "right_ribs": [
+      "FJ3330",
+      "FJ3331",
+      "FJ3332",
+      "FJ3334",
+      "FJ3336",
+      "FJ3338",
+      "FJ3340",
+      "FJ3342",
+      "FJ3344",
+      "FJ3346",
+      "FJ3347",
+      "FJ3348"
+    ]
+  },
+  "source_archive": "partof_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 4,
+  "triangle_count": 194110,
+  "bounding_box": {
+    "min": [
+      -0.13709,
+      1.00806,
+      0.00364
+    ],
+    "max": [
+      0.13578,
+      1.37048,
+      0.21383
+    ],
+    "size": [
+      0.27286,
+      0.36242,
+      0.21019
+    ]
+  },
+  "file_size": 3583268,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "sternum",
+      "name": "Sternum",
+      "concept_id": "FMA7485",
+      "concept_name": "sternum",
+      "material": "bone",
+      "element_count": 3,
+      "triangles": 8114,
+      "mesh_check": {
+        "non_manifold_edges": 2690,
+        "boundary_edges": 2690,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.02745,
+          1.16402,
+          0.1308
+        ],
+        "max": [
+          0.02745,
+          1.32525,
+          0.21383
+        ],
+        "size": [
+          0.0549,
+          0.16123,
+          0.08303
+        ]
+      }
+    },
+    {
+      "id": "costal_cartilages",
+      "name": "Costal cartilages",
+      "concept_id": "FMA7480",
+      "concept_name": "rib cage",
+      "material": "cartilage",
+      "element_count": 14,
+      "triangles": 15234,
+      "mesh_check": {
+        "non_manifold_edges": 2292,
+        "boundary_edges": 2292,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.10991,
+          1.10256,
+          0.12217
+        ],
+        "max": [
+          0.10846,
+          1.32025,
+          0.21322
+        ],
+        "size": [
+          0.21837,
+          0.21769,
+          0.09104
+        ]
+      }
+    },
+    {
+      "id": "left_ribs",
+      "name": "Left ribs",
+      "concept_id": "FMA7480",
+      "concept_name": "rib cage",
+      "material": "bone",
+      "element_count": 12,
+      "triangles": 85402,
+      "mesh_check": {
+        "non_manifold_edges": 672,
+        "boundary_edges": 672,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.01237,
+          1.00806,
+          0.00364
+        ],
+        "max": [
+          0.13578,
+          1.37048,
+          0.19769
+        ],
+        "size": [
+          0.12341,
+          0.36242,
+          0.19404
+        ]
+      }
+    },
+    {
+      "id": "right_ribs",
+      "name": "Right ribs",
+      "concept_id": "FMA7480",
+      "concept_name": "rib cage",
+      "material": "bone",
+      "element_count": 12,
+      "triangles": 85360,
+      "mesh_check": {
+        "non_manifold_edges": 682,
+        "boundary_edges": 682,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.13709,
+          1.00808,
+          0.00364
+        ],
+        "max": [
+          -0.01368,
+          1.37048,
+          0.19765
+        ],
+        "size": [
+          0.12341,
+          0.3624,
+          0.19401
+        ]
+      }
+    }
+  ]
+}

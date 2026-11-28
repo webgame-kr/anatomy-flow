@@ -2,14 +2,15 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 03-A — FLOW Asset Pipeline v0.3 (해부학 모델 가공)**
-BodyParts3D 원본에서 심혈관계 모델을 골라 GLB로 변환했습니다(장면 E·F). 혈액 이동과 타이핑 진행은 아직 없습니다.
+**현재 단계: STEP 03-B — Anatomy Viewer & Anatomical Anchor System**
+사용자용 해부학 탐색 화면(`explorer.html`)과 해부학 구조 레지스트리, 레이어, 라벨, 검색, Anchor 편집을 만들었습니다. 혈액 이동과 타이핑 진행은 아직 없습니다.
 
 - STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
 - STEP 02: 객체·카메라·선택·재질·단면·장면 관리 엔진 (아래 "STEP 02 엔진")
 - 2026-11-27 개발 자료 정리: 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트 ("개발 자료와 자산 관리")
 - **STEP 03-A:** BodyParts3D 검색·선택 추출·Blender 변환 파이프라인. 심장, 대동맥, 대정맥, 폐혈관, 기관지 가지 GLB 6개를 원본 상대 위치 그대로 만들었습니다(`docs/development/bp3d/ANATOMY_PIPELINE.md`).
-- **다음 단계 (STEP 03-B):** 3D 곡선 경로 위 혈액 이동, 이동 객체 추적 카메라, 보존한 진행 규칙 엔진과 타이핑 입력 연결
+- **STEP 03-B:** Anatomy Explorer. 심혈관 구조 41개 레지스트리, 레이어, 3D 라벨, 검색, 해부학 Anchor(object-local) 편집, 피부·흉곽 맥락 모델 (`docs/development/STEP_03B_REPORT.md`)
+- **다음 단계 (STEP 03-C):** Anchor를 잇는 3D 곡선 경로 위 혈액 이동, 이동 객체 추적 카메라, 진행 규칙 엔진과 타이핑 입력 연결
 
 3D 해부학 모델 출처: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형 내역은 `assets/licenses/bodyparts3d.md`)
 
@@ -96,7 +97,9 @@ cd anatomy-flow
 python -m http.server 8000
 ```
 
-그다음 브라우저에서 `http://localhost:8000`을 엽니다.
+그다음 브라우저에서 엽니다.
+- 사용자용 Anatomy Explorer: `http://localhost:8000/explorer.html`
+- 개발자 Sandbox (STEP 02): `http://localhost:8000/`
 - 인터넷 연결이 필요합니다. Three.js와 Pyodide(약 10MB)를 CDN에서 받습니다.
 - 파일을 고쳤는데 그대로면 강력 새로고침(Ctrl+Shift+R)을 하세요.
 
@@ -214,6 +217,33 @@ commands = [
 
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
+
+## STEP 03-B Anatomy Explorer
+
+`explorer.html`은 사용자용 화면이고, `index.html`(개발자 Sandbox)은 그대로 둡니다.
+
+- **데이터:** `content/anatomy/cardiovascular/`
+  - `scene.json`: 자산, 레이어, 카메라 시점·방향, 라벨, 출처
+  - `structures.json`: 해부학 레지스트리
+  - `anchors.json`: Anchor
+  - `structures.json`과 `anchors.json`은 원본 `tools/asset-processing/anatomy/cardiovascular.structures.src.json`에서 만듭니다:
+    ```powershell
+    python tools/asset-processing/anatomy_data.py tools/asset-processing/anatomy/cardiovascular.structures.src.json
+    ```
+- **모듈:** `js/anatomy/`
+  - `anatomy-registry.js`: 구조 ↔ Mesh 명시적 매핑과 상태
+  - `anatomy-search.js`: 검색
+  - `anatomy-manager.js`: 레이어, 선택, 카메라, 격리, 단면
+  - `anatomy-labels.js`: 3D 라벨
+  - `anchor-manager.js`: Anchor
+  - `anatomy-explorer.js`: 화면 연결
+- **구조 상태:** AVAILABLE, PARTIAL(원본에 일부만 있음), MISSING(원본에 없음), NOT_LOADED(지연 로딩 전). 원본에 없는 구조는 도형으로 만들지 않습니다.
+- **해부학 좌우:** "해부학 좌측"은 환자의 왼쪽(+X)에서 본 화면입니다.
+- **개발자 모드:** 설정 → 개발자 모드를 켜면 다음이 보입니다.
+  - Anchor 표시와 표면 클릭 생성, 기즈모 이동, XYZ 편집, JSON 내보내기·불러오기
+  - Python 연동 테스트와 로그
+- **Anchor 좌표:** 대상 Object의 로컬 좌표로 저장합니다. 모델이 움직여도 따라갑니다. 시드 Anchor는 정점 평균으로 만든 기하 위치이며 해부학적으로 검증하지 않았습니다.
+- **Python:** `scene_commands`의 target에 anatomical_id(예: `cv.left_ventricle`)를 쓸 수 있습니다. JS가 그 구조의 Mesh 전체로 바꿉니다.
 
 ## STEP 03-A 해부학 모델 파이프라인
 

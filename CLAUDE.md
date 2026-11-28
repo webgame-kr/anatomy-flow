@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 02(3D 객체·카메라 시스템)이다. 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진"에 있다.
+현재 단계는 STEP 03-B(Anatomy Explorer와 Anchor)까지 완료했다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진"과 "STEP 03-B Anatomy Explorer"에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -98,8 +98,21 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **출처 표기:** BodyParts3D 파생 모델은 CC BY 4.0이다. 해당 장면의 `credits`로 화면에 출처를 표시하고, 수정 내역은 `assets/licenses/bodyparts3d.md`에 적는다.
 - **Z-Anatomy:** 별도 라이선스 검토 전까지 쓰지 않는다.
 
-## STEP 03-B 방향
-1. (완료: STEP 03-A) BodyParts3D 메타데이터를 확보하고 심혈관계 GLB 6개를 변환·등록했다.
-2. 3차원 경로: CatmullRomCurve3로 경로를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다. 경로는 심장 내강·혈관 모델의 실제 좌표(m, 같은 원점)를 기준으로 잡는다.
+## 해부학 Explorer (STEP 03-B, 2026-11-28)
+- **화면 분리:** `explorer.html`은 사용자용, `index.html`은 개발자 Sandbox다. 공유 엔진 모듈(`js/engine/`)은 확장만 하고 Sandbox 동작을 깨지 않는다.
+- **해부학 레지스트리**(`js/anatomy/anatomy-registry.js`)
+  - 구조와 Mesh는 `"asset:node"` 이름으로 명시적으로 연결한다. Three.js UUID를 쓰지 않는다.
+  - 렌더링 상태를 저장하지 않는다. 그 기준은 엔진 레지스트리와 material-controller다.
+- **데이터 원본:** `structures.json`과 `anchors.json`은 직접 고치지 않는다. 원본은 `tools/asset-processing/anatomy/*.src.json`이고, `anatomy_data.py`로 다시 만든다.
+- **레이어:** 레이어 숨김과 구조별 숨김은 따로 저장한다. 상위 레이어를 다시 켜도 개별 상태가 유지되어야 한다.
+- **Anchor:**
+  - 대상 Object의 로컬 좌표로 저장한다. 장면 좌표는 필요할 때 계산한다.
+  - `verification_status`에 출처를 적는다(GEOMETRY_DERIVED, MANUAL, EDITED).
+  - 해부학적으로 검증했다고 표시하지 않는다.
+- **Python:** target에 anatomical_id를 쓸 수 있고, JS `resolve` 훅이 Mesh ID로 바꾼다. 스냅샷에는 구조와 Anchor의 id·상태만 보낸다.
+
+## STEP 03-C 방향
+1. (완료: STEP 03-A, 03-B) 심혈관 GLB와 해부학 레지스트리, Anchor 시스템
+2. 3차원 경로: Anchor들을 잇는 CatmullRomCurve3를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다.
 3. `camera-controller.setFollowTarget`으로 이동 객체를 추적한다.
-4. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 `[x, y, z]`로 확장한다. 타이핑 입력(`js/shared/typing-input.js`)과 연결한다.
+4. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 Anchor ID로 연결한다. 타이핑 입력(`js/shared/typing-input.js`)과 연결한다.

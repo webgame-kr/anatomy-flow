@@ -171,23 +171,34 @@ export function createMaterialController({ registry }) {
   }
 
   function isolate(id) {
+    if (!registry.has(id)) { clearIsolation(); return; }
+    isolateSet(registry.meshesOf(id), id);
+  }
+
+  function ghostOthers(id) {
+    if (!registry.has(id)) { clearGhost(); return; }
+    ghostSet(registry.meshesOf(id), id);
+  }
+
+  // STEP 03-B: 여러 Mesh로 된 논리 구조(예: 폐정맥 4개)를 한꺼번에 격리·고스트
+  function isolateSet(meshes, label = 'set') {
     clearIsolation(false);
-    if (!registry.has(id)) return;
-    isolatedId = id;
+    const keep = new Set(meshes);
+    isolatedId = label;
     for (const mesh of registry.allMeshes()) {
       const st = state(mesh);
-      st.isoHidden = !inSubtree(mesh, id);
+      st.isoHidden = !keep.has(mesh);
       apply(mesh);
     }
   }
 
-  function ghostOthers(id) {
+  function ghostSet(meshes, label = 'set') {
     clearGhost();
-    if (!registry.has(id)) return;
-    ghostId = id;
+    const keep = new Set(meshes);
+    ghostId = label;
     for (const mesh of registry.allMeshes()) {
       const st = state(mesh);
-      st.ghost = !inSubtree(mesh, id);
+      st.ghost = !keep.has(mesh);
       apply(mesh);
     }
   }
@@ -253,6 +264,8 @@ export function createMaterialController({ registry }) {
     setHighlight,
     isolate,
     ghostOthers,
+    isolateSet,
+    ghostSet,
     clearIsolation,
     clearGhost,
     showAll,

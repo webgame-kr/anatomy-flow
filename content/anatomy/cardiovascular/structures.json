@@ -1,0 +1,2201 @@
+{
+  "system": "cardiovascular",
+  "generated_by": "tools/asset-processing/anatomy_data.py",
+  "source_definition": "tools/asset-processing/anatomy/cardiovascular.structures.src.json",
+  "structures": [
+    {
+      "anatomical_id": "cv.heart",
+      "name_ko": "심장",
+      "name_en": "Heart",
+      "aliases": [
+        "cor",
+        "심장 전체"
+      ],
+      "fma_id": "FMA7088",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": null,
+      "children": [
+        "cv.right_atrium",
+        "cv.right_ventricle",
+        "cv.left_atrium",
+        "cv.left_ventricle",
+        "cv.interventricular_septum",
+        "cv.papillary_muscles",
+        "cv.valves",
+        "cv.coronary_arteries",
+        "cv.cardiac_veins"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_right_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_left_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_ventricle"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_ventricle"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_tricuspid"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_pulmonary"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_aortic"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_mitral"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_papillary_muscles"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_coronary_veins"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_coronary_arteries"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2439",
+        "FJ2438",
+        "FJ2424",
+        "FJ2423",
+        "FJ2425",
+        "FJ2422",
+        "FJ2421",
+        "FJ2433",
+        "FJ2436",
+        "FJ2417",
+        "FJ2427",
+        "FJ2434",
+        "FJ2426",
+        "FJ2431",
+        "FJ2435",
+        "FJ2420",
+        "FJ2432",
+        "FJ2418",
+        "FJ2419",
+        "FJ2429",
+        "FJ2430",
+        "FJ2437",
+        "FJ2655",
+        "FJ2656",
+        "FJ2724",
+        "FJ2727",
+        "FJ2728",
+        "FJ2729",
+        "FJ2731",
+        "FJ2631",
+        "FJ2632",
+        "FJ2633",
+        "FJ2634",
+        "FJ2635",
+        "FJ2636",
+        "FJ2637",
+        "FJ2638",
+        "FJ2639",
+        "FJ2640",
+        "FJ2641",
+        "FJ2642",
+        "FJ2643",
+        "FJ2644",
+        "FJ2645",
+        "FJ2646",
+        "FJ2647",
+        "FJ2648",
+        "FJ2649",
+        "FJ2650",
+        "FJ2651",
+        "FJ2652",
+        "FJ2653",
+        "FJ2654",
+        "FJ2667",
+        "FJ2668",
+        "FJ2670",
+        "FJ2671",
+        "FJ2672",
+        "FJ2673",
+        "FJ2674",
+        "FJ2675",
+        "FJ2676",
+        "FJ2677",
+        "FJ2692",
+        "FJ2693",
+        "FJ2694",
+        "FJ2695",
+        "FJ2696",
+        "FJ2697",
+        "FJ2698",
+        "FJ2699",
+        "FJ2700",
+        "FJ2714",
+        "FJ2715",
+        "FJ2716",
+        "FJ2717",
+        "FJ2718",
+        "FJ2719",
+        "FJ2720",
+        "FJ2721",
+        "FJ2722",
+        "FJ2723",
+        "FJ2737"
+      ],
+      "triangle_count": 102802,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "원본 COMPOUND(element 83). 심실 심근 벽과 심실중격 메시는 원본에 없다."
+    },
+    {
+      "anatomical_id": "cv.right_atrium",
+      "name_ko": "우심방",
+      "name_en": "Right atrium",
+      "aliases": [
+        "RA",
+        "오른심방"
+      ],
+      "fma_id": "FMA7096",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [
+        "cv.right_atrium.wall",
+        "cv.right_atrium.cavity"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_right_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2439",
+        "FJ2424"
+      ],
+      "triangle_count": 20028,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_atrium.wall",
+      "name_ko": "우심방벽",
+      "name_en": "Wall of right atrium",
+      "aliases": [],
+      "fma_id": "FMA9457",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.right_atrium",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_right_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2439"
+      ],
+      "triangle_count": 17784,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_atrium.cavity",
+      "name_ko": "우심방 내강",
+      "name_en": "Cavity of right atrium",
+      "aliases": [
+        "우심방 안"
+      ],
+      "fma_id": "FMA11359",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart_internal",
+      "parent_id": "cv.right_atrium",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2424"
+      ],
+      "triangle_count": 2244,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_ventricle",
+      "name_ko": "우심실",
+      "name_en": "Right ventricle",
+      "aliases": [
+        "RV",
+        "오른심실"
+      ],
+      "fma_id": "FMA7098",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [
+        "cv.right_ventricle.cavity"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_ventricle"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2423"
+      ],
+      "triangle_count": 1918,
+      "model_status": "PARTIAL",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "심실 심근 벽 메시가 원본에 없어 내강(cavity) 입체만 있다. 유두근은 '유두근'에 좌우가 함께 묶여 있다."
+    },
+    {
+      "anatomical_id": "cv.right_ventricle.cavity",
+      "name_ko": "우심실 내강",
+      "name_en": "Cavity of right ventricle",
+      "aliases": [],
+      "fma_id": "FMA9291",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart_internal",
+      "parent_id": "cv.right_ventricle",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_right_ventricle"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2423"
+      ],
+      "triangle_count": 1918,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_atrium",
+      "name_ko": "좌심방",
+      "name_en": "Left atrium",
+      "aliases": [
+        "LA",
+        "왼심방"
+      ],
+      "fma_id": "FMA7097",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [
+        "cv.left_atrium.wall",
+        "cv.left_atrium.cavity"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_left_atrium"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2438",
+        "FJ2425"
+      ],
+      "triangle_count": 8608,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_atrium.wall",
+      "name_ko": "좌심방벽",
+      "name_en": "Wall of left atrium",
+      "aliases": [],
+      "fma_id": "FMA9531",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.left_atrium",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_wall_left_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2438"
+      ],
+      "triangle_count": 7544,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_atrium.cavity",
+      "name_ko": "좌심방 내강",
+      "name_en": "Cavity of left atrium",
+      "aliases": [],
+      "fma_id": "FMA9465",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart_internal",
+      "parent_id": "cv.left_atrium",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_atrium"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2425"
+      ],
+      "triangle_count": 1064,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_ventricle",
+      "name_ko": "좌심실",
+      "name_en": "Left ventricle",
+      "aliases": [
+        "LV",
+        "왼심실"
+      ],
+      "fma_id": "FMA7101",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [
+        "cv.left_ventricle.cavity"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_ventricle"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2422"
+      ],
+      "triangle_count": 1722,
+      "model_status": "PARTIAL",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "심실 심근 벽 메시가 원본에 없어 내강(cavity) 입체만 있다."
+    },
+    {
+      "anatomical_id": "cv.left_ventricle.cavity",
+      "name_ko": "좌심실 내강",
+      "name_en": "Cavity of left ventricle",
+      "aliases": [],
+      "fma_id": "FMA9466",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart_internal",
+      "parent_id": "cv.left_ventricle",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_cavity_left_ventricle"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2422"
+      ],
+      "triangle_count": 1722,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.interventricular_septum",
+      "name_ko": "심실사이막",
+      "name_en": "Interventricular septum",
+      "aliases": [
+        "심실중격",
+        "IVS"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [],
+      "objects": [],
+      "asset_ids": [],
+      "element_file_ids": [],
+      "triangle_count": 0,
+      "model_status": "MISSING",
+      "selectable": false,
+      "internal_structure_available": false,
+      "source": null,
+      "license": null,
+      "verification_status": "MISSING in BodyParts3D 4.0",
+      "notes": "BodyParts3D 4.0 IS-A·PART-OF 어디에도 메시가 없다(STEP 03-A 조사). 도형으로 대신 만들지 않는다."
+    },
+    {
+      "anatomical_id": "cv.papillary_muscles",
+      "name_ko": "유두근",
+      "name_en": "Papillary muscles",
+      "aliases": [
+        "꼭지근"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart_internal",
+      "parent_id": "cv.heart",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_papillary_muscles"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2418",
+        "FJ2419",
+        "FJ2429",
+        "FJ2430",
+        "FJ2437"
+      ],
+      "triangle_count": 4014,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "좌·우 심실 유두근 element 5개를 한 메시로 묶었다(원본 FMA7088 중 papillary)."
+    },
+    {
+      "anatomical_id": "cv.valves",
+      "name_ko": "심장판막",
+      "name_en": "Cardiac valves",
+      "aliases": [
+        "판막"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "valves",
+      "parent_id": "cv.heart",
+      "children": [
+        "cv.valve.tricuspid",
+        "cv.valve.mitral",
+        "cv.valve.pulmonary",
+        "cv.valve.aortic"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_tricuspid"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_mitral"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_pulmonary"
+        },
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_aortic"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2421",
+        "FJ2433",
+        "FJ2436",
+        "FJ2420",
+        "FJ2432",
+        "FJ2417",
+        "FJ2427",
+        "FJ2434",
+        "FJ2426",
+        "FJ2431",
+        "FJ2435"
+      ],
+      "triangle_count": 34778,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.valve.tricuspid",
+      "name_ko": "삼첨판",
+      "name_en": "Tricuspid valve",
+      "aliases": [
+        "우방실판",
+        "right atrioventricular valve"
+      ],
+      "fma_id": "FMA7234",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "valves",
+      "parent_id": "cv.valves",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_tricuspid"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2421",
+        "FJ2433",
+        "FJ2436"
+      ],
+      "triangle_count": 17612,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.valve.mitral",
+      "name_ko": "승모판",
+      "name_en": "Mitral valve",
+      "aliases": [
+        "이첨판",
+        "좌방실판",
+        "bicuspid valve",
+        "left atrioventricular valve"
+      ],
+      "fma_id": "FMA7235",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "valves",
+      "parent_id": "cv.valves",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_mitral"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2420",
+        "FJ2432"
+      ],
+      "triangle_count": 11378,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "원본 FMA7235에 섞인 대동맥판 첨 2개는 대동맥판으로 옮겼다(이름에 mitral이 든 element 2개만 사용)."
+    },
+    {
+      "anatomical_id": "cv.valve.pulmonary",
+      "name_ko": "폐동맥판",
+      "name_en": "Pulmonary valve",
+      "aliases": [
+        "허파동맥판",
+        "pulmonic valve"
+      ],
+      "fma_id": "FMA7246",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "valves",
+      "parent_id": "cv.valves",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_pulmonary"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2417",
+        "FJ2427",
+        "FJ2434"
+      ],
+      "triangle_count": 3638,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.valve.aortic",
+      "name_ko": "대동맥판",
+      "name_en": "Aortic valve",
+      "aliases": [],
+      "fma_id": "FMA7236",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "valves",
+      "parent_id": "cv.valves",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_valve_aortic"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2426",
+        "FJ2431",
+        "FJ2435"
+      ],
+      "triangle_count": 2150,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": true,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.coronary_arteries",
+      "name_ko": "관상동맥",
+      "name_en": "Coronary arteries",
+      "aliases": [
+        "심장동맥"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_coronary_arteries"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2631",
+        "FJ2632",
+        "FJ2633",
+        "FJ2634",
+        "FJ2635",
+        "FJ2636",
+        "FJ2637",
+        "FJ2638",
+        "FJ2639",
+        "FJ2640",
+        "FJ2641",
+        "FJ2642",
+        "FJ2643",
+        "FJ2644",
+        "FJ2645",
+        "FJ2646",
+        "FJ2647",
+        "FJ2648",
+        "FJ2649",
+        "FJ2650",
+        "FJ2651",
+        "FJ2652",
+        "FJ2653",
+        "FJ2654",
+        "FJ2667",
+        "FJ2668",
+        "FJ2670",
+        "FJ2671",
+        "FJ2672",
+        "FJ2673",
+        "FJ2674",
+        "FJ2675",
+        "FJ2676",
+        "FJ2677",
+        "FJ2692",
+        "FJ2693",
+        "FJ2694",
+        "FJ2695",
+        "FJ2696",
+        "FJ2697",
+        "FJ2698",
+        "FJ2699",
+        "FJ2700",
+        "FJ2714",
+        "FJ2715",
+        "FJ2716",
+        "FJ2717",
+        "FJ2718",
+        "FJ2719",
+        "FJ2720",
+        "FJ2721",
+        "FJ2722",
+        "FJ2723",
+        "FJ2737"
+      ],
+      "triangle_count": 27348,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.cardiac_veins",
+      "name_ko": "심장정맥·관상정맥굴",
+      "name_en": "Cardiac veins & coronary sinus",
+      "aliases": [
+        "관상정맥동",
+        "심장정맥"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "heart",
+      "parent_id": "cv.heart",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-heart",
+          "node": "heart_coronary_veins"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-heart"
+      ],
+      "element_file_ids": [
+        "FJ2655",
+        "FJ2656",
+        "FJ2724",
+        "FJ2727",
+        "FJ2728",
+        "FJ2729",
+        "FJ2731"
+      ],
+      "triangle_count": 4386,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.aorta",
+      "name_ko": "대동맥",
+      "name_en": "Aorta",
+      "aliases": [
+        "상행대동맥",
+        "대동맥궁",
+        "하행대동맥"
+      ],
+      "fma_id": "FMA3734",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-aorta",
+          "node": "aorta"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-aorta"
+      ],
+      "element_file_ids": [
+        "FJ1931",
+        "FJ1932",
+        "FJ3411",
+        "FJ3413",
+        "FJ3427"
+      ],
+      "triangle_count": 10188,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pulmonary_trunk",
+      "name_ko": "폐동맥간",
+      "name_en": "Pulmonary trunk",
+      "aliases": [
+        "폐동맥줄기",
+        "허파동맥줄기"
+      ],
+      "fma_id": "FMA8612",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "pulmonary_trunk"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2966"
+      ],
+      "triangle_count": 1302,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pulmonary_arteries",
+      "name_ko": "폐동맥",
+      "name_en": "Pulmonary arteries",
+      "aliases": [
+        "허파동맥"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": null,
+      "children": [
+        "cv.right_pulmonary_artery",
+        "cv.left_pulmonary_artery",
+        "cv.left_lingular_arteries"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_pulmonary_artery"
+        },
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_pulmonary_artery"
+        },
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_lung_other_pulmonary_arteries"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2041",
+        "FJ2044",
+        "FJ2967",
+        "FJ2968",
+        "FJ2969",
+        "FJ2970",
+        "FJ2971",
+        "FJ2972",
+        "FJ2973",
+        "FJ2974",
+        "FJ2975",
+        "FJ2976",
+        "FJ2977",
+        "FJ2978",
+        "FJ2979",
+        "FJ2980",
+        "FJ2981",
+        "FJ2982",
+        "FJ2983",
+        "FJ2984",
+        "FJ2985",
+        "FJ2986",
+        "FJ2987",
+        "FJ2988",
+        "FJ2989",
+        "FJ2990",
+        "FJ2991",
+        "FJ2992",
+        "FJ2993",
+        "FJ2994",
+        "FJ2995",
+        "FJ2996",
+        "FJ2997",
+        "FJ2998",
+        "FJ2999",
+        "FJ3000",
+        "FJ3001",
+        "FJ3002",
+        "FJ3003",
+        "FJ3004",
+        "FJ3005",
+        "FJ3006",
+        "FJ3007",
+        "FJ3008",
+        "FJ3009",
+        "FJ3010",
+        "FJ3011",
+        "FJ3012",
+        "FJ3013",
+        "FJ3014",
+        "FJ3015",
+        "FJ3016",
+        "FJ3017",
+        "FJ3018",
+        "FJ3019",
+        "FJ2881",
+        "FJ2882",
+        "FJ2883",
+        "FJ2884",
+        "FJ2885",
+        "FJ2886",
+        "FJ2887",
+        "FJ2888",
+        "FJ2889",
+        "FJ2890",
+        "FJ2891",
+        "FJ2892",
+        "FJ2893",
+        "FJ2894",
+        "FJ2895",
+        "FJ2902",
+        "FJ2903",
+        "FJ2904",
+        "FJ2905",
+        "FJ2906",
+        "FJ2907",
+        "FJ2908",
+        "FJ2909",
+        "FJ2910",
+        "FJ2911",
+        "FJ2912",
+        "FJ2913",
+        "FJ2914",
+        "FJ2915",
+        "FJ2916",
+        "FJ2917",
+        "FJ2918",
+        "FJ2919",
+        "FJ2920",
+        "FJ2921",
+        "FJ2922",
+        "FJ2923",
+        "FJ2924",
+        "FJ2896",
+        "FJ2897",
+        "FJ2898",
+        "FJ2899",
+        "FJ2900",
+        "FJ2901"
+      ],
+      "triangle_count": 47064,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_pulmonary_artery",
+      "name_ko": "우폐동맥",
+      "name_en": "Right pulmonary artery",
+      "aliases": [],
+      "fma_id": "FMA50872",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": "cv.pulmonary_arteries",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_pulmonary_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2041",
+        "FJ2044",
+        "FJ2967",
+        "FJ2968",
+        "FJ2969",
+        "FJ2970",
+        "FJ2971",
+        "FJ2972",
+        "FJ2973",
+        "FJ2974",
+        "FJ2975",
+        "FJ2976",
+        "FJ2977",
+        "FJ2978",
+        "FJ2979",
+        "FJ2980",
+        "FJ2981",
+        "FJ2982",
+        "FJ2983",
+        "FJ2984",
+        "FJ2985",
+        "FJ2986",
+        "FJ2987",
+        "FJ2988",
+        "FJ2989",
+        "FJ2990",
+        "FJ2991",
+        "FJ2992",
+        "FJ2993",
+        "FJ2994",
+        "FJ2995",
+        "FJ2996",
+        "FJ2997",
+        "FJ2998",
+        "FJ2999",
+        "FJ3000",
+        "FJ3001",
+        "FJ3002",
+        "FJ3003",
+        "FJ3004",
+        "FJ3005",
+        "FJ3006",
+        "FJ3007",
+        "FJ3008",
+        "FJ3009",
+        "FJ3010",
+        "FJ3011",
+        "FJ3012",
+        "FJ3013",
+        "FJ3014",
+        "FJ3015",
+        "FJ3016",
+        "FJ3017",
+        "FJ3018",
+        "FJ3019"
+      ],
+      "triangle_count": 19962,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_pulmonary_artery",
+      "name_ko": "좌폐동맥",
+      "name_en": "Left pulmonary artery",
+      "aliases": [],
+      "fma_id": "FMA50873",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": "cv.pulmonary_arteries",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_pulmonary_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2881",
+        "FJ2882",
+        "FJ2883",
+        "FJ2884",
+        "FJ2885",
+        "FJ2886",
+        "FJ2887",
+        "FJ2888",
+        "FJ2889",
+        "FJ2890",
+        "FJ2891",
+        "FJ2892",
+        "FJ2893",
+        "FJ2894",
+        "FJ2895",
+        "FJ2902",
+        "FJ2903",
+        "FJ2904",
+        "FJ2905",
+        "FJ2906",
+        "FJ2907",
+        "FJ2908",
+        "FJ2909",
+        "FJ2910",
+        "FJ2911",
+        "FJ2912",
+        "FJ2913",
+        "FJ2914",
+        "FJ2915",
+        "FJ2916",
+        "FJ2917",
+        "FJ2918",
+        "FJ2919",
+        "FJ2920",
+        "FJ2921",
+        "FJ2922",
+        "FJ2923",
+        "FJ2924"
+      ],
+      "triangle_count": 22926,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_lingular_arteries",
+      "name_ko": "좌폐 혀구역 동맥",
+      "name_en": "Lingular arteries (left lung)",
+      "aliases": [],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries",
+      "parent_id": "cv.pulmonary_arteries",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_lung_other_pulmonary_arteries"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2896",
+        "FJ2897",
+        "FJ2898",
+        "FJ2899",
+        "FJ2900",
+        "FJ2901"
+      ],
+      "triangle_count": 4176,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "원본 좌폐(FMA7310) element 중 좌폐동맥 concept에 들어 있지 않은 동맥 6개."
+    },
+    {
+      "anatomical_id": "cv.superior_vena_cava",
+      "name_ko": "상대정맥",
+      "name_en": "Superior vena cava",
+      "aliases": [
+        "위대정맥",
+        "SVC"
+      ],
+      "fma_id": "FMA4720",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-vena-cava",
+          "node": "superior_vena_cava"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-vena-cava"
+      ],
+      "element_file_ids": [
+        "FJ3645"
+      ],
+      "triangle_count": 598,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.inferior_vena_cava",
+      "name_ko": "하대정맥",
+      "name_en": "Inferior vena cava",
+      "aliases": [
+        "아래대정맥",
+        "IVC"
+      ],
+      "fma_id": "FMA10951",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-vena-cava",
+          "node": "inferior_vena_cava"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-vena-cava"
+      ],
+      "element_file_ids": [
+        "FJ3441",
+        "FJ3659"
+      ],
+      "triangle_count": 3080,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pulmonary_veins",
+      "name_ko": "폐정맥",
+      "name_en": "Pulmonary veins",
+      "aliases": [
+        "허파정맥"
+      ],
+      "fma_id": null,
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": null,
+      "children": [
+        "cv.pv.right_superior",
+        "cv.pv.right_inferior",
+        "cv.pv.left_superior",
+        "cv.pv.left_inferior"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_superior_pulmonary_vein"
+        },
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_inferior_pulmonary_vein"
+        },
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_superior_pulmonary_vein"
+        },
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_inferior_pulmonary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3020",
+        "FJ3021",
+        "FJ3022",
+        "FJ3023",
+        "FJ3024",
+        "FJ3025",
+        "FJ3026",
+        "FJ3027",
+        "FJ3028",
+        "FJ3029",
+        "FJ3030",
+        "FJ3031",
+        "FJ3032",
+        "FJ3033",
+        "FJ3034",
+        "FJ3035",
+        "FJ3036",
+        "FJ3037",
+        "FJ3038",
+        "FJ3039",
+        "FJ3042",
+        "FJ3053",
+        "FJ3064",
+        "FJ3067",
+        "FJ3068",
+        "FJ3069",
+        "FJ3070",
+        "FJ3040",
+        "FJ3041",
+        "FJ3043",
+        "FJ3044",
+        "FJ3045",
+        "FJ3046",
+        "FJ3047",
+        "FJ3048",
+        "FJ3049",
+        "FJ3050",
+        "FJ3051",
+        "FJ3052",
+        "FJ3054",
+        "FJ3055",
+        "FJ3056",
+        "FJ3057",
+        "FJ3058",
+        "FJ3059",
+        "FJ3060",
+        "FJ3061",
+        "FJ3062",
+        "FJ3063",
+        "FJ3065",
+        "FJ3066",
+        "FJ2925",
+        "FJ2926",
+        "FJ2927",
+        "FJ2928",
+        "FJ2929",
+        "FJ2930",
+        "FJ2931",
+        "FJ2932",
+        "FJ2933",
+        "FJ2934",
+        "FJ2935",
+        "FJ2936",
+        "FJ2937",
+        "FJ2938",
+        "FJ2939",
+        "FJ2940",
+        "FJ2941",
+        "FJ2942",
+        "FJ2943",
+        "FJ2947",
+        "FJ2958",
+        "FJ2961",
+        "FJ2962",
+        "FJ2963",
+        "FJ2964",
+        "FJ2965",
+        "FJ2944",
+        "FJ2945",
+        "FJ2946",
+        "FJ2948",
+        "FJ2949",
+        "FJ2950",
+        "FJ2951",
+        "FJ2952",
+        "FJ2953",
+        "FJ2954",
+        "FJ2955",
+        "FJ2956",
+        "FJ2957",
+        "FJ2959",
+        "FJ2960"
+      ],
+      "triangle_count": 23546,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pv.right_superior",
+      "name_ko": "우상폐정맥",
+      "name_en": "Right superior pulmonary vein",
+      "aliases": [],
+      "fma_id": "FMA49914",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": "cv.pulmonary_veins",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_superior_pulmonary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3020",
+        "FJ3021",
+        "FJ3022",
+        "FJ3023",
+        "FJ3024",
+        "FJ3025",
+        "FJ3026",
+        "FJ3027",
+        "FJ3028",
+        "FJ3029",
+        "FJ3030",
+        "FJ3031",
+        "FJ3032",
+        "FJ3033",
+        "FJ3034",
+        "FJ3035",
+        "FJ3036",
+        "FJ3037",
+        "FJ3038",
+        "FJ3039",
+        "FJ3042",
+        "FJ3053",
+        "FJ3064",
+        "FJ3067",
+        "FJ3068",
+        "FJ3069",
+        "FJ3070"
+      ],
+      "triangle_count": 6746,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pv.right_inferior",
+      "name_ko": "우하폐정맥",
+      "name_en": "Right inferior pulmonary vein",
+      "aliases": [],
+      "fma_id": "FMA49911",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": "cv.pulmonary_veins",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "right_inferior_pulmonary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3040",
+        "FJ3041",
+        "FJ3043",
+        "FJ3044",
+        "FJ3045",
+        "FJ3046",
+        "FJ3047",
+        "FJ3048",
+        "FJ3049",
+        "FJ3050",
+        "FJ3051",
+        "FJ3052",
+        "FJ3054",
+        "FJ3055",
+        "FJ3056",
+        "FJ3057",
+        "FJ3058",
+        "FJ3059",
+        "FJ3060",
+        "FJ3061",
+        "FJ3062",
+        "FJ3063",
+        "FJ3065",
+        "FJ3066"
+      ],
+      "triangle_count": 5524,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pv.left_superior",
+      "name_ko": "좌상폐정맥",
+      "name_en": "Left superior pulmonary vein",
+      "aliases": [],
+      "fma_id": "FMA49916",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": "cv.pulmonary_veins",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_superior_pulmonary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2925",
+        "FJ2926",
+        "FJ2927",
+        "FJ2928",
+        "FJ2929",
+        "FJ2930",
+        "FJ2931",
+        "FJ2932",
+        "FJ2933",
+        "FJ2934",
+        "FJ2935",
+        "FJ2936",
+        "FJ2937",
+        "FJ2938",
+        "FJ2939",
+        "FJ2940",
+        "FJ2941",
+        "FJ2942",
+        "FJ2943",
+        "FJ2947",
+        "FJ2958",
+        "FJ2961",
+        "FJ2962",
+        "FJ2963",
+        "FJ2964",
+        "FJ2965"
+      ],
+      "triangle_count": 6722,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.pv.left_inferior",
+      "name_ko": "좌하폐정맥",
+      "name_en": "Left inferior pulmonary vein",
+      "aliases": [],
+      "fma_id": "FMA49913",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins",
+      "parent_id": "cv.pulmonary_veins",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-pulmonary-vessels",
+          "node": "left_inferior_pulmonary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-pulmonary-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2944",
+        "FJ2945",
+        "FJ2946",
+        "FJ2948",
+        "FJ2949",
+        "FJ2950",
+        "FJ2951",
+        "FJ2952",
+        "FJ2953",
+        "FJ2954",
+        "FJ2955",
+        "FJ2956",
+        "FJ2957",
+        "FJ2959",
+        "FJ2960"
+      ],
+      "triangle_count": 4554,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_lung",
+      "name_ko": "좌폐",
+      "name_en": "Left lung",
+      "aliases": [
+        "왼허파",
+        "왼폐"
+      ],
+      "fma_id": "FMA7310",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "lungs",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-lungs-airways",
+          "node": "left_lung_bronchial_tree"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-lungs-airways"
+      ],
+      "element_file_ids": [
+        "FJ2441",
+        "FJ2442",
+        "FJ2443",
+        "FJ2444",
+        "FJ2445",
+        "FJ2446",
+        "FJ2447",
+        "FJ2448",
+        "FJ2460",
+        "FJ2461",
+        "FJ2462",
+        "FJ2463",
+        "FJ2464",
+        "FJ2465",
+        "FJ2466",
+        "FJ2467",
+        "FJ2468",
+        "FJ2469",
+        "FJ2471",
+        "FJ2472",
+        "FJ2473",
+        "FJ2474",
+        "FJ2475",
+        "FJ2476",
+        "FJ2477",
+        "FJ2478",
+        "FJ2479",
+        "FJ2480",
+        "FJ2482",
+        "FJ2483",
+        "FJ2484",
+        "FJ2485",
+        "FJ2527",
+        "FJ2528",
+        "FJ2529",
+        "FJ2530",
+        "FJ2531",
+        "FJ2532",
+        "FJ2533",
+        "FJ2534",
+        "FJ2535",
+        "FJ2536",
+        "FJ2537",
+        "FJ2538",
+        "FJ2540"
+      ],
+      "triangle_count": 10588,
+      "model_status": "PARTIAL",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "원본에 폐 실질(겉면) 메시가 없어 기관지 가지만 표시한다. 폐 안 혈관은 폐동맥·폐정맥에 있다."
+    },
+    {
+      "anatomical_id": "cv.right_lung",
+      "name_ko": "우폐",
+      "name_en": "Right lung",
+      "aliases": [
+        "오른허파",
+        "오른폐"
+      ],
+      "fma_id": "FMA7309",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "lungs",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-lungs-airways",
+          "node": "right_lung_bronchial_tree"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-lungs-airways"
+      ],
+      "element_file_ids": [
+        "FJ2449",
+        "FJ2451",
+        "FJ2452",
+        "FJ2453",
+        "FJ2454",
+        "FJ2455",
+        "FJ2456",
+        "FJ2457",
+        "FJ2458",
+        "FJ2459",
+        "FJ2470",
+        "FJ2481",
+        "FJ2486",
+        "FJ2487",
+        "FJ2488",
+        "FJ2489",
+        "FJ2490",
+        "FJ2491",
+        "FJ2492",
+        "FJ2493",
+        "FJ2494",
+        "FJ2495",
+        "FJ2496",
+        "FJ2497",
+        "FJ2498",
+        "FJ2499",
+        "FJ2500",
+        "FJ2501",
+        "FJ2502",
+        "FJ2503",
+        "FJ2504",
+        "FJ2505",
+        "FJ2506",
+        "FJ2507",
+        "FJ2508",
+        "FJ2509",
+        "FJ2510",
+        "FJ2511",
+        "FJ2512",
+        "FJ2513",
+        "FJ2514",
+        "FJ2515",
+        "FJ2516",
+        "FJ2517",
+        "FJ2518",
+        "FJ2519",
+        "FJ2520",
+        "FJ2521",
+        "FJ2522",
+        "FJ2523",
+        "FJ2524",
+        "FJ2525",
+        "FJ2526"
+      ],
+      "triangle_count": 42278,
+      "model_status": "PARTIAL",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": "원본에 폐 실질(겉면) 메시가 없어 기관지 가지만 표시한다."
+    },
+    {
+      "anatomical_id": "ctx.body_outline",
+      "name_ko": "인체 외형(피부)",
+      "name_en": "Body outline (skin)",
+      "aliases": [
+        "피부",
+        "skin",
+        "외형"
+      ],
+      "fma_id": "FMA7163",
+      "anatomical_system": "context",
+      "anatomical_group": "body",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-body-skin",
+          "node": "skin"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-body-skin"
+      ],
+      "element_file_ids": [
+        "FJ2810"
+      ],
+      "triangle_count": 203382,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "ctx.rib_cage",
+      "name_ko": "흉곽",
+      "name_en": "Rib cage",
+      "aliases": [
+        "가슴우리",
+        "갈비뼈"
+      ],
+      "fma_id": "FMA7480",
+      "anatomical_system": "context",
+      "anatomical_group": "skeleton",
+      "parent_id": null,
+      "children": [
+        "ctx.sternum",
+        "ctx.costal_cartilages",
+        "ctx.left_ribs",
+        "ctx.right_ribs"
+      ],
+      "objects": [
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "sternum"
+        },
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "costal_cartilages"
+        },
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "left_ribs"
+        },
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "right_ribs"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-rib-cage"
+      ],
+      "element_file_ids": [
+        "FJ3153",
+        "FJ3178",
+        "FJ3290",
+        "FJ3239",
+        "FJ3242",
+        "FJ3245",
+        "FJ3248",
+        "FJ3251",
+        "FJ3254",
+        "FJ3255",
+        "FJ3333",
+        "FJ3335",
+        "FJ3337",
+        "FJ3339",
+        "FJ3341",
+        "FJ3343",
+        "FJ3345",
+        "FJ3225",
+        "FJ3226",
+        "FJ3227",
+        "FJ3228",
+        "FJ3229",
+        "FJ3230",
+        "FJ3231",
+        "FJ3232",
+        "FJ3233",
+        "FJ3234",
+        "FJ3235",
+        "FJ3236",
+        "FJ3330",
+        "FJ3331",
+        "FJ3332",
+        "FJ3334",
+        "FJ3336",
+        "FJ3338",
+        "FJ3340",
+        "FJ3342",
+        "FJ3344",
+        "FJ3346",
+        "FJ3347",
+        "FJ3348"
+      ],
+      "triangle_count": 194110,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "ctx.sternum",
+      "name_ko": "복장뼈",
+      "name_en": "Sternum",
+      "aliases": [
+        "흉골"
+      ],
+      "fma_id": "FMA7485",
+      "anatomical_system": "context",
+      "anatomical_group": "skeleton",
+      "parent_id": "ctx.rib_cage",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "sternum"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-rib-cage"
+      ],
+      "element_file_ids": [
+        "FJ3153",
+        "FJ3178",
+        "FJ3290"
+      ],
+      "triangle_count": 8114,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "ctx.costal_cartilages",
+      "name_ko": "갈비연골",
+      "name_en": "Costal cartilages",
+      "aliases": [
+        "늑연골"
+      ],
+      "fma_id": null,
+      "anatomical_system": "context",
+      "anatomical_group": "skeleton",
+      "parent_id": "ctx.rib_cage",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "costal_cartilages"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-rib-cage"
+      ],
+      "element_file_ids": [
+        "FJ3239",
+        "FJ3242",
+        "FJ3245",
+        "FJ3248",
+        "FJ3251",
+        "FJ3254",
+        "FJ3255",
+        "FJ3333",
+        "FJ3335",
+        "FJ3337",
+        "FJ3339",
+        "FJ3341",
+        "FJ3343",
+        "FJ3345"
+      ],
+      "triangle_count": 15234,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "ctx.left_ribs",
+      "name_ko": "왼쪽 갈비뼈",
+      "name_en": "Left ribs",
+      "aliases": [
+        "좌측 늑골"
+      ],
+      "fma_id": null,
+      "anatomical_system": "context",
+      "anatomical_group": "skeleton",
+      "parent_id": "ctx.rib_cage",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "left_ribs"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-rib-cage"
+      ],
+      "element_file_ids": [
+        "FJ3225",
+        "FJ3226",
+        "FJ3227",
+        "FJ3228",
+        "FJ3229",
+        "FJ3230",
+        "FJ3231",
+        "FJ3232",
+        "FJ3233",
+        "FJ3234",
+        "FJ3235",
+        "FJ3236"
+      ],
+      "triangle_count": 85402,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "ctx.right_ribs",
+      "name_ko": "오른쪽 갈비뼈",
+      "name_en": "Right ribs",
+      "aliases": [
+        "우측 늑골"
+      ],
+      "fma_id": null,
+      "anatomical_system": "context",
+      "anatomical_group": "skeleton",
+      "parent_id": "ctx.rib_cage",
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-rib-cage",
+          "node": "right_ribs"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-rib-cage"
+      ],
+      "element_file_ids": [
+        "FJ3330",
+        "FJ3331",
+        "FJ3332",
+        "FJ3334",
+        "FJ3336",
+        "FJ3338",
+        "FJ3340",
+        "FJ3342",
+        "FJ3344",
+        "FJ3346",
+        "FJ3347",
+        "FJ3348"
+      ],
+      "triangle_count": 85360,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    }
+  ]
+}

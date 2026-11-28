@@ -24,6 +24,12 @@ export function createSceneManager(ctx) {
     return catalog;
   }
 
+  // STEP 03-B: 다른 형식(해부학 scene.json)에서 만든 장면 목록을 직접 넣는다
+  function useCatalog(c) {
+    catalog = c;
+    return catalog;
+  }
+
   function def(id) {
     return catalog.scenes.find((s) => s.scene_id === id) || null;
   }
@@ -187,6 +193,7 @@ export function createSceneManager(ctx) {
 
   return {
     loadCatalog,
+    useCatalog,
     load,
     back,
     reset,

@@ -1,0 +1,56 @@
+{
+  "scene_id": "anatomy_cardiovascular",
+  "scene_name": "심혈관계 (Cardiovascular system)",
+  "anatomical_system": "cardiovascular",
+  "description": "BodyParts3D 4.0 PART-OF 기반 심혈관계 해부학 장면. 모델 좌표는 STEP 03-A 변환 그대로이고, 카메라 맞춤을 위해 모델을 옮기거나 크기를 바꾸지 않는다.",
+  "coordinate_system": { "up": "+Y", "front": "+Z", "left": "+X", "unit": "m",
+    "note": "glTF (x, y, z) = (X, Z, -Y) × 0.001 of BodyParts3D mm. +X = 환자(모델)의 왼쪽, +Z = 앞, BodyParts3D 원점 그대로." },
+  "unit": "m",
+  "object_mapping": "content/anatomy/cardiovascular/structures.json",
+  "anchors": "content/anatomy/cardiovascular/anchors.json",
+  "source": "BodyParts3D 4.0 (Database Center for Life Science), PART-OF tree, derived GLB (tools/asset-processing)",
+  "license": "CC-BY-4.0",
+  "credits": "3D 모델: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형: 파트 결합·단위·축 변환·재질)",
+  "lighting": "soft",
+  "background": "#eef1f5",
+  "assets": [
+    { "asset_id": "bp3d-cv-heart", "url": "assets/anatomy/cardiovascular/heart.glb", "load": "initial" },
+    { "asset_id": "bp3d-cv-aorta", "url": "assets/anatomy/cardiovascular/aorta.glb", "load": "initial" },
+    { "asset_id": "bp3d-cv-vena-cava", "url": "assets/anatomy/cardiovascular/vena-cava.glb", "load": "initial" },
+    { "asset_id": "bp3d-cv-pulmonary-vessels", "url": "assets/anatomy/cardiovascular/pulmonary-vessels.glb", "load": "initial" },
+    { "asset_id": "bp3d-cv-lungs-airways", "url": "assets/anatomy/cardiovascular/lungs-airways.glb", "load": "lazy" },
+    { "asset_id": "bp3d-rib-cage", "url": "assets/anatomy/context/rib-cage.glb", "load": "lazy" },
+    { "asset_id": "bp3d-body-skin", "url": "assets/anatomy/context/body-skin.glb", "load": "lazy" }
+  ],
+  "layers": [
+    { "id": "body", "name_ko": "인체 외형", "name_en": "Body outline", "groups": ["body"], "visible": false, "opacity": 0.12 },
+    { "id": "heart", "name_ko": "심장", "name_en": "Heart", "groups": ["heart"], "visible": true, "opacity": 1 },
+    { "id": "heart_internal", "name_ko": "심장 내부 구조", "name_en": "Heart internal", "groups": ["heart_internal"], "visible": true, "opacity": 1 },
+    { "id": "valves", "name_ko": "심장판막", "name_en": "Cardiac valves", "groups": ["valves"], "visible": true, "opacity": 1 },
+    { "id": "arteries", "name_ko": "주요 동맥", "name_en": "Major arteries", "groups": ["arteries"], "visible": true, "opacity": 1 },
+    { "id": "veins", "name_ko": "주요 정맥", "name_en": "Major veins", "groups": ["veins"], "visible": true, "opacity": 1 },
+    { "id": "lungs", "name_ko": "폐 (기관지 가지)", "name_en": "Lungs (bronchial trees)", "groups": ["lungs"], "visible": false, "opacity": 0.6 },
+    { "id": "skeleton", "name_ko": "흉곽", "name_en": "Rib cage", "groups": ["skeleton"], "visible": false, "opacity": 0.5 },
+    { "id": "labels", "name_ko": "해부학 라벨", "name_en": "Labels", "kind": "overlay", "visible": true },
+    { "id": "anchors", "name_ko": "Anchor Point", "name_en": "Anchors", "kind": "overlay", "visible": false }
+  ],
+  "default_camera": { "position": [0.42, 1.36, 0.72], "target": [0.01, 1.2, 0.11], "fov": 40 },
+  "views": [
+    { "id": "whole", "name_ko": "전체 보기", "targets": "loaded", "direction": "iso" },
+    { "id": "heart", "name_ko": "심장 중심", "targets": ["cv.heart"], "direction": "front" },
+    { "id": "vessels", "name_ko": "주요 혈관", "targets": ["cv.aorta", "cv.superior_vena_cava", "cv.inferior_vena_cava", "cv.pulmonary_trunk"], "direction": "front" },
+    { "id": "lungs", "name_ko": "폐 중심", "targets": ["cv.left_lung", "cv.right_lung"], "direction": "front", "show_layers": ["lungs"] }
+  ],
+  "directions": [
+    { "id": "front", "name_ko": "정면 (앞)" },
+    { "id": "back", "name_ko": "후면 (뒤)" },
+    { "id": "left", "name_ko": "해부학적 좌측", "note": "환자(모델)의 왼쪽 면을 보는 시점. 카메라가 +X 쪽에 있어 화면에서는 모델의 앞이 오른쪽에 보인다." },
+    { "id": "right", "name_ko": "해부학적 우측", "note": "환자(모델)의 오른쪽 면을 보는 시점 (카메라 -X 쪽)." },
+    { "id": "top", "name_ko": "위 (상단)" },
+    { "id": "iso", "name_ko": "사선" }
+  ],
+  "labels": { "default_mode": "both", "default_scope": "major",
+    "major": ["cv.heart", "cv.right_atrium", "cv.right_ventricle", "cv.left_atrium", "cv.left_ventricle",
+              "cv.aorta", "cv.superior_vena_cava", "cv.inferior_vena_cava", "cv.pulmonary_trunk",
+              "cv.pulmonary_arteries", "cv.pulmonary_veins", "cv.left_lung", "cv.right_lung"] }
+}

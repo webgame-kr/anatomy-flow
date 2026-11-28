@@ -29,25 +29,40 @@ export function createCommandRunner(manager, ctx = {}) {
   }
 
   // ---------- STEP 02 action 명령 ----------
+  // 대상 → 레지스트리 객체 ID 목록. STEP 03-B: ctx.resolve가 있으면 해부학 ID(예: cv.left_ventricle)를
+  // 그 구조의 객체들로 풀어 준다. 없으면 레지스트리 ID 하나.
+  function targetIds(target) {
+    if (ctx.resolve) {
+      const ids = ctx.resolve(target);
+      if (ids && ids.length) return ids;
+    }
+    return ctx.registry.has(target) ? [target] : [];
+  }
+
   function validateAction(cmd) {
     if (!(cmd.action in CHECK)) return `지원하지 않는 명령: ${cmd.action}`;
-    if (!NO_TARGET.has(cmd.action) && !ctx.registry.has(cmd.target)) return `없는 객체 ID: ${cmd.target}`;
+    if (!NO_TARGET.has(cmd.action) && targetIds(cmd.target).length === 0) return `없는 객체 ID: ${cmd.target}`;
     if (cmd.action === 'scene_change' && ctx.scenes && !ctx.scenes.has(cmd.value)) return `없는 장면: ${cmd.value}`;
     return CHECK[cmd.action](cmd.value);
   }
 
   function runAction(cmd) {
     const d = isNum(cmd.duration) ? cmd.duration : 0;
+    const ids = NO_TARGET.has(cmd.action) ? [] : targetIds(cmd.target);
     switch (cmd.action) {
-      case 'set_position': manager.update(cmd.target, { position: cmd.value }, d); break;
-      case 'set_rotation': manager.update(cmd.target, { rotation: cmd.value }, d); break;
-      case 'set_scale': manager.update(cmd.target, { scale: cmd.value }, d); break;
-      case 'set_color': ctx.materials.setColor(cmd.target, cmd.value); break;
-      case 'set_visibility': ctx.materials.setVisible(cmd.target, cmd.value); break;
-      case 'set_opacity': ctx.materials.setOpacity(cmd.target, cmd.value); break;
-      case 'highlight': ctx.materials.setHighlight(cmd.target, 'event', cmd.value !== false); break;
+      case 'set_position': ids.forEach((id) => manager.update(id, { position: cmd.value }, d)); break;
+      case 'set_rotation': ids.forEach((id) => manager.update(id, { rotation: cmd.value }, d)); break;
+      case 'set_scale': ids.forEach((id) => manager.update(id, { scale: cmd.value }, d)); break;
+      case 'set_color': ids.forEach((id) => ctx.materials.setColor(id, cmd.value)); break;
+      case 'set_visibility': ids.forEach((id) => ctx.materials.setVisible(id, cmd.value)); break;
+      case 'set_opacity': ids.forEach((id) => ctx.materials.setOpacity(id, cmd.value)); break;
+      case 'highlight': ids.forEach((id) => ctx.materials.setHighlight(id, 'event', cmd.value !== false)); break;
       // 대상이 이동 중이면 도착한 뒤 초점을 맞춘다
-      case 'camera_focus': return manager.whenSettled(cmd.target).then(() => ctx.camera.focus(cmd.target));
+      case 'camera_focus':
+        return Promise.all(ids.map((id) => manager.whenSettled(id))).then(() => {
+          if (ids.length > 1 && ctx.focusMany) ctx.focusMany(ids);
+          else ctx.camera.focus(ids[0]);
+        });
       case 'camera_overview': ctx.camera.overview(); break;
       case 'scene_change': return ctx.scenes.load(cmd.value);
       default: break;

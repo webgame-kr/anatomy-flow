@@ -13,17 +13,25 @@ export function createClippingController({ renderer, scene, registry, materials 
   helper.visible = false;
   scene.add(helper);
 
-  const st = { enabled: false, axis: 'x', t: 0.5, flip: false, scope: 'all', targetId: null };
+  const st = { enabled: false, axis: 'x', t: 0.5, flip: false, scope: 'all', targetId: null, targetIds: null };
   let applied = [];          // 현재 단면이 적용된 Mesh
 
+  // 선택 범위: targetIds(여러 객체, STEP 03-B 논리 구조)가 있으면 그것을, 없으면 targetId 하나
+  function selectedIds() {
+    const ids = st.targetIds && st.targetIds.length ? st.targetIds : (st.targetId ? [st.targetId] : []);
+    return ids.filter((id) => registry.has(id));
+  }
+
   function scopeMeshes() {
-    if (st.scope === 'selected') return st.targetId && registry.has(st.targetId) ? registry.meshesOf(st.targetId) : [];
+    if (st.scope === 'selected') return selectedIds().flatMap((id) => registry.meshesOf(id));
     return registry.allMeshes();
   }
 
   function scopeBox() {
     if (st.scope === 'selected') {
-      return st.targetId && registry.has(st.targetId) ? boxOf(registry.get(st.targetId).object3D, false) : new THREE.Box3();
+      const box = new THREE.Box3();
+      for (const id of selectedIds()) box.union(boxOf(registry.get(id).object3D, false));
+      return box;
     }
     const box = new THREE.Box3();
     for (const id of registry.roots()) box.union(boxOf(registry.get(id).object3D, false));
@@ -65,7 +73,7 @@ export function createClippingController({ renderer, scene, registry, materials 
   }
 
   function reset() {
-    Object.assign(st, { enabled: false, axis: 'x', t: 0.5, flip: false, scope: 'all', targetId: null });
+    Object.assign(st, { enabled: false, axis: 'x', t: 0.5, flip: false, scope: 'all', targetId: null, targetIds: null });
     return update();
   }
 
