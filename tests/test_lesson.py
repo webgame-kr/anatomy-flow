@@ -118,11 +118,18 @@ v = r['view']
 check('첫 시도 정답 수 (분기에서 1번 틀림)', v['questions'] == 16 and v['first_correct'] == 15 and v['first_accuracy'] == 93.8)
 check('전체 시도 정답률', v['correct'] == 16 and v['wrong'] == 1)
 rec = lesson.record({'session_id': 's1', 'learning_mode': 'guide', 'start_time': 't0', 'end_time': 't1', 'active_seconds': 12.34, 'completion_status': 'completed'})
-check('기록 v2 필드', rec['version'] == 2 and rec['content_version'] == '0.1.0' and rec['hint_count'] == 1 and len(rec['completed_nodes']) == 15 and rec['active_learning_time'] == 12.3)
+check('기록 v2 필드', rec['version'] == 2 and rec['content_version'] == '0.1.1' and rec['hint_count'] == 1 and len(rec['completed_nodes']) == 15 and rec['active_learning_time'] == 12.3)
 check('입력 기록', len(rec['attempted_answers']) == 17 and rec['attempted_answers'][1]['result'] == 'wrong')
 csv = lesson.records_csv([rec, {'date': '2026-11-01', 'content_id': 'old', 'correct': 3, 'wrong': 1, 'accuracy': 75.0, 'finished': True, 'seconds': 9}])
 lines = csv.strip().split('\n')
 check('CSV v2 머리글 17열 + v1 기록 변환', len(lines[0].split(',')) == 17 and len(lines[2].split(',')) == 17 and lines[2].split(',')[-1] == 'completed')
+
+# ---------- 강의자료 용어 (2026-11-28 대조 후 추가) ----------
+lesson.load(cv, 'rbc_01')
+check('강의 용어: 정맥 귀환', play('정맥귀환')['view']['current'] == 'n.venous_return')
+play('상대정맥')
+play('우심방')
+check('강의 용어: 삼첨판막', play('삼첨판막')['view']['current'] == 'n.tricuspid')
 
 # ---------- 진행률: 고르지 않은 분기는 분모에 넣지 않음 ----------
 lesson.load(cv, 'rbc_01')

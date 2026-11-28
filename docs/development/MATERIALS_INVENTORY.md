@@ -13,9 +13,14 @@
 | 프로그래밍 강의자료 1~12장 | `references/programming/` | 12 |
 | 같은 강의의 실습 자료 | `references/programming/practice/` | 3 |
 | 강의 학습 노트 (STEP 00에서 작성) | `references/programming/notes/` | 4 |
-| 생리학·기초간호과학 | `references/nursing/physiology/` | 3 |
-| 기본간호학 | `references/nursing/fundamentals/` | 19 |
-| 성인간호학 (교재 상권 2종 + 추가자료 2종) | `references/nursing/adult-health/` | 4 |
+| 생리학·기초간호과학 (대사·체온, 신장, 소화, 내분비) | `references/nursing/physiology/` | 9 |
+| 기본간호학 (강의자료 + 기본간호학2 교재, NANDA) | `references/nursing/fundamentals/` | 34 |
+| 성인간호학 (교재 상권 3종 + 2026 추가·배포 자료) | `references/nursing/adult-health/` | 14 |
+| 해부학·인체구조와 기능 (신경계 1~4주, 비뇨계통, 소화, 생식, 통합적 이해) | `references/nursing/anatomy/` | 8 |
+| 건강사정 (1~11장 + 핵심건강사정 교재) | `references/nursing/health-assessment/` | 12 |
+| 약리학 (약력학·약동학, 중추·자율신경계, 심혈관계, 호흡기·위장관, 항암·내분비, 항균제) | `references/nursing/pharmacology/` | 10 |
+| 미생물학 (감염성 미생물, 숙주 방어) | `references/nursing/microbiology/` | 2 |
+| 스캔 교재 (글자 추출 불가, 제목 미확인: part_1 289쪽, split 411쪽·412쪽) | `references/nursing/unidentified-scans/` | 3 |
 | BodyParts3D 원본 ZIP (is-a, part-of) | `raw-models/bodyparts3d/archives/` | 2 |
 | BodyParts3D 메타데이터 (2026-11-28 공식 페이지에서 다운로드) | `raw-models/bodyparts3d/metadata/` | 6 |
 | BodyParts3D 공식 README (`README_e.html`, 2026-11-28) | `raw-models/bodyparts3d/metadata/` | 1 |
@@ -58,12 +63,18 @@
 
 **STEP 03 참고:** part-of 트리에 `heart`(FMA7088), `right/left atrium`, `right/left ventricle`, `tricuspid/mitral/aortic valve`와 판막엽(leaflet)이 각각 부위로 들어 있습니다.
 
+## 2026-11-28 추가: `데이터 베이스.zip`
+- 바탕화면의 `데이터 베이스.zip`(PDF 66개, 약 1.9 GB)을 읽기만 하고, 위 표의 분류 폴더에 풀어 넣었다. 원본 zip은 바꾸지 않았다.
+- 파일 이름에서 내려받은 시각 접미사(`_261128_200726` 등)를 지우고 공백을 `_`로 바꿨다.
+- 기존 자료와 sha256이 같은 파일은 없었다. 이름이 같고 내용이 다른 파일 1개는 `_데이터베이스판` 접미사를 붙였다(소화생리학).
+- 원래 이름, 해시, 크기는 `references/FILE_MAP.csv`에 66행으로 남겼다. 모든 자료는 Git 제외 대상이다.
+
 ## 누락 목록 (다운로드 폴더에 없음)
 | 자료 | 비고 |
 |---|---|
 | ~~`isa_parts_list_e.txt`, `partof_parts_list_e.txt`~~ | 2026-11-28 공식 페이지에서 받음 (위 "BodyParts3D 메타데이터") |
 | Z-Anatomy BLEND / OBJ | 받지 않음 |
-| 해부학 전공 자료 | 다운로드 폴더에서 해부학 강의자료를 찾지 못했습니다(`references/nursing/anatomy/` 비어 있음). |
+| ~~해부학 전공 자료~~ | 2026-11-28 사용자가 준 `데이터 베이스.zip`에서 신경계·비뇨·소화·생식 자료를 받음. **심혈관계 해부 강의자료는 여전히 없음** (심혈관 관련: 건강사정 6장 심장과 혈관, 약리학 9·10주차 심혈관계 약물) |
 
 ## 가져오지 않은 자료 (관련성 불명확 또는 개인 파일)
 - 개인 과제, 보고서, 시험 문제, 퀴즈 정리본, 개인 필기(`.hwp`)

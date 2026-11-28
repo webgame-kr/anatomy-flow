@@ -122,11 +122,12 @@ lesson.arrived(status) ─▶ 도착: game.arrive → Edge 이벤트 → 노드 
   - 모든 3D 이동 경로는 Anchor 정점 평균을 이은 APPROXIMATE 경로다(STEP 03-C 기하 검사: 메시 밖 0~7%).
   - 화면의 진행 목록과 설명에 노드마다 "근사 경로", "모델·경로 없음", "개념" 배지를 붙여 구분한다.
 - **구조 이름:** BodyParts3D FMA 기반 레지스트리(STEP 03-B)를 쓴다. 의학적 검증 표시는 하지 않았다.
-- **강의자료 대조: NOT TESTED.**
-  - 로컬 `references/nursing/anatomy/`는 비어 있다(심혈관 해부 자료 없음).
-  - `adult-health/성인간호학_상권.pdf`에서 용어(삼첨판, 승모판, 상대정맥 등)를 텍스트로 찾으려 했지만, 4분 40초 안에 추출이 끝나지 않아 결과를 얻지 못했다.
-  - 콘텐츠의 정의와 동의어(위대정맥, 이첨판, 폐동맥간 등)는 표준 해부학 용어로 직접 작성했다. OpenStax A&P 19·20장은 개념 확인용으로 참고했고 문장은 옮기지 않았다.
-  - 간호학 전공자의 검토가 필요하다.
+- **강의자료 대조 (2026-11-28 추가):** 사용자가 준 `데이터 베이스.zip`의 강의자료로 대조했다.
+  - 대조한 자료: 건강사정 「심장과 혈관」, 약리학 「심혈관계 약물1」, 기본간호학 「산소화 요구」
+  - 일치: 순환 순서, 판막 분류, 동맥·정맥 정의와 폐동맥·폐정맥 예외, 모세혈관 교환
+  - 추가: 강의 용어 "정맥 귀환", "삼첨판막", "승모판막"을 허용 정답에 넣었다(콘텐츠 0.1.1).
+  - 강의자료에 없어 확인하지 못한 내용은 전공자 검토가 필요하다. 첨판 수, 대정맥이 혈액을 모으는 부위, 좌심실 벽 두께, 폐정맥 수 등이다.
+  - 자세한 결과는 `docs/development/CONTENT_REVIEW_cardiovascular.md`에 있다.
 
 ## 10. 미확보 모델과 미검증 경로
 - **모델 없음:** 폐 실질과 폐 모세혈관, 심실 근육 벽, 심실중격(STEP 03-A부터 같음)
@@ -162,7 +163,7 @@ lesson.arrived(status) ─▶ 도착: game.arrive → Edge 이벤트 → 노드 
 | `tests/test_scene_commands.py` | 30 통과 |
 | `tests/test_engine.py` (v0.1 규칙 엔진) | 70 통과 |
 | `tests/test_motion_commands.py` | 29 통과 |
-| 신규 `tests/test_lesson.py` | 49 통과 |
+| 신규 `tests/test_lesson.py` | 49 통과 (강의 용어 대조 뒤 51) |
 | `tools/asset-processing/test_bp3d_tools.py` | 13 통과 |
 | `tests/motion-tests.html` (브라우저) | 28/28 통과 |
 

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "id": "cv.blood_circulation",
-  "content_version": "0.1.0",
+  "content_version": "0.1.1",
   "title": "혈액순환: 정맥 환류에서 체순환까지",
   "system": "cardiovascular",
   "scene": { "type": "anatomy", "url": "content/anatomy/cardiovascular/scene.json" },
@@ -11,11 +11,11 @@
   "options": { "ignore_spaces": true },
   "variables": { "oxygenation": "deoxygenated", "current_circulation": "systemic", "current_structure": "", "completed_cycles": 0 },
   "verification_note": "3D 이동 경로는 BodyParts3D 모델 위의 근사 경로(APPROXIMATE)이며 해부학적으로 검증되지 않았다. 폐 모세혈관·폐정맥·대동맥 이후 구간은 경로가 없어(PENDING) 이동 없이 개념으로만 진행한다. 질문과 설명은 이 프로젝트에서 직접 작성했다.",
-  "source": "직접 작성. 개념 확인: OpenStax Anatomy and Physiology 2e, 19장(심장)·20장(혈관과 순환). 문장을 옮기지 않았다.",
+  "source": "직접 작성. 개념 확인: OpenStax Anatomy and Physiology 2e, 19장(심장)·20장(혈관과 순환). 2026-11-28 로컬 강의자료(건강사정 심장과 혈관, 약리학 심혈관계 약물, 기본간호학 산소화 요구)와 순서·용어를 대조했다(docs/development/CONTENT_REVIEW_cardiovascular.md). 문장을 옮기지 않았다.",
   "nodes": [
     {
       "node_id": "n.venous_return", "name_ko": "정맥 환류", "name_en": "venous return",
-      "accepted_answers": ["정맥 환류", "venous return"],
+      "accepted_answers": ["정맥 환류", "정맥 귀환", "venous return"],
       "prompt": "전신 조직을 지나며 산소를 내준 혈액이 정맥을 따라 심장으로 돌아오는 것을 무엇이라 할까요?",
       "reason_prompt": "조직에서 산소를 쓰고 난 혈액은 다음에 어디로 가야 다시 산소를 받을 수 있을까요? 그 출발이 되는 흐름의 이름은?",
       "explanation": "정맥 환류는 전신의 정맥혈이 대정맥을 거쳐 우심방으로 돌아오는 흐름입니다. 다음 단계에서 상대정맥과 하대정맥 중 따라갈 경로를 고릅니다. 실제 몸에서는 두 대정맥으로 동시에 들어오며, 여기서는 하나를 골라 따라갈 뿐입니다.",
@@ -55,7 +55,7 @@
     },
     {
       "node_id": "n.tricuspid", "name_ko": "삼첨판", "name_en": "tricuspid valve",
-      "accepted_answers": ["삼첨판", "오른방실판막", "우방실판", "tricuspid valve", "tricuspid"],
+      "accepted_answers": ["삼첨판", "삼첨판막", "오른방실판막", "우방실판", "tricuspid valve", "tricuspid"],
       "prompt": "우심방과 우심실 사이에서 역류를 막는 판막은?",
       "reason_prompt": "우심방에서 우심실로 간 혈액이 다시 우심방으로 돌아가지 않게 막는 구조는?",
       "explanation": "삼첨판은 첨판이 세 개인 오른쪽 방실판막입니다. 심실이 수축할 때 닫혀 우심방으로의 역류를 막습니다. 이 게임은 판막이 열리고 닫히는 동작은 표현하지 않습니다.",
@@ -132,7 +132,7 @@
     },
     {
       "node_id": "n.mitral", "name_ko": "승모판", "name_en": "mitral valve",
-      "accepted_answers": ["승모판", "이첨판", "왼방실판막", "좌방실판", "mitral valve", "bicuspid valve", "mitral"],
+      "accepted_answers": ["승모판", "승모판막", "이첨판", "왼방실판막", "좌방실판", "mitral valve", "bicuspid valve", "mitral"],
       "prompt": "좌심방과 좌심실 사이에서 역류를 막는 판막은?",
       "reason_prompt": "좌심실이 강하게 수축할 때 혈액이 좌심방으로 되돌아가지 않게 막는 판막은?",
       "explanation": "승모판(이첨판)은 첨판이 두 개인 왼쪽 방실판막입니다. 좌심실이 수축할 때 닫힙니다.",
