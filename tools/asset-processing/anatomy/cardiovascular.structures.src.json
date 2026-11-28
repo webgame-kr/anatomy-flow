@@ -114,7 +114,10 @@
     { "anchor_id": "a.la.cavity", "anatomical_id": "cv.left_atrium", "member": "bp3d-cv-heart:heart_cavity_left_atrium", "ko": "좌심방 내강 중심", "en": "LA cavity centroid", "method": "vertex_centroid" },
     { "anchor_id": "a.lv.cavity", "anatomical_id": "cv.left_ventricle", "member": "bp3d-cv-heart:heart_cavity_left_ventricle", "ko": "좌심실 내강 중심", "en": "LV cavity centroid", "method": "vertex_centroid" },
     { "anchor_id": "a.pt.lumen", "anatomical_id": "cv.pulmonary_trunk", "member": "bp3d-cv-pulmonary-vessels:pulmonary_trunk", "ko": "폐동맥간 중심", "en": "Pulmonary trunk centroid", "method": "vertex_centroid" },
-    { "anchor_id": "a.av.center", "anatomical_id": "cv.valve.aortic", "member": "bp3d-cv-heart:heart_valve_aortic", "ko": "대동맥판 중심", "en": "Aortic valve centroid", "method": "vertex_centroid" }
+    { "anchor_id": "a.av.center", "anatomical_id": "cv.valve.aortic", "member": "bp3d-cv-heart:heart_valve_aortic", "ko": "대동맥판 중심", "en": "Aortic valve centroid", "method": "vertex_centroid" },
+    { "anchor_id": "a.tv.center", "anatomical_id": "cv.valve.tricuspid", "member": "bp3d-cv-heart:heart_valve_tricuspid", "ko": "삼첨판 중심", "en": "Tricuspid valve centroid", "method": "vertex_centroid" },
+    { "anchor_id": "a.pv.center", "anatomical_id": "cv.valve.pulmonary", "member": "bp3d-cv-heart:heart_valve_pulmonary", "ko": "폐동맥판 중심", "en": "Pulmonary valve centroid", "method": "vertex_centroid" },
+    { "anchor_id": "a.mv.center", "anatomical_id": "cv.valve.mitral", "member": "bp3d-cv-heart:heart_valve_mitral", "ko": "승모판 중심", "en": "Mitral valve centroid", "method": "vertex_centroid" }
   ],
   "anchor_candidates": [
     ["cv.superior_vena_cava", "상대정맥"], ["cv.inferior_vena_cava", "하대정맥"], ["cv.right_atrium", "우심방"],

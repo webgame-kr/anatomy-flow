@@ -18,6 +18,8 @@ import { createPythonBridge } from './python/python-bridge.js';
 import { createHierarchyPanel } from './ui/hierarchy-panel.js';
 import { createInspectorPanel } from './ui/inspector-panel.js';
 import { createDebugPanel } from './ui/debug-panel.js';
+import { createMotionKit } from './motion/motion-kit.js';
+import { createPathEditor } from './motion/path-editor.js';
 
 window.__nf3dBooted = true;
 
@@ -67,10 +69,12 @@ function buildEngine() {
   e.viewport = createViewport($('viewport'), {
     onFrame: (dt) => {
       e.objects.tick(dt);
+      e.kit.tick(dt);          // STEP 03-C: 경로 갱신과 Actor 이동 (카메라 추적보다 먼저)
       e.camera.tick(dt);
       e.selection.tick();
     },
     onStats: (s) => {
+      e.fps = s.fps;
       dbg.stats(s);
       dbg.objects(e.registry.size);
       if (e.selection.selectedId) e.inspector.show(e.registry.info(e.selection.selectedId));
@@ -105,10 +109,13 @@ function buildEngine() {
     viewport: e.viewport, registry: e.registry, tracker: e.tracker, objects: e.objects, materials: e.materials,
     selection: e.selection, clipping: e.clipping, camera: e.camera, loader: e.loader, log,
   });
+  // STEP 03-C: 경로·Actor·이동 (Sandbox에는 Anchor가 없어 scene/object_local 좌표만 쓴다)
+  e.kit = createMotionKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, camera: e.camera, log });
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
+    motion: e.kit.commands,
   });
-  e.bridge = createPythonBridge({ client, runner: e.runner, log });
+  e.bridge = createPythonBridge({ client, runner: e.runner, log, guard: () => e.kit.motion.session });
 
   e.hierarchy = createHierarchyPanel($('hierarchy'), $('hier-count'), {
     registry: e.registry,
@@ -130,6 +137,8 @@ function buildEngine() {
   return e;
 }
 
+function camera3d(e) { return e.viewport.camera; }
+
 function debugText(e, s) {
   const t = e.tracker.stats();
   const cam = e.camera.state();
@@ -147,6 +156,7 @@ function debugText(e, s) {
     `isolate    ${e.materials.isolatedId || '-'} · ghost ${e.materials.ghostId || '-'}`,
     `clipping   ${c.enabled ? `${c.axis} ${Math.round(c.t * 100)}%${c.flip ? ' flip' : ''} · ${c.scope}` : 'off'}`,
     `canvas     ${s.size} · pixelRatio ${e.viewport.renderer.getPixelRatio()}`,
+    `motion     paths ${e.kit.paths.ids().length} · actors ${e.kit.actors.ids().length} · session ${e.kit.motion.session} · camera ${e.camera.mode}${e.camera.followTarget ? ` → ${e.camera.followTarget}` : ''}`,
   ].join('\n');
 }
 
@@ -191,6 +201,7 @@ function wireUi(e) {
   });
   e.scenes.onChange((kind, data) => {
     if (kind === 'loading') {
+      e.kit.unload();          // 이전 장면의 이동·이벤트·경로 정리 (session 증가)
       $('btn-reset').disabled = true;
       sceneSelect.disabled = true;
     }
@@ -204,7 +215,7 @@ function wireUi(e) {
       $('credits').hidden = !data.scene.credits;
       $('credits').textContent = data.scene.credits || '';
       log(`장면 준비: ${data.scene.scene_name} · 객체 ${e.registry.size}개`);
-      onSceneReady(data.scene);
+      loadMotion(data.scene).then(() => onSceneReady(data.scene));
     }
     if (kind === 'model') {
       if (data.report.meshes > 12) e.hierarchy.collapseDeep(data.id, 1);
@@ -299,6 +310,21 @@ function wireUi(e) {
     }));
   }
 
+  // STEP 03-C: 이동 데이터와 경로 편집기
+  e.editor = createPathEditor({
+    container: $('motion-panel'), kit: e.kit, camera3d: camera3d(e), renderer: e.viewport.renderer, controls: e.viewport.controls,
+    cameraCtl: e.camera, scene: e.viewport.scene, log, getFps: () => e.fps ?? '-',
+  });
+  async function loadMotion(sceneDef) {
+    if (!sceneDef.motion) { e.editor.render(); return; }
+    try {
+      await e.kit.loadUrl(sceneDef.motion);
+    } catch (err) {
+      log(`이동 데이터를 읽지 못했습니다: ${err.message}`, 'error');
+    }
+    e.editor.render();
+  }
+
   // 단면 UI
   const clipUi = setupClipUi(e);
   function applyClip(changes) { clipUi.apply(changes); }
@@ -387,6 +413,7 @@ async function sendSnapshot(verbose = true) {
   const scenes = e.scenes.list().map((s) => s.id);
   try {
     const r = await e.bridge.call('scene_commands.set_snapshot', e.registry.snapshot(), scenes, e.scenes.current.scene_id);
+    await e.bridge.call('scene_commands.set_paths', e.kit.pathSnapshot());
     if (verbose) log(`Python 스냅샷: ${r.count}개 · 종류 ${JSON.stringify(r.types)}`);
     return r;
   } catch (err) {
@@ -449,6 +476,34 @@ function renderPythonPanel() {
     const p = document.createElement('p');
     p.textContent = 'STEP 01 기능: Python이 객체 상태를 갖고 명령을 보냅니다. 이동·색 버튼은 sandbox3d 객체(box-1 등)를 선택하고 누르세요.';
     panel.prepend(p);
+    return;
+  }
+
+  if (sceneDef.python === 'motion') {
+    const info = document.createElement('p');
+    info.textContent = 'STEP 03-C: Python은 Actor·경로·Checkpoint ID로 이동 명령을 만들고, JavaScript가 좌표 계산과 이동을 맡습니다.';
+    const firstActor = () => {
+      const a = e.kit.actors.list()[0];
+      if (!a || !a.path_id) return null;
+      const cps = e.kit.paths.checkpoints(a.path_id);
+      const cp = cps.find((c) => c.stop_on_arrival) || cps[0];
+      return { a, cp };
+    };
+    panel.append(info, button('스냅샷 보내기', () => sendSnapshot(true)),
+      button('Python: 경로 지정·Checkpoint 이동·추적', async () => {
+        const f = firstActor();
+        if (!f || !f.cp) { log('Checkpoint가 있는 Actor가 없습니다 (Scene MF에서 확인)', 'warn'); return; }
+        await sendSnapshot(false);
+        e.bridge.run('scene_commands.route_demo', f.a.actor_id, f.a.path_id, f.cp.checkpoint_id);
+      }, 'primary'),
+      button('Python: 잘못된 이동 명령', async () => {
+        const f = firstActor();
+        if (!f) return;
+        await sendSnapshot(false);
+        e.bridge.run('scene_commands.motion_error_test', f.a.actor_id);
+      }, 'danger'),
+      button('Python: 추적 해제', async () => { await sendSnapshot(false); e.bridge.run('scene_commands.build', [{ action: 'camera_unfollow' }]); }),
+    );
     return;
   }
 

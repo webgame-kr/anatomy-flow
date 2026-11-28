@@ -2,6 +2,8 @@
 // STEP 01 형식: { id, op: 'clear' | 'create' | 'update' | 'remove', target, ... }
 // STEP 02 형식: { action, target, value, duration } — set_position, set_rotation, set_scale,
 //               set_color, set_visibility, set_opacity, highlight, camera_focus, camera_overview, scene_change
+// STEP 03-C 형식: { action: 'actor_*' | 'path_show' | 'path_hide' | 'camera_follow' | 'camera_unfollow', target, ... }
+//               → ctx.motion(js/motion/motion-commands.js)이 검증·실행한다. wait: true면 이동 결과까지 기다린다.
 // 잘못된 명령은 기록만 하고 다음 명령을 계속 실행한다(전체가 멈추지 않게).
 
 const NO_TARGET = new Set(['camera_overview', 'scene_change']);
@@ -39,7 +41,10 @@ export function createCommandRunner(manager, ctx = {}) {
     return ctx.registry.has(target) ? [target] : [];
   }
 
+  const isMotion = (cmd) => !!(ctx.motion && ctx.motion.handles(cmd.action));
+
   function validateAction(cmd) {
+    if (isMotion(cmd)) return ctx.motion.validate(cmd);
     if (!(cmd.action in CHECK)) return `지원하지 않는 명령: ${cmd.action}`;
     if (!NO_TARGET.has(cmd.action) && targetIds(cmd.target).length === 0) return `없는 객체 ID: ${cmd.target}`;
     if (cmd.action === 'scene_change' && ctx.scenes && !ctx.scenes.has(cmd.value)) return `없는 장면: ${cmd.value}`;
@@ -47,6 +52,7 @@ export function createCommandRunner(manager, ctx = {}) {
   }
 
   function runAction(cmd) {
+    if (isMotion(cmd)) return ctx.motion.run(cmd);
     const d = isNum(cmd.duration) ? cmd.duration : 0;
     const ids = NO_TARGET.has(cmd.action) ? [] : targetIds(cmd.target);
     switch (cmd.action) {
@@ -95,7 +101,7 @@ export function createCommandRunner(manager, ctx = {}) {
 
   // 명령 목록 실행. scene_change처럼 비동기인 명령은 끝날 때까지 기다린 뒤 다음 명령을 실행한다.
   async function run(commands) {
-    const summary = { applied: 0, skipped: 0, failed: 0, errors: [] };
+    const summary = { applied: 0, skipped: 0, failed: 0, errors: [], results: [] };
     if (!Array.isArray(commands)) {
       log('명령 목록이 배열이 아닙니다.', 'error');
       summary.failed += 1;
@@ -108,7 +114,12 @@ export function createCommandRunner(manager, ctx = {}) {
           const problem = validateAction(cmd);
           if (problem) throw new Error(problem);
           const pending = runAction(cmd);
-          if (pending && typeof pending.then === 'function') await pending;
+          if (isMotion(cmd)) {
+            // 이동 명령: 결과 Promise. wait일 때만 끝날 때까지 기다린다(다음 명령은 그 뒤에 실행)
+            const outcome = pending && typeof pending.then === 'function' && cmd.wait === true ? await pending : pending;
+            if (outcome && outcome.status === 'failed') throw new Error(outcome.reason || '이동 명령 실패');
+            summary.results.push({ index: i, action: cmd.action, target: cmd.target, outcome: outcome && outcome.then ? 'pending' : outcome });
+          } else if (pending && typeof pending.then === 'function') await pending;
           summary.applied += 1;
         } else if (cmd && typeof cmd.op === 'string') {
           if (runOp(cmd) === 'skipped') summary.skipped += 1;

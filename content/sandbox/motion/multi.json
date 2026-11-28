@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "scene_id": "motion_h",
+  "description": "요구서 Scene H — 여러 Actor 동시 이동, 서로 다른 속도, 개별 정지·재개, 공유 리소스",
+  "marker_size": 0.08,
+  "follow": { "distance": 1.4, "height": 0.6, "side": 0 },
+  "paths": [
+    {
+      "path_id": "p.ring", "name_ko": "원형 순환", "curve_type": "catmull_rom", "closed": true,
+      "points": [
+        { "space": "scene", "position": [2.5, 0.6, 0] }, { "space": "scene", "position": [0, 0.9, 2.5] },
+        { "space": "scene", "position": [-2.5, 0.6, 0] }, { "space": "scene", "position": [0, 0.9, -2.5] }
+      ],
+      "default_speed": 1.0, "verification_status": "TEST_PATH", "source": "project test data"
+    },
+    {
+      "path_id": "p.cross", "name_ko": "가로지르는 곡선", "curve_type": "catmull_rom",
+      "points": [ { "space": "scene", "position": [-3.5, 0.3, -3] }, { "space": "scene", "position": [0, 1.6, 0] }, { "space": "scene", "position": [3.5, 0.3, 3] } ],
+      "default_speed": 1.0, "verification_status": "TEST_PATH", "source": "project test data"
+    }
+  ],
+  "actors": [
+    { "actor_id": "rbc_a", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.4, "path_id": "p.ring", "speed": 0.6, "biological_state": { "oxygenation": "oxygenated" } },
+    { "actor_id": "rbc_b", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.4, "path_id": "p.ring", "progress": 0.25, "speed": 1.0, "biological_state": { "oxygenation": "oxygenated" } },
+    { "actor_id": "rbc_c", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.4, "path_id": "p.ring", "progress": 0.5, "speed": 1.6, "biological_state": { "oxygenation": "deoxygenated" } },
+    { "actor_id": "wbc_a", "actor_type": "white_blood_cell", "model_id": "wbc", "display_size": 0.5, "path_id": "p.ring", "progress": 0.75, "speed": 0.4 },
+    { "actor_id": "platelet_a", "actor_type": "platelet", "model_id": "platelet", "display_size": 0.25, "path_id": "p.cross", "speed": 0.8 },
+    { "actor_id": "lymph_a", "actor_type": "lymph_particle", "model_id": "lymph", "display_size": 0.25, "path_id": "p.cross", "progress": 0.3, "speed": 0.5 },
+    { "actor_id": "hormone_a", "actor_type": "hormone", "model_id": "hormone", "display_size": 0.3, "path_id": "p.cross", "progress": 0.6, "speed": 1.2 },
+    { "actor_id": "food_a", "actor_type": "food", "model_id": "food", "display_size": 0.35, "path_id": "p.ring", "progress": 0.1, "speed": 0.3 }
+  ]
+}

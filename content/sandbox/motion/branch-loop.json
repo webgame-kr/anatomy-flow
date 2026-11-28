@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "scene_id": "motion_g",
+  "description": "요구서 Scene G — 연결 경로, 분기, 순환, 반복, 명시적 종료 조건, 객체 로컬 좌표 경로",
+  "marker_size": 0.08,
+  "follow": { "distance": 1.4, "height": 0.6, "side": 0 },
+  "paths": [
+    {
+      "path_id": "p.trunk", "name_ko": "줄기 (분기 전)", "curve_type": "catmull_rom",
+      "points": [ { "space": "scene", "position": [-4, 0.5, 0] }, { "space": "scene", "position": [-2.6, 0.7, 0.2] }, { "space": "scene", "position": [-1.5, 0.5, 0] } ],
+      "links": [ { "to": "p.left", "when": "left", "label": "왼쪽 가지" }, { "to": "p.right", "when": "right", "label": "오른쪽 가지" } ],
+      "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data",
+      "notes": "끝에서 Actor의 biological_state.branch 값(left 또는 right)으로 가지를 고른다. 값이 없으면 첫 연결."
+    },
+    {
+      "path_id": "p.left", "name_ko": "왼쪽 가지 → 순환 진입", "curve_type": "catmull_rom",
+      "points": [ { "space": "scene", "position": [-1.5, 0.5, 0] }, { "space": "scene", "position": [-0.6, 0.6, -1.4] }, { "space": "scene", "position": [1.0, 0.5, -2.0] } ],
+      "links": [ { "to": "p.loop" } ],
+      "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data"
+    },
+    {
+      "path_id": "p.right", "name_ko": "오른쪽 가지 (끝)", "curve_type": "catmull_rom",
+      "points": [ { "space": "scene", "position": [-1.5, 0.5, 0] }, { "space": "scene", "position": [-0.4, 0.4, 1.4] }, { "space": "scene", "position": [1.0, 0.5, 2.4] } ],
+      "checkpoints": [ { "checkpoint_id": "cp.right_end", "path_progress": 1.0, "stop_on_arrival": true, "label": "오른쪽 끝" } ],
+      "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data"
+    },
+    {
+      "path_id": "p.loop", "name_ko": "순환 경로", "curve_type": "catmull_rom", "closed": true,
+      "points": [
+        { "space": "scene", "position": [1.0, 0.5, -2.0] }, { "space": "scene", "position": [2.6, 1.0, -2.4] },
+        { "space": "scene", "position": [3.4, 0.5, -0.8] }, { "space": "scene", "position": [2.2, 0.8, 0.2] }
+      ],
+      "checkpoints": [ { "checkpoint_id": "cp.loop_gate", "path_progress": 0.5, "stop_on_arrival": false, "event_ids": ["ev.loop"], "label": "순환 관문 (바퀴마다 다시 활성화)" } ],
+      "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data",
+      "notes": "닫힌 곡선. 종료 조건은 actor_move의 loops(바퀴 수). loops가 없으면 actor_stop까지 계속 돈다."
+    },
+    {
+      "path_id": "p.local", "name_ko": "회전판 위 경로 (객체 로컬 좌표)", "curve_type": "catmull_rom", "closed": true,
+      "points": [
+        { "space": "object_local", "object_id": "turntable", "position": [0.9, 0.25, 0] },
+        { "space": "object_local", "object_id": "turntable", "position": [0, 0.25, 0.9] },
+        { "space": "object_local", "object_id": "turntable", "position": [-0.9, 0.25, 0] },
+        { "space": "object_local", "object_id": "turntable", "position": [0, 0.25, -0.9] }
+      ],
+      "default_speed": 0.8, "verification_status": "TEST_PATH", "source": "project test data",
+      "notes": "turntable 객체의 로컬 좌표. 회전판을 움직이면(set_position, set_rotation) 경로가 다음 프레임에 따라간다."
+    }
+  ],
+  "actors": [
+    { "actor_id": "rbc_branch", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.4, "path_id": "p.trunk", "speed": 1.2, "biological_state": { "oxygenation": "oxygenated", "branch": "left" } },
+    { "actor_id": "rbc_right", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.4, "path_id": "p.trunk", "speed": 1.0, "biological_state": { "oxygenation": "deoxygenated", "branch": "right" } },
+    { "actor_id": "signal_local", "actor_type": "nerve_signal", "model_id": "nerve_signal", "display_size": 0.22, "path_id": "p.local", "speed": 0.8 }
+  ]
+}

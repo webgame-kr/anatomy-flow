@@ -20,6 +20,8 @@ import { createAnatomyManager } from './anatomy-manager.js';
 import { createAnatomyLabels } from './anatomy-labels.js';
 import { createAnatomySearch } from './anatomy-search.js';
 import { createAnchorManager } from './anchor-manager.js';
+import { createMotionKit } from '../motion/motion-kit.js';
+import { createPathEditor } from '../motion/path-editor.js';
 
 window.__nf3dBooted = true;
 const $ = (id) => document.getElementById(id);
@@ -72,6 +74,7 @@ function boot() {
   e.viewport = createViewport($('viewport'), {
     onFrame: (dt) => {
       e.objects.tick(dt);
+      e.kit.tick(dt);          // STEP 03-C: 경로·Actor 이동 (카메라 추적보다 먼저)
       e.camera.tick(dt);
       e.manager.tick();
       e.anchors.tick();
@@ -108,12 +111,15 @@ function boot() {
   e.labels = createAnatomyLabels({ container: $('viewport'), camera, anatomy: e.anatomy });
   e.search = createAnatomySearch({ anatomy: e.anatomy });
   e.anchors = createAnchorManager({ scene, camera, renderer, controls, registry: e.registry, anatomy: e.anatomy, log });
+  // STEP 03-C: 경로·Actor·이동. 경로 점은 Anchor(object-local)를 그대로 참조한다.
+  e.kit = createMotionKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, camera: e.camera, anchors: e.anchors, log });
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
     resolve: (t) => e.manager.resolveTargets(t), focusMany: (ids) => e.manager.focusObjects(ids),
+    motion: e.kit.commands,
   });
-  e.client = createPythonClient({ onStatus: (state, text) => { $('py-status').textContent = text; $('py-test').disabled = $('py-clear').disabled = state !== 'ready'; } });
-  e.bridge = createPythonBridge({ client: e.client, runner: e.runner, log });
+  e.client = createPythonClient({ onStatus: (state, text) => { $('py-status').textContent = text; $('py-test').disabled = $('py-clear').disabled = $('py-motion').disabled = state !== 'ready'; } });
+  e.bridge = createPythonBridge({ client: e.client, runner: e.runner, log, guard: () => e.kit.motion.session });
 
   // 화면에서 객체를 고르면 → 해부학 구조로 바꿔 선택 (선택 컨트롤러 자체 강조는 쓰지 않음)
   let guard = false;
@@ -136,7 +142,22 @@ function boot() {
     if (kind === 'select') { e.labels.setSelected(data.id); renderInfo(); markActive(); if (data.id) openRight(); }
     if (kind === 'state' || kind === 'layer' || kind === 'assets') { renderLayers(); renderInfo(); }
   });
-  e.anchors.onChange((kind) => { if (kind !== 'move') renderAnchors(); else renderAnchorEdit(); });
+  e.anchors.onChange((kind, data) => {
+    if (kind !== 'move') renderAnchors(); else renderAnchorEdit();
+    if ((kind === 'change' || kind === 'move') && data && data.id) e.kit.paths.refreshAnchor(data.id);   // Anchor를 쓰는 경로 갱신
+  });
+  e.editor = createPathEditor({
+    container: $('motion-panel'), kit: e.kit, camera3d: camera, renderer, controls, cameraCtl: e.camera, scene, anchors: e.anchors, registry: e.registry, log,
+    getFps: () => stats.fps,
+  });
+  // Checkpoint 도착 초점: 해부학 구조가 있으면 그 구조로
+  e.editor.setCheckpointFocus((ev) => {
+    if (!ev.anatomical_id || !e.anatomy.has(ev.anatomical_id)) return false;
+    e.camera.stopFollow();
+    e.manager.select(ev.anatomical_id);
+    e.manager.focus(ev.anatomical_id);
+    return true;
+  });
 
   wireUi(e, () => stats);
   window.__nfx = e;
@@ -171,9 +192,32 @@ async function start(e) {
   }).catch(() => log('Python을 불러오지 못했습니다 (3D 탐색은 계속 쓸 수 있음)', 'warn'));
 }
 
+// STEP 03-C: 이동 시험 데이터(경로·적혈구)는 개발자 모드에서만 불러온다 (학습자 화면에 노출하지 않음)
+let motionLoaded = false;
+async function syncMotion() {
+  if (!E || !E.manager.scene || !E.manager.scene.motion) return;
+  const m = E.manager.scene.motion;
+  if (devOn() && !motionLoaded) {
+    motionLoaded = true;
+    try {
+      await E.kit.loadUrl(m.paths, m.actors);
+      E.editor.render();
+    } catch (err) {
+      motionLoaded = false;
+      log(`이동 데이터를 읽지 못했습니다: ${err.message}`, 'error');
+    }
+  } else if (!devOn() && motionLoaded) {
+    motionLoaded = false;
+    E.kit.unload();
+    E.kit.actors.clear();
+    E.editor.render();
+  }
+}
+
 async function sendSnapshot(e) {
-  const objs = [...e.anatomy.snapshot(), ...e.anchors.list().map((a) => ({ id: a.anchor_id, type: 'anchor', visible: e.anchors.visible, parent: a.anatomical_id }))];
+  const objs = [...e.anatomy.snapshot(), ...e.anchors.list().map((a) => ({ id: a.anchor_id, type: 'anchor', visible: e.anchors.visible, parent: a.anatomical_id })), ...e.kit.actors.snapshot()];
   try {
+    await e.bridge.call('scene_commands.set_paths', e.kit.pathSnapshot());
     const r = await e.bridge.call('scene_commands.set_snapshot', objs, [e.manager.scene.scene_id], e.manager.scene.scene_id);
     log(`Python 스냅샷: ${r.count}개 ${JSON.stringify(r.types)}`);
   } catch (err) {
@@ -191,8 +235,11 @@ function wireUi(e, getStats) {
     e.clipping.reset();
     syncClip();
     $('ex-loading').hidden = false;
+    e.kit.unload();                 // 이동·이벤트 취소(session 증가), 경로 제거
+    motionLoaded = false;
     const ms = await e.manager.start();
     $('ex-loading').hidden = true;
+    syncMotion();
     const ov = (id) => e.manager.layerState(id).visible;
     e.labels.setVisible(ov('labels'));
     e.anchors.setVisible(ov('anchors'));
@@ -207,7 +254,7 @@ function wireUi(e, getStats) {
   });
   $('set-label-mode').addEventListener('change', (ev) => e.labels.setMode(ev.target.value));
   $('set-label-scope').addEventListener('change', (ev) => e.labels.setScope(ev.target.value));
-  $('set-dev').addEventListener('change', () => { $('dev').hidden = !devOn(); renderDev(); });
+  $('set-dev').addEventListener('change', () => { $('dev').hidden = !devOn(); renderDev(); syncMotion(); });
   $('tg-left').addEventListener('click', () => { $('ex-left').classList.toggle('open'); $('ex-right').classList.remove('open'); });
   $('tg-right').addEventListener('click', () => { $('ex-right').classList.toggle('open'); $('ex-left').classList.remove('open'); });
 
@@ -298,6 +345,14 @@ function wireUi(e, getStats) {
     ]);
   });
   $('py-clear').addEventListener('click', () => e.bridge.run('scene_commands.build', [{ action: 'highlight', target: 'cv.left_ventricle', value: false }]));
+  $('py-motion').addEventListener('click', async () => {
+    const a = e.kit.actors.list()[0];
+    if (!a || !a.path_id) { log('개발자 모드에서 이동 데이터가 불러와져야 합니다', 'warn'); return; }
+    const cp = e.kit.paths.checkpoints(a.path_id).find((c) => c.stop_on_arrival);
+    if (!cp) { log('정지 Checkpoint가 없습니다', 'warn'); return; }
+    await sendSnapshot(e);
+    e.bridge.run('scene_commands.route_demo', a.actor_id, a.path_id, cp.checkpoint_id);
+  });
 
   window.addEventListener('keydown', (ev) => {
     if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;

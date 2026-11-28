@@ -18,9 +18,33 @@ ACTIONS = {
 NO_TARGET = ('camera_overview', 'scene_change')
 HEX = '0123456789abcdef'
 
+# STEP 03-C 이동 명령 -> 대상 종류 (new_actor: 새 ID, actor: 있는 Actor, path: 경로, none: 대상 없음)
+MOTION = {
+    'actor_create': 'new_actor',
+    'actor_remove': 'actor',
+    'actor_set_path': 'actor',
+    'actor_move': 'actor',
+    'actor_move_to_checkpoint': 'actor',
+    'actor_pause': 'actor',
+    'actor_resume': 'actor',
+    'actor_stop': 'actor',
+    'actor_reset': 'actor',
+    'actor_reverse': 'actor',
+    'actor_set_speed': 'actor',
+    'actor_seek': 'actor',
+    'actor_set_state': 'actor',
+    'path_show': 'path',
+    'path_hide': 'path',
+    'camera_follow': 'actor',
+    'camera_unfollow': 'none',
+}
+UNTIL = ('end', 'next_stop')
+
 snapshot = {}       # 객체 ID -> {'type', 'visible', 'parent'}
 scene_ids = []      # 전환할 수 있는 장면 ID
 current_scene = ''
+paths = {}          # 경로 ID -> Checkpoint ID 리스트
+checkpoints = {}    # Checkpoint ID -> 경로 ID
 
 
 def set_snapshot(objects, scenes, scene_id):
@@ -33,6 +57,81 @@ def set_snapshot(objects, scenes, scene_id):
     scene_ids = list(scenes)
     current_scene = scene_id
     return {'ok': True, 'count': len(snapshot), 'types': count_types(), 'scene': current_scene}
+
+
+def set_paths(path_list):
+    # JS 경로 엔진이 보낸 경로·Checkpoint ID 목록을 저장한다 (좌표는 받지 않는다)
+    paths.clear()
+    checkpoints.clear()
+    for item in path_list:
+        cp_ids = []
+        for cp_id in item.get('checkpoints', []):
+            cp_ids.append(cp_id)
+            checkpoints[cp_id] = item['id']
+        paths[item['id']] = cp_ids
+    return {'ok': True, 'paths': len(paths), 'checkpoints': len(checkpoints)}
+
+
+def is_actor(obj_id):
+    return obj_id in snapshot and snapshot[obj_id]['type'] == 'actor'
+
+
+def check_motion(command):
+    # 이동 명령 검사. 문제가 없으면 빈 문자열
+    action = command['action']
+    kind = MOTION[action]
+    target = command.get('target')
+    if kind == 'new_actor':
+        if type(target) != str or target == '':
+            return 'actor_id(target)가 필요합니다'
+        if target in snapshot:
+            return '이미 있는 ID: {}'.format(target)
+        value = command.get('value', {})
+        if type(value) != dict:
+            return 'value는 딕셔너리여야 합니다'
+        if 'path_id' in value and value['path_id'] not in paths:
+            return '없는 경로: {}'.format(value['path_id'])
+        return ''
+    if kind == 'actor' and not is_actor(target):
+        return '없는 Actor: {}'.format(target)
+    if kind == 'path' and target not in paths:
+        return '없는 경로: {}'.format(target)
+    if action == 'actor_set_path':
+        if command.get('path_id') not in paths:
+            return '없는 경로: {}'.format(command.get('path_id'))
+        if 'progress' in command:
+            progress = command['progress']
+            if not is_number(progress) or progress < 0 or progress > 1:
+                return 'progress는 0~1'
+        if 'direction' in command and command['direction'] not in (1, -1):
+            return 'direction은 1 또는 -1'
+    if action == 'actor_move':
+        if 'speed' in command and (not is_number(command['speed']) or command['speed'] <= 0):
+            return 'speed는 0보다 큰 숫자'
+        if 'duration' in command and (not is_number(command['duration']) or command['duration'] <= 0):
+            return 'duration은 0보다 큰 숫자(ms)'
+        if 'until' in command and command['until'] not in UNTIL:
+            return "until은 'end' 또는 'next_stop'"
+        if 'route' in command:
+            for path_id in command['route']:
+                if path_id not in paths:
+                    return 'route에 없는 경로: {}'.format(path_id)
+    if action == 'actor_move_to_checkpoint':
+        if command.get('checkpoint_id') not in checkpoints:
+            return '없는 Checkpoint: {}'.format(command.get('checkpoint_id'))
+        if 'duration' in command and (not is_number(command['duration']) or command['duration'] <= 0):
+            return 'duration은 0보다 큰 숫자(ms)'
+    if action == 'actor_set_speed':
+        if not is_number(command.get('value')) or command.get('value') <= 0:
+            return '속도는 0보다 큰 숫자'
+    if action == 'actor_seek':
+        value = command.get('value')
+        if not is_number(value) or value < 0 or value > 1:
+            return '진행률은 0~1'
+    if action == 'actor_set_state':
+        if type(command.get('value')) != dict:
+            return 'value는 딕셔너리여야 합니다'
+    return ''
 
 
 def count_types():
@@ -103,6 +202,8 @@ def validate(command):
     if type(command) != dict:
         return '명령은 딕셔너리여야 합니다'
     action = command.get('action')
+    if action in MOTION:
+        return check_motion(command)
     if action not in ACTIONS:
         return '지원하지 않는 명령: {}'.format(action)
     if action not in NO_TARGET:
@@ -200,3 +301,35 @@ def error_test():
 
 def change_scene(scene_id):
     return build([make('scene_change', None, scene_id)])
+
+
+def move_to(actor_id, checkpoint_id, duration=0):
+    # Checkpoint까지 이동하는 명령 하나 (STEP 03-D 타이핑 정답 처리에서 쓸 형식)
+    command = {'action': 'actor_move_to_checkpoint', 'target': actor_id, 'checkpoint_id': checkpoint_id}
+    if duration > 0:
+        command['duration'] = duration
+    return command
+
+
+def route_demo(actor_id, path_id, checkpoint_id):
+    # 경로 지정 → Checkpoint까지 이동 → 카메라 추적
+    commands = []
+    commands.append({'action': 'actor_set_path', 'target': actor_id, 'path_id': path_id})
+    commands.append(move_to(actor_id, checkpoint_id, 2000))
+    commands.append({'action': 'camera_follow', 'target': actor_id})
+    return build(commands)
+
+
+def motion_error_test(actor_id):
+    # 잘못된 이동 명령을 섞어 Python·JS 양쪽 검사를 확인한다 (원본 그대로 전송)
+    raw = [
+        {'action': 'actor_move', 'target': 'ghost_actor'},
+        {'action': 'actor_set_path', 'target': actor_id, 'path_id': 'no_such_path'},
+        {'action': 'actor_move_to_checkpoint', 'target': actor_id, 'checkpoint_id': 'no_such_cp'},
+        {'action': 'actor_seek', 'target': actor_id, 'value': 1.5},
+        {'action': 'actor_set_speed', 'target': actor_id, 'value': -1},
+        {'action': 'actor_pause', 'target': actor_id},
+    ]
+    checked = build(raw)
+    return {'ok': True, 'commands': raw, 'errors': checked['errors'],
+            'message': 'Python 검사: {}개 중 {}개 오류 (원본 그대로 전송)'.format(len(raw), len(checked['errors']))}

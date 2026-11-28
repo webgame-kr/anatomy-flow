@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "scene_id": "motion_f",
+  "description": "요구서 Scene F — 여러 Checkpoint, 지정 지점 정지, Next 버튼, 이벤트 기록",
+  "marker_size": 0.08,
+  "follow": { "distance": 1.4, "height": 0.5, "side": 0 },
+  "paths": [
+    {
+      "path_id": "path_001", "name_ko": "Checkpoint 테스트 경로", "curve_type": "catmull_rom",
+      "points": [
+        { "space": "scene", "position": [-3.5, 0.5, 0] },
+        { "space": "scene", "position": [-1.8, 1.4, -1.2] },
+        { "space": "scene", "position": [0, 0.5, 0] },
+        { "space": "scene", "position": [1.8, 1.4, 1.2] },
+        { "space": "scene", "position": [3.5, 0.5, 0] }
+      ],
+      "checkpoints": [
+        { "checkpoint_id": "checkpoint_01", "path_progress": 0.2, "stop_on_arrival": true, "event_ids": ["ev.intro"], "label": "CP1 (정지)" },
+        { "checkpoint_id": "checkpoint_pass", "path_progress": 0.35, "stop_on_arrival": false, "event_ids": ["ev.pass"], "label": "통과 지점 (정지 안 함)" },
+        { "checkpoint_id": "checkpoint_02", "path_progress": 0.5, "stop_on_arrival": true, "event_ids": ["ev.mid"], "label": "CP2 (정지)" },
+        { "checkpoint_id": "checkpoint_back", "path_progress": 0.65, "stop_on_arrival": false, "trigger": "backward", "event_ids": ["ev.back"], "label": "역방향 전용" },
+        { "checkpoint_id": "checkpoint_03", "path_progress": 0.8, "stop_on_arrival": true, "event_ids": ["ev.late"], "label": "CP3 (정지)" }
+      ],
+      "default_speed": 1.2, "verification_status": "TEST_PATH", "source": "project test data"
+    }
+  ],
+  "actors": [
+    { "actor_id": "rbc_01", "actor_type": "red_blood_cell", "model_id": "rbc", "display_size": 0.45, "path_id": "path_001", "speed": 1.2, "biological_state": { "oxygenation": "oxygenated" } }
+  ]
+}

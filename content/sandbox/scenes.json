@@ -141,6 +141,10 @@
         { "asset_id": "bp3d-cv-preview", "display_name": "Cardiovascular preview (심혈관계 통합)" }
       ],
       "objects": []
-    }
+    },
+    {"scene_id": "motion_e", "scene_name": "ME — Motion: Basic Path (요구서 Scene E)", "description": "직선·곡선 이동, 호 길이 기반 일정 속도, 정방향·역방향, 완료·초기화", "python": "motion", "motion": "content/sandbox/motion/basic.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []},
+    {"scene_id": "motion_f", "scene_name": "MF — Motion: Checkpoint (요구서 Scene F)", "description": "여러 Checkpoint, 지정 지점 정지, Next로 재개, 이벤트 기록", "python": "motion", "motion": "content/sandbox/motion/checkpoint.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []},
+    {"scene_id": "motion_g", "scene_name": "MG — Motion: Branch & Loop (요구서 Scene G)", "description": "연결 경로, 분기, 순환·반복, 종료 조건, 객체 로컬 좌표 경로", "python": "motion", "motion": "content/sandbox/motion/branch-loop.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "groups": [{"id": "turntable", "name": "Turntable (경로 기준 객체)", "position": [0, 0, 3.4]}], "objects": [{"id": "turntable_disc", "kind": "cylinder", "name": "회전판", "parent": "turntable", "position": [0, 0.05, 0], "scale": [2.2, 0.1, 2.2], "color": "#cfd6e0"}]},
+    {"scene_id": "motion_h", "scene_name": "MH — Motion: Multiple Actors (요구서 Scene H)", "description": "여러 Actor 동시 이동, 서로 다른 속도, 개별 정지·재개, 공유 리소스", "python": "motion", "motion": "content/sandbox/motion/multi.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []}
   ]
 }

@@ -20,6 +20,10 @@ const ALLOWED = new Set([
   'scene_commands.set_snapshot', 'scene_commands.demo', 'scene_commands.restore_demo',
   'scene_commands.error_test', 'scene_commands.change_scene', 'scene_commands.build',
   'scene_commands.count_types',
+  // STEP 03-C 이동 명령
+  'scene_commands.set_paths', 'scene_commands.route_demo', 'scene_commands.motion_error_test',
+  'scene_commands.move_to',
+  'motion_link.setup', 'motion_link.to_motion', 'motion_link.motion_done',
 ]);
 
 function toPlain(value) {
@@ -56,6 +60,7 @@ async function init({ pyodideBase, pyBase, files }) {
     sandbox = py.pyimport('sandbox3d');
     modules.sandbox3d = sandbox;
     modules.scene_commands = py.pyimport('scene_commands');
+    modules.motion_link = py.pyimport('motion_link');
     ready = true;
     const info = toPlain(sandbox.ping());
     postMessage({ type: 'ready', python: info.python, pyodide: py.version, ping: info });

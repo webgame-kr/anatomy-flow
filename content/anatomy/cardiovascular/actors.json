@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "scene_id": "anatomy_cardiovascular",
+  "scale_note": "적혈구 실제 지름은 약 7.8 µm(real_size_m)다. 장면에서 보이도록 display_size 3 mm(약 385배)로 확대해 표시한다. 교육용 가시성 배율이며 실제 크기가 아니다.",
+  "actors": [
+    {
+      "actor_id": "rbc_01", "actor_type": "red_blood_cell", "model_id": "rbc", "name": "적혈구 (교육용 확대)",
+      "display_size": 0.003, "path_id": "cv.svc_to_ra", "speed": 0.02, "rotation_mode": "tangent",
+      "biological_state": { "oxygenation": "deoxygenated" }
+    }
+  ]
+}

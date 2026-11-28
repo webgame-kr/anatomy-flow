@@ -8,6 +8,7 @@
   "unit": "m",
   "object_mapping": "content/anatomy/cardiovascular/structures.json",
   "anchors": "content/anatomy/cardiovascular/anchors.json",
+  "motion": { "paths": "content/anatomy/cardiovascular/paths.json", "actors": "content/anatomy/cardiovascular/actors.json", "visibility": "developer" },
   "source": "BodyParts3D 4.0 (Database Center for Life Science), PART-OF tree, derived GLB (tools/asset-processing)",
   "license": "CC-BY-4.0",
   "credits": "3D 모델: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형: 파트 결합·단위·축 변환·재질)",

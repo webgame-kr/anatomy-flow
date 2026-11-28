@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 03-B(Anatomy Explorer와 Anchor)까지 완료했다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진"과 "STEP 03-B Anatomy Explorer"에 있다.
+현재 단계는 STEP 03-C(경로·Actor·이동 엔진)까지 완료했다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -111,8 +111,39 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
   - 해부학적으로 검증했다고 표시하지 않는다.
 - **Python:** target에 anatomical_id를 쓸 수 있고, JS `resolve` 훅이 Mesh ID로 바꾼다. 스냅샷에는 구조와 Anchor의 id·상태만 보낸다.
 
-## STEP 03-C 방향
-1. (완료: STEP 03-A, 03-B) 심혈관 GLB와 해부학 레지스트리, Anchor 시스템
-2. 3차원 경로: Anchor들을 잇는 CatmullRomCurve3를 정의하고 이동 객체가 그 위를 지난다. Python은 경로 ID와 시간만 보낸다.
-3. `camera-controller.setFollowTarget`으로 이동 객체를 추적한다.
-4. 보존한 진행 규칙 엔진(`flow_engine` 등)을 Worker에 싣고 노드 좌표를 Anchor ID로 연결한다. 타이핑 입력(`js/shared/typing-input.js`)과 연결한다.
+## 이동 엔진 (STEP 03-C, 2026-11-28)
+- **모듈 위치:** `js/motion/`. Sandbox와 Explorer는 `motion-kit.js`로 같은 방식으로 조립한다. 같은 역할 모듈을 새로 만들지 말고 여기서 확장한다.
+- **좌표:**
+  - 곡선은 장면 좌표로 계산한다.
+  - 점은 `anchor_id`, `object_local`, `scene` 중 자기 좌표계를 적는다.
+  - 참조 객체가 움직이면 다음 프레임에 캐시를 다시 만든다.
+  - GLB의 축·단위 변환을 다시 적용하지 않는다.
+- **이동:**
+  - 진행은 거리(m) 단위로 한다. 위치·방향은 `getPointAt`/`getTangentAt`(호 길이)로 얻는다.
+  - 기존 렌더링 루프의 `kit.tick(dt)`에서만 움직인다. 별도 루프를 만들지 않는다.
+- **Checkpoint:**
+  - 프레임 구간 교차로 감지한다(건너뛰지 않음).
+  - 이벤트는 (Checkpoint, 바퀴, 방향)마다 한 번만 낸다.
+  - 다시 활성화되는 조건(새 바퀴, reset, set_path, 경로 전환)을 바꾸면 `tests/motion-tests.js`도 고친다.
+- **Actor:**
+  - 레지스트리 type `actor`로 등록한다.
+  - 모델별 Geometry와 상태별 Material을 공유한다.
+  - 재질을 바꿀 때는 `materials.setBaseMaterial`을 쓴다.
+- **명령과 결과:**
+  - 이동 명령은 Python(`scene_commands.MOTION`)과 JS(`motion-commands.js`)가 각각 검사한다.
+  - 결과는 arrived, completed, cancelled, failed 중 하나다.
+  - 장면 전환·초기화 때 `motion.cancelAll()`이 session을 올린다. Python Bridge는 호출 뒤 session이 바뀌면 명령을 버린다.
+- **해부학 경로:**
+  - Anchor 정점 평균을 이은 경로는 `APPROXIMATE`로 적는다.
+  - 기하 검사(ray parity)는 근거일 뿐 검증이 아니다.
+  - 원본에 없는 구조를 임의 좌표로 이어 정확한 혈류 경로라고 표시하지 않는다.
+- **노출 범위:** 해부학 이동 시험 데이터와 편집기는 Explorer 개발자 모드에서만 불러온다.
+- **테스트:**
+  - 이동 엔진을 바꾸면 `tests/motion-tests.html`(브라우저, 28개)과 `python tests/test_motion_commands.py`를 실행한다.
+  - Worker 파일을 바꾸면 `py-client.js`의 `WORKER_VERSION`을 올린다.
+
+## STEP 03-D 방향
+1. (완료: STEP 03-A~C) 심혈관 GLB, 해부학 레지스트리, Anchor, 경로·Actor·이동 엔진
+2. 보존한 규칙 엔진(`game.py`, `flow_engine.py`, `state_engine.py`, `typing_engine.py`)을 Worker에 싣는다. `py-client.js`의 `PY_FILES`와 `py-worker.js`의 `ALLOWED`에 추가한다.
+3. 콘텐츠 Edge를 경로·Checkpoint에 연결한다(`motion_link.setup`). 정답 제출 결과를 `motion_link.to_motion`으로 바꿔 실행하고, 이동 결과를 `motion_link.motion_done`과 `game.arrive`로 돌려준다.
+4. 타이핑 입력(`js/shared/typing-input.js`)과 Next 버튼을 교체한다.

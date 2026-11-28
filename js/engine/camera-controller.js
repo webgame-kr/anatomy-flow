@@ -79,6 +79,75 @@ export function createCameraController({ camera, controls, registry }) {
     if (duration <= 0) tick(1);
   }
 
+  // ---------- STEP 03-C: 추적 카메라 ----------
+  // mode: 'overview' | 'orbit' | 'follow'(Actor 뒤에서) | 'checkpoint' | 'first_person'
+  // follow 대상은 레지스트리 객체 ID. 이동 방향은 객체의 앞쪽(+Z, 회전 반영)으로 본다.
+  let mode = 'orbit';
+  const follow = { distance: 1, height: 0.35, side: 0, smooth: 6, lookAhead: 0.5, suspended: false, savedNear: null };
+  const fv = { pos: new THREE.Vector3(), look: new THREE.Vector3(), fwd: new THREE.Vector3(), up: new THREE.Vector3(), right: new THREE.Vector3(), q: new THREE.Quaternion() };
+
+  // 사용자가 직접 돌리거나 확대하면 추적을 잠시 멈춘다 (resumeFollow로 다시)
+  controls.addEventListener('start', () => {
+    if (followId && (mode === 'follow' || mode === 'first_person')) follow.suspended = true;
+  });
+
+  function startFollow(id, opts = {}) {
+    if (!registry.has(id)) return false;
+    followId = id;
+    mode = opts.firstPerson ? 'first_person' : 'follow';
+    for (const k of ['distance', 'height', 'side', 'smooth', 'lookAhead']) if (Number.isFinite(opts[k])) follow[k] = opts[k];
+    follow.suspended = false;
+    anim = null;
+    // 작은 모델 안쪽을 볼 때 near가 크면 화면이 잘린다 → 추적 중에는 near를 거리에 맞춰 줄인다
+    if (follow.savedNear === null) {
+      follow.savedNear = camera.near;
+      // OrbitControls의 거리·각도 제한이 추적 위치와 싸우지 않도록 잠시 푼다
+      follow.savedLimits = { min: controls.minDistance, polar: controls.maxPolarAngle };
+      controls.minDistance = 0.00001;
+      controls.maxPolarAngle = Math.PI;
+    }
+    camera.near = Math.max(0.0001, Math.min(camera.near, follow.distance / 50, 0.01));
+    camera.updateProjectionMatrix();
+    return true;
+  }
+
+  function stopFollow() {
+    followId = null;
+    follow.suspended = false;
+    if (mode === 'follow' || mode === 'first_person') mode = 'orbit';
+    if (follow.savedNear !== null) {
+      controls.minDistance = follow.savedLimits.min;
+      controls.maxPolarAngle = follow.savedLimits.polar;
+      camera.near = follow.savedNear;
+      camera.updateProjectionMatrix();
+      follow.savedNear = null;
+    }
+  }
+
+  function followPose(dt) {
+    const obj = registry.get(followId).object3D;
+    obj.updateWorldMatrix(true, false);
+    obj.getWorldPosition(fv.look);
+    obj.getWorldQuaternion(fv.q);
+    fv.fwd.set(0, 0, 1).applyQuaternion(fv.q).normalize();
+    fv.up.set(0, 1, 0);
+    fv.right.crossVectors(fv.fwd, fv.up);
+    if (fv.right.lengthSq() < 1e-6) fv.right.set(1, 0, 0);   // 수직 이동 때 기준축 대체
+    fv.right.normalize();
+    const k = 1 - Math.exp(-dt * follow.smooth);
+    if (mode === 'first_person') {
+      // 1인칭: 객체 바로 뒤에서 진행 방향을 본다
+      fv.pos.copy(fv.look).addScaledVector(fv.fwd, -follow.distance * 0.15);
+      fv.look.addScaledVector(fv.fwd, follow.distance);
+    } else {
+      fv.pos.copy(fv.look).addScaledVector(fv.fwd, -follow.distance)
+        .addScaledVector(fv.up, follow.height).addScaledVector(fv.right, follow.side);
+      fv.look.addScaledVector(fv.fwd, follow.distance * follow.lookAhead * 0.3);
+    }
+    camera.position.lerp(fv.pos, k);
+    controls.target.lerp(fv.look, k);
+  }
+
   // 렌더링 루프에서 매 프레임 호출
   function tick(dt) {
     if (anim) {
@@ -88,8 +157,13 @@ export function createCameraController({ camera, controls, registry }) {
       camera.position.lerpVectors(anim.fromPos, anim.toPos, k);
       controls.target.lerpVectors(anim.fromTarget, anim.toTarget, k);
       if (p >= 1) anim = null;
-    } else if (followId && registry.has(followId)) {
-      // STEP 03 확장: 이동 객체 추적 (지금은 대상 중심으로 target만 따라간다)
+    } else if (followId && !registry.has(followId)) {
+      // 추적 대상이 사라짐(제거·장면 전환) → 오류 없이 추적 종료
+      stopFollow();
+    } else if (followId && (mode === 'follow' || mode === 'first_person')) {
+      if (!follow.suspended) followPose(dt);
+    } else if (followId) {
+      // STEP 02 호환: 대상 중심으로 target만 따라간다
       const c = boxOf(registry.get(followId).object3D).getCenter(new THREE.Vector3());
       const delta = c.sub(controls.target).multiplyScalar(Math.min(1, dt * 4));
       controls.target.add(delta);
@@ -116,9 +190,11 @@ export function createCameraController({ camera, controls, registry }) {
     return focusBox(boxOf(entry.object3D), opts);
   }
 
+  let extraBounds = null;    // STEP 03-C: 레지스트리 밖 표시물(경로 등)의 범위
   function sceneBox() {
     const box = new THREE.Box3();
     for (const id of registry.roots()) box.union(boxOf(registry.get(id).object3D));
+    if (extraBounds) { const b = extraBounds(); if (b && !b.isEmpty()) box.union(b); }
     return box;
   }
 
@@ -140,6 +216,7 @@ export function createCameraController({ camera, controls, registry }) {
   }
 
   function resetHome(duration = 0) {
+    stopFollow();
     if (home.fov !== camera.fov) {
       camera.fov = home.fov;
       camera.updateProjectionMatrix();
@@ -173,7 +250,16 @@ export function createCameraController({ camera, controls, registry }) {
     state,
     restoreState,
     directionOf: presetDirection,       // STEP 03-B: 여러 객체 상자에 프리셋 방향을 쓰기 위해
-    setFollowTarget(id) { followId = id; },
+    setFollowTarget(id) { followId = id; if (!id) stopFollow(); },
+    startFollow,
+    stopFollow,
+    setExtraBounds(fn) { extraBounds = fn; },
+    resumeFollow() { follow.suspended = false; },
+    setFollowOptions(o) { for (const k of ['distance', 'height', 'side', 'smooth', 'lookAhead']) if (Number.isFinite(o[k])) follow[k] = o[k]; },
+    setMode(m) { mode = m; },
+    get mode() { return mode; },
+    get followOptions() { return { ...follow }; },
+    get followSuspended() { return follow.suspended; },
     get followTarget() { return followId; },
     get animating() { return !!anim; },
     presetNames: PRESET_NAMES,

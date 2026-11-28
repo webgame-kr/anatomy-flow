@@ -170,6 +170,69 @@
       "optional_direction": null,
       "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
       "notes": "heart_valve_aortic element 3개 정점 1249개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.tv.center",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.valve.tricuspid",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_valve_tricuspid"
+      },
+      "object_id": "bp3d-cv-heart/heart_valve_tricuspid",
+      "name_ko": "삼첨판 중심",
+      "name_en": "Tricuspid valve centroid",
+      "position": [
+        0.00087,
+        1.21391,
+        0.1348
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_valve_tricuspid element 3개 정점 9602개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.pv.center",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.valve.pulmonary",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_valve_pulmonary"
+      },
+      "object_id": "bp3d-cv-heart/heart_valve_pulmonary",
+      "name_ko": "폐동맥판 중심",
+      "name_en": "Pulmonary valve centroid",
+      "position": [
+        0.02661,
+        1.25455,
+        0.14362
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_valve_pulmonary element 3개 정점 2050개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
+    },
+    {
+      "anchor_id": "a.mv.center",
+      "scene_id": "anatomy_cardiovascular",
+      "anatomical_id": "cv.valve.mitral",
+      "object": {
+        "asset_id": "bp3d-cv-heart",
+        "node": "heart_valve_mitral"
+      },
+      "object_id": "bp3d-cv-heart/heart_valve_mitral",
+      "name_ko": "승모판 중심",
+      "name_en": "Mitral valve centroid",
+      "position": [
+        0.03291,
+        1.21645,
+        0.10925
+      ],
+      "coordinate_space": "object_local",
+      "optional_direction": null,
+      "verification_status": "GEOMETRY_DERIVED (vertex centroid); NOT anatomically verified",
+      "notes": "heart_valve_mitral element 2개 정점 6612개의 평균. 열린·오목한 메시는 평균점이 내강 밖일 수 있으니 단면으로 확인할 것."
     }
   ],
   "candidates": [

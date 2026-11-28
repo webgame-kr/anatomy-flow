@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "scene_id": "motion_e",
+  "description": "요구서 Scene E — 직선·곡선 이동, 일정한 속도, 정방향·역방향, 완료와 초기화",
+  "marker_size": 0.08,
+  "follow": { "distance": 1.6, "height": 0.6, "side": 0 },
+  "paths": [
+    {
+      "path_id": "p.line", "name_ko": "직선 경로", "curve_type": "linear",
+      "points": [ { "space": "scene", "position": [-3, 0.4, -1.5] }, { "space": "scene", "position": [3, 0.4, -1.5] } ],
+      "default_speed": 1.0, "verification_status": "TEST_PATH", "source": "project test data",
+      "notes": "길이 6 m 직선. 1 m/s면 6초."
+    },
+    {
+      "path_id": "p.curve", "name_ko": "곡선 경로 (급커브·수직 구간)", "curve_type": "catmull_rom",
+      "points": [
+        { "space": "scene", "position": [-3, 0.4, 1.2] },
+        { "space": "scene", "position": [-1.5, 0.4, 2.6] },
+        { "space": "scene", "position": [-0.2, 0.4, 1.0] },
+        { "space": "scene", "position": [0.4, 2.2, 1.0] },
+        { "space": "scene", "position": [1.2, 0.4, 1.05] },
+        { "space": "scene", "position": [3, 0.4, 2.4] }
+      ],
+      "default_speed": 1.0, "verification_status": "TEST_PATH", "source": "project test data",
+      "notes": "점 간격이 고르지 않고 수직으로 오르내리는 구간이 있다. 호 길이 기반 이동이면 구간마다 속도가 같다."
+    }
+  ],
+  "actors": [
+    { "actor_id": "marker_line", "actor_type": "custom", "model_id": "marker", "display_size": 0.35, "path_id": "p.line", "speed": 1.0 },
+    { "actor_id": "marker_curve", "actor_type": "custom", "model_id": "marker", "display_size": 0.35, "path_id": "p.curve", "speed": 1.0 }
+  ]
+}

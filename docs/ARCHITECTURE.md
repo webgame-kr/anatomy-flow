@@ -90,3 +90,31 @@ Python은 루프에서 부르지 않는다.
 ## 장면 정의 (content/sandbox/scenes.json)
 `scene_id, scene_name, coordinate_system{up, front, unit}, camera_defaults{position, target, fov}, lighting(studio|soft), background, materials{공유 재질}, groups[], objects[], assets[{asset_id, position, fit{size}, optional}], default_visible_objects, python(step01|commands)`
 자산 URL과 공개 여부는 상위 `assets{}`에 둔다. 공개하지 않는 자산(`public: false`)은 배포본에 없으므로 `optional: true`로 둔다.
+
+---
+
+# STEP 03-C — 3D Path, Actor & Motion Engine
+
+```
+motion-kit.js (조립: Sandbox·Explorer 공용)
+ ├ path-engine.js ───────── 경로 데이터 · CatmullRom/직선 곡선 · 호 길이 캐시 · Waypoint/Checkpoint 편집 · 기술 검증 · 표시(레지스트리 밖 overlay)
+ ├ actor-manager.js ─────── Actor 기록 + 3D 객체(레지스트리 type 'actor') · 모델별 공유 Geometry/상태별 공유 Material
+ ├ motion-controller.js ─── 거리 기반 이동 · Checkpoint 구간 교차 감지 · 분기/순환/전환 · 결과 Promise · session
+ ├ motion-commands.js ───── actor_* / path_* / camera_follow 명령 검증·실행 (command-runner의 ctx.motion)
+ ├ path-editor.js ───────── 개발자 경로 편집기 + 미리보기 패널 (TransformControls, 핸들 클릭은 capture 단계)
+ └ path-geometry-check.js ─ 표본점 ray parity 기하 검사 (버튼으로만, 해부학 검증 아님)
+camera-controller.js ────── + startFollow/stopFollow/resumeFollow (follow · first_person), setExtraBounds
+command-runner.js ───────── + ctx.motion 위임, wait, results
+python-bridge.js ────────── + guard(session): 호출 뒤 장면이 바뀌면 명령을 실행하지 않음
+py/scene_commands.py ────── + MOTION 명령 검사, set_paths, route_demo, move_to
+py/motion_link.py ───────── 규칙 엔진(game.py) move ↔ 3D 이동 명령 (STEP 03-D용)
+```
+
+## 프레임 루프 (STEP 03-C 이후)
+`objects.tick` → `kit.tick`(경로 갱신 검사 → Actor 이동) → `camera.tick`(이동 뒤 위치를 추적) → … → `controls.update()` → `render`
+- 별도 requestAnimationFrame 루프를 만들지 않는다.
+- dt는 viewport가 0.1초로 제한한다.
+- Python은 이벤트(버튼, 도착 결과) 때만 부른다.
+
+## 데이터 명세
+`docs/development/MOTION_DATA_SPEC.md`

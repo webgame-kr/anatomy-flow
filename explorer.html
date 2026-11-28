@@ -118,9 +118,11 @@
           <button id="an-export" type="button">JSON 내보내기</button>
           <label class="btn file-btn">JSON 불러오기<input id="an-import" type="file" accept=".json,application/json"></label>
         </div>
+        <h3>Motion (STEP 03-C) <span class="muted">경로 · Actor · Checkpoint — 해부학적으로 검증되지 않은 시험 경로</span></h3>
+        <div id="motion-panel"></div>
         <h3>Python</h3>
         <div class="row"><span id="py-status" class="muted">대기</span></div>
-        <div class="row btns"><button id="py-test" type="button" disabled>Python: 좌심실 강조·초점</button><button id="py-clear" type="button" disabled>강조 해제</button></div>
+        <div class="row btns"><button id="py-test" type="button" disabled>Python: 좌심실 강조·초점</button><button id="py-clear" type="button" disabled>강조 해제</button><button id="py-motion" type="button" disabled>Python: 적혈구 Checkpoint 이동</button></div>
         <h3>로그</h3>
         <ol id="log" class="log" reversed></ol>
       </section>

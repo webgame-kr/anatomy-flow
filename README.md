@@ -2,15 +2,16 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 03-B — Anatomy Viewer & Anatomical Anchor System**
-사용자용 해부학 탐색 화면(`explorer.html`)과 해부학 구조 레지스트리, 레이어, 라벨, 검색, Anchor 편집을 만들었습니다. 혈액 이동과 타이핑 진행은 아직 없습니다.
+**현재 단계: STEP 03-C — 3D Path, Actor & Motion Engine**
+3차원 경로, Checkpoint, 이동 객체(Actor), 추적 카메라, 개발자 경로 편집기를 만들었습니다. 혈액·림프액·음식물·신경 신호가 같은 엔진으로 움직입니다. 타이핑 게임 연결은 아직 없습니다(STEP 03-D).
 
 - STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
 - STEP 02: 객체·카메라·선택·재질·단면·장면 관리 엔진 (아래 "STEP 02 엔진")
 - 2026-11-27 개발 자료 정리: 원본 모델, 강의·전공 자료, 자산 대장, 참고 사이트 ("개발 자료와 자산 관리")
 - **STEP 03-A:** BodyParts3D 검색·선택 추출·Blender 변환 파이프라인. 심장, 대동맥, 대정맥, 폐혈관, 기관지 가지 GLB 6개를 원본 상대 위치 그대로 만들었습니다(`docs/development/bp3d/ANATOMY_PIPELINE.md`).
 - **STEP 03-B:** Anatomy Explorer. 심혈관 구조 41개 레지스트리, 레이어, 3D 라벨, 검색, 해부학 Anchor(object-local) 편집, 피부·흉곽 맥락 모델 (`docs/development/STEP_03B_REPORT.md`)
-- **다음 단계 (STEP 03-C):** Anchor를 잇는 3D 곡선 경로 위 혈액 이동, 이동 객체 추적 카메라, 진행 규칙 엔진과 타이핑 입력 연결
+- **STEP 03-C:** 경로 엔진(호 길이 기반 이동), Checkpoint(건너뛰기 없는 감지), Actor(적혈구 교육용 모델 등), 추적 카메라, 경로 편집기, Python 이동 명령 (`docs/development/STEP_03C_REPORT.md`, `docs/development/MOTION_DATA_SPEC.md`)
+- **다음 단계 (STEP 03-D):** 타이핑 입력 → 규칙 엔진(`game.py`) → `motion_link.py` → Checkpoint 이동 연결
 
 3D 해부학 모델 출처: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형 내역은 `assets/licenses/bodyparts3d.md`)
 
@@ -217,6 +218,28 @@ commands = [
 
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
+
+## STEP 03-C 이동 엔진
+
+- **Sandbox 시험 장면:** 장면 선택에서 고릅니다. 기존 E·F는 해부학 장면이라, 요구서의 Scene E~H는 앞에 M을 붙였습니다.
+  - ME: Basic Path
+  - MF: Checkpoint
+  - MG: Branch & Loop
+  - MH: Multiple Actors
+- **오른쪽 "Motion" 패널 (경로 편집기)**
+  - 이동: Play, Pause, Resume, Stop, Next(다음 정지 Checkpoint까지), Reset, 방향 반전, 속도·진행률 조절
+  - 카메라: 카메라 추적, 1인칭, 추적 재개, 전체 보기 복귀
+  - 경로 편집: Path 목록, Waypoint 삽입·순서 변경·삭제, XYZ 입력, 편집 핸들 기즈모, 직선·곡선 전환, 순환
+  - Checkpoint: 추가·삭제, 정지 여부 설정
+  - 파일·검증: JSON 내보내기·불러오기, 기술 검증
+- **Scene I (해부학):** Anatomy Explorer에서 설정 → 개발자 모드를 켜면 심혈관 시험 경로 6개와 적혈구 Actor를 불러옵니다. 학습자 화면에는 보이지 않습니다.
+  - 경로는 Anchor(정점 평균)를 잇는 **APPROXIMATE** 경로이며 해부학적으로 검증하지 않았습니다.
+  - "기하 검사" 버튼은 경로 표본점이 어느 메시의 닫힌 면 안쪽에 있는지 추정할 뿐입니다.
+- **엔진 테스트:** 로컬 서버에서 `tests/motion-tests.html`을 엽니다. 렌더링 루프와 분리된 인스턴스로 28개 항목을 검사합니다.
+- **Python:**
+  - 이동 명령: `scene_commands.validate`가 이동 명령을 검사합니다. 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있습니다.
+  - 규칙 엔진 연결: `py/motion_link.py`(STEP 03-D 준비)
+  - 테스트: `python tests/test_motion_commands.py`
 
 ## STEP 03-B Anatomy Explorer
 

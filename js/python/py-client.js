@@ -2,7 +2,9 @@
 
 export const PYODIDE_VERSION = '0.26.4';
 const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
-const PY_FILES = ['sandbox3d.py', 'scene_commands.py'];
+const PY_FILES = ['sandbox3d.py', 'scene_commands.py', 'motion_link.py'];
+// Worker 파일이 바뀌면 올린다 (브라우저·Pages 캐시에 남은 이전 Worker를 쓰지 않도록)
+const WORKER_VERSION = '03c-1';
 const INIT_TIMEOUT_MS = 90000;
 const CALL_TIMEOUT_MS = 10000;
 
@@ -28,7 +30,7 @@ export function createPythonClient({ onStatus, simulateFailure = false } = {}) {
       }
       setState('loading', 'Python 엔진 준비 중…');
       try {
-        worker = new Worker(new URL('./py-worker.js', import.meta.url));
+        worker = new Worker(new URL(`./py-worker.js?v=${WORKER_VERSION}`, import.meta.url));
       } catch (e) {
         const err = { kind: 'worker', detail: String(e) };
         setState('error', describe(err));

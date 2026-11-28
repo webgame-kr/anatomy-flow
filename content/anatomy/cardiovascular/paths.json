@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "scene_id": "anatomy_cardiovascular",
+  "description": "요구서 Scene I — 실제 BodyParts3D 심혈관 모델 위 시험 경로. 해부학적으로 검증한 혈류 경로가 아니다.",
+  "coordinate_note": "곡선은 장면 좌표(m)로 계산한다. 점은 Anchor(object-local, anchors.json)를 참조하므로 모델이 움직이면 따라간다.",
+  "marker_size": 0.0012,
+  "follow": { "distance": 0.035, "height": 0.01, "side": 0, "smooth": 5 },
+  "paths": [
+    {
+      "path_id": "cv.svc_to_ra", "name_ko": "상대정맥 → 우심방",
+      "source_anchor_id": "a.svc.lumen", "target_anchor_id": "a.ra.cavity",
+      "points": [ { "anchor_id": "a.svc.lumen" }, { "anchor_id": "a.ra.cavity" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.svc", "anchor_id": "a.svc.lumen", "anatomical_id": "cv.superior_vena_cava", "stop_on_arrival": false, "label": "상대정맥", "event_ids": ["ev.svc"] },
+        { "checkpoint_id": "cp.ra", "path_progress": 1.0, "anatomical_id": "cv.right_atrium", "stop_on_arrival": true, "label": "우심방 도착", "event_ids": ["ev.ra"] }
+      ],
+      "links": [ { "to": "cv.ra_to_rv" } ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "Anchor 두 개를 잇는 곡선. 내강 통과 여부는 geometry_check와 단면으로만 확인했으며 해부학 전문가 검증을 받지 않았다."
+    },
+    {
+      "path_id": "cv.ivc_to_ra", "name_ko": "하대정맥 → 우심방",
+      "source_anchor_id": "a.ivc.lumen", "target_anchor_id": "a.ra.cavity",
+      "points": [ { "anchor_id": "a.ivc.lumen" }, { "anchor_id": "a.ra.cavity" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.ivc_ra", "path_progress": 1.0, "anatomical_id": "cv.right_atrium", "stop_on_arrival": true, "label": "우심방 도착" }
+      ],
+      "links": [ { "to": "cv.ra_to_rv" } ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "하대정맥 메시의 정점 평균은 긴 관의 중간쯤이다."
+    },
+    {
+      "path_id": "cv.ra_to_rv", "name_ko": "우심방 → 삼첨판 → 우심실",
+      "source_anchor_id": "a.ra.cavity", "target_anchor_id": "a.rv.cavity",
+      "points": [ { "anchor_id": "a.ra.cavity" }, { "anchor_id": "a.tv.center" }, { "anchor_id": "a.rv.cavity" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.tricuspid", "anchor_id": "a.tv.center", "anatomical_id": "cv.valve.tricuspid", "stop_on_arrival": true, "label": "삼첨판", "event_ids": ["ev.tricuspid"] },
+        { "checkpoint_id": "cp.rv", "path_progress": 1.0, "anatomical_id": "cv.right_ventricle", "stop_on_arrival": true, "label": "우심실 도착" }
+      ],
+      "links": [ { "to": "cv.rv_to_pt" } ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "판막 개폐는 표현하지 않는다. 판막 중심점은 첨판 정점의 평균이다."
+    },
+    {
+      "path_id": "cv.rv_to_pt", "name_ko": "우심실 → 폐동맥판 → 폐동맥줄기",
+      "source_anchor_id": "a.rv.cavity", "target_anchor_id": "a.pt.lumen",
+      "points": [ { "anchor_id": "a.rv.cavity" }, { "anchor_id": "a.pv.center" }, { "anchor_id": "a.pt.lumen" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.pulmonary_valve", "anchor_id": "a.pv.center", "anatomical_id": "cv.valve.pulmonary", "stop_on_arrival": true, "label": "폐동맥판" },
+        { "checkpoint_id": "cp.pt", "path_progress": 1.0, "anatomical_id": "cv.pulmonary_trunk", "stop_on_arrival": true, "label": "폐동맥줄기 도착" }
+      ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "폐동맥줄기 정점 평균에서 끝난다. 폐 안쪽 경로는 폐 실질 모델이 없어 만들지 않았다."
+    },
+    {
+      "path_id": "cv.la_to_lv", "name_ko": "좌심방 → 승모판 → 좌심실",
+      "source_anchor_id": "a.la.cavity", "target_anchor_id": "a.lv.cavity",
+      "points": [ { "anchor_id": "a.la.cavity" }, { "anchor_id": "a.mv.center" }, { "anchor_id": "a.lv.cavity" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.mitral", "anchor_id": "a.mv.center", "anatomical_id": "cv.valve.mitral", "stop_on_arrival": true, "label": "승모판" },
+        { "checkpoint_id": "cp.lv", "path_progress": 1.0, "anatomical_id": "cv.left_ventricle", "stop_on_arrival": true, "label": "좌심실 도착" }
+      ],
+      "links": [ { "to": "cv.lv_to_av" } ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "BodyParts3D 승모판 개념에는 대동맥판 첨판 2개가 섞여 있어(STEP 03-A 기록) 03-A에서 이름 필터로 분리했다. 중심점 위치를 단면으로 확인해야 한다."
+    },
+    {
+      "path_id": "cv.lv_to_av", "name_ko": "좌심실 → 대동맥판",
+      "source_anchor_id": "a.lv.cavity", "target_anchor_id": "a.av.center",
+      "points": [ { "anchor_id": "a.lv.cavity" }, { "anchor_id": "a.av.center" } ],
+      "checkpoints": [
+        { "checkpoint_id": "cp.aortic_valve", "path_progress": 1.0, "anatomical_id": "cv.valve.aortic", "stop_on_arrival": true, "label": "대동맥판 도착" }
+      ],
+      "default_speed": 0.02, "verification_status": "APPROXIMATE", "source": "anchors.json vertex centroids (BodyParts3D 4.0 derived)",
+      "notes": "대동맥은 한 메시(상행·궁·하행)라 정점 평균이 내강 밖이다. 대동맥 안쪽 경로는 중심선 Anchor가 생긴 뒤 만든다."
+    }
+  ]
+}

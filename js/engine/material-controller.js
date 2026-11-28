@@ -244,6 +244,16 @@ export function createMaterialController({ registry }) {
     apply(mesh);
   }
 
+  // STEP 03-C: 기준(원본) 재질 바꾸기 (예: 적혈구 산소화 상태의 공유 재질 교체). 상태 층은 유지된다.
+  function setBaseMaterial(mesh, material) {
+    const st = state(mesh);
+    if (st.original === material) return;
+    dropOwned(mesh, st);
+    st.original = material;
+    mesh.material = material;
+    apply(mesh);
+  }
+
   // 레지스트리에서 객체가 빠지기 전에 원본 재질로 되돌리고 복제본을 해제한다
   registry.onBeforeRemove((entry) => {
     entry.object3D.traverse((o) => {
@@ -270,6 +280,7 @@ export function createMaterialController({ registry }) {
     clearGhost,
     showAll,
     setClip,
+    setBaseMaterial,
     apply,
     get isolatedId() { return isolatedId; },
     get ghostId() { return ghostId; },
