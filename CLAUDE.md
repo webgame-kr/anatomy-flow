@@ -1,7 +1,12 @@
 # CLAUDE.md — NURSE FLOW 3D 개발 원칙
 
 ## 프로젝트
-실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
+**최종 목표 (2026-11-29 개정):** 범용 실시간 3D 인체 해부학·생리학 학습 플랫폼.
+- 간호학·해부학·생리학·병태생리학·약리학의 어떤 문제든 같은 인체 모델과 공통 엔진으로 콘텐츠를 만든다.
+- 11개 계통 전신 해부학 데이터베이스를 구축한다. 규모는 전신 → 장기 → 조직 → 세포 → 분자다.
+- 로드맵은 `docs/development/ROADMAP.md`, 계통별 모델 현황은 `docs/development/ANATOMY_COVERAGE.md`에 있다.
+
+지금 형태는 실시간 3D 인체 모델에서 기전을 타이핑과 시각적 이동으로 학습하는 웹게임이다.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
 현재 단계는 STEP 04-C(생리 상태·인과·되먹임 엔진, 혈압·심박출량·압력수용체 반사·RAAS 콘텐츠)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`, `docs/development/STEP_04B_ASSET_UPGRADE_REPORT.md`, `docs/development/STEP_04C_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
@@ -233,7 +238,15 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. STEP 04-B+에서 나머지 폐정맥·대동맥 가지·팔다리 혈관 경로 13개(GEOMETRY_CHECKED 9, APPROXIMATE 4)를 더했다. 남은 것은 전공자 경로 검토다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
 3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. STEP 04-B+에서 BodyParts3D 파생 판막 리깅·심실 벽 영역 모델(교육용 근사)을 Sandbox HV에 만들었다. Play 학습 화면 연결은 아직이다.
    - (완료: STEP 04-C) 생리 상태·계산·인과·되먹임 엔진과 콘텐츠 3개(혈역학, 압력수용체 반사, RAAS). 다음은 04-D(대규모 입자·InstancedMesh)다.
-4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.
+4. (개정 2026-11-29) 이후 순서: 04-D 입자·성능 → 05-A 전신 해부학 DB → 05-B 11개 계통 3D 모델 → 05-C 조직·세포·분자 → 05-D 관계·연결 데이터 → 05-E 통합 Atlas → 05-F 그래픽 품질 → 06 FLOW Studio → 07 첫 완성형 콘텐츠 → 08 간호학 확장 → 09 UI/UX → 10 정식 배포. 자세한 내용은 `docs/development/ROADMAP.md`.
+
+## 전신 플랫폼 원칙 (2026-11-29)
+- **기존 엔진 보존:** 규칙 엔진, 렌더링, Path·Actor·Animation, Biological State Engine을 다시 쓰지 않고 확장한다. 새 기전은 데이터(JSON)로 더하고 핵심 엔진을 고치지 않는다.
+- **등록과 확보 구분:** 모델이 없는 구조도 해부학 DB에 등록한다(`model_status: NONE`). 등록 구조 수와 3D 모델 확보 수를 따로 센다. 모델·콘텐츠가 없는 항목을 완료로 표시하지 않는다.
+- **레지스트리 확장:** 기존 Anatomy Registry를 확장한다(Uberon ID, 계통, 관계, 규모, 출처별 모델, 변이). 같은 역할의 레지스트리를 새로 만들지 않는다.
+- **모델 출처:** 이미 확보한 것을 먼저 다시 쓴다(BodyParts3D, Z-Anatomy). 다음 후보는 Human Reference Atlas(CC BY 4.0, 남녀 장기)다. NIH 3D 등은 항목마다 라이선스를 확인한다. 조직·세포·분자는 직접 만든 교육용 모델(CONCEPTUAL)로 만들 수 있다.
+- **합치지 않기:** 출처마다 좌표계를 따로 등록한다. 다른 인체(남/녀, 다른 출처)나 다른 라이선스의 메시를 한 파일로 합치지 않는다.
+- **한꺼번에 하지 않기:** 모든 모델을 한 번에 변환하지 않는다. 계통별로 사양 → 변환 → 검수 → 대장 등록 순서를 지킨다.
 
 ## 해부학 자산 확장 (STEP 04-B+, 2026-11-29)
 - **버전 관리:** 기존 모델은 바꾸지 않고 새 파일로 만든다(`heart.glb` 그대로, `heart-v2*.glb` 추가). 학습 화면(Play)은 아직 v1을 쓴다.

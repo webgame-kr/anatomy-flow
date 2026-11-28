@@ -2,8 +2,16 @@
 
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 **타이핑**과 **시각적 이동**으로 배우는 웹게임입니다. 혈액, 림프액, 음식물, 세포, 호르몬, 신경 신호 등이 이동하고 변화하는 모습을 다룹니다.
 
-**현재 단계: STEP 03-D — Gameplay Integration & Python Learning Engine**
-첫 번째로 플레이할 수 있는 학습 게임(`play.html`)을 만들었습니다. 용어를 입력하면 Python 규칙 엔진이 판정하고, 적혈구가 3D 심장 안의 다음 학습 지점으로 이동합니다. 가이드·암기·기전 추론 모드와 학습 기록이 있습니다.
+**최종 목표:** 범용 실시간 3D 인체 해부학·생리학 학습 플랫폼입니다.
+- 간호학·해부학·생리학·병태생리학·약리학의 어떤 문제든 같은 인체 모델과 공통 엔진으로 학습 콘텐츠를 만들 수 있게 합니다.
+- 11개 인체 계통(골격, 근육, 신경·감각, 심혈관, 호흡, 소화, 비뇨, 내분비, 림프·면역, 외피, 생식)의 전신 해부학 데이터베이스를 전신 → 장기 → 조직 → 세포 → 분자 규모로 구축합니다.
+- 로드맵: `docs/development/ROADMAP.md`
+- 계통별 모델 보유 현황: `docs/development/ANATOMY_COVERAGE.md`
+
+**현재 단계: STEP 04-C 완료 → 다음 STEP 04-D(입자·성능), 이어서 STEP 05(전신 해부학)**
+- 지금 3D 모델과 학습 콘텐츠는 **심혈관계 중심**입니다.
+- 다른 계통 모델은 원본 자료 조사만 했고, 아직 변환하지 않았습니다.
+- 모든 모델과 콘텐츠는 전문가 검토 전입니다.
 
 - STEP 01: 실시간 3D 렌더링과 Pyodide 연결 (`step01` 장면에서 그대로 동작)
 - STEP 02: 객체·카메라·선택·재질·단면·장면 관리 엔진 (아래 "STEP 02 엔진")
@@ -12,7 +20,8 @@
 - **STEP 03-B:** Anatomy Explorer. 심혈관 구조 41개 레지스트리, 레이어, 3D 라벨, 검색, 해부학 Anchor(object-local) 편집, 피부·흉곽 맥락 모델 (`docs/development/STEP_03B_REPORT.md`)
 - **STEP 03-C:** 경로 엔진(호 길이 기반 이동), Checkpoint(건너뛰기 없는 감지), Actor(적혈구 교육용 모델 등), 추적 카메라, 경로 편집기, Python 이동 명령 (`docs/development/STEP_03C_REPORT.md`, `docs/development/MOTION_DATA_SPEC.md`)
 - **STEP 03-D:** Play 화면, Gameplay Controller(상태 머신, 세션 검증), Python 학습 API(`lesson.py`), 3D 콘텐츠 형식(version 2), 심혈관 혈액순환 콘텐츠, 학습 기록 v2 (`docs/development/STEP_03D_REPORT.md`, `docs/FLOW_SPEC_v0.1.md` 6장)
-- **다음 단계 (STEP 04):** 생리적 형태 변화(박동·판막), 내강 중심선 경로 검증, 다른 계통 콘텐츠
+- **STEP 04-A~C:** 내강 중심선 경로·다중 스케일, 애니메이션 엔진·심장주기, 해부학 자산 확장, 생리 상태·인과·되먹임 엔진 (아래 각 섹션과 `docs/development/STEP_04*_REPORT.md`)
+- **다음 단계:** STEP 04-D 입자·성능 → STEP 05-A~F 전신 해부학(DB, 11개 계통 모델, 조직·세포·분자, 관계 데이터, Atlas, 그래픽) → STEP 06 FLOW Studio → STEP 07~10 콘텐츠·UI·정식 배포
 
 3D 해부학 모델 출처: BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International (변형 내역은 `assets/licenses/bodyparts3d.md`)
 
