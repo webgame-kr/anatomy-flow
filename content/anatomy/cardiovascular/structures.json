@@ -2196,6 +2196,736 @@
       "license": "CC-BY-4.0",
       "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
       "notes": ""
+    },
+    {
+      "anatomical_id": "cv.brachiocephalic_artery",
+      "name_ko": "팔머리동맥",
+      "name_en": "Brachiocephalic artery",
+      "aliases": [
+        "완두동맥",
+        "brachiocephalic trunk"
+      ],
+      "fma_id": "FMA3932",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "brachiocephalic_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3417"
+      ],
+      "triangle_count": 262,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_common_carotid_artery",
+      "name_ko": "오른온목동맥",
+      "name_en": "Right common carotid artery",
+      "aliases": [
+        "우총경동맥",
+        "오른쪽 온목동맥"
+      ],
+      "fma_id": "FMA3941",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_common_carotid_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3564"
+      ],
+      "triangle_count": 884,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_common_carotid_artery",
+      "name_ko": "왼온목동맥",
+      "name_en": "Left common carotid artery",
+      "aliases": [
+        "좌총경동맥",
+        "왼쪽 온목동맥"
+      ],
+      "fma_id": "FMA4058",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "left_common_carotid_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3483"
+      ],
+      "triangle_count": 170,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_subclavian_artery",
+      "name_ko": "오른빗장밑동맥",
+      "name_en": "Right subclavian artery",
+      "aliases": [
+        "우쇄골하동맥"
+      ],
+      "fma_id": "FMA3953",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_subclavian_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3579"
+      ],
+      "triangle_count": 452,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_subclavian_artery",
+      "name_ko": "왼빗장밑동맥",
+      "name_en": "Left subclavian artery",
+      "aliases": [
+        "좌쇄골하동맥"
+      ],
+      "fma_id": "FMA4694",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "left_subclavian_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3479"
+      ],
+      "triangle_count": 646,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_axillary_artery",
+      "name_ko": "오른겨드랑동맥",
+      "name_en": "Right axillary artery",
+      "aliases": [
+        "우액와동맥"
+      ],
+      "fma_id": "FMA22655",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_axillary_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2268"
+      ],
+      "triangle_count": 1826,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_brachial_artery",
+      "name_ko": "오른위팔동맥",
+      "name_en": "Right brachial artery",
+      "aliases": [
+        "우상완동맥"
+      ],
+      "fma_id": "FMA22691",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_brachial_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2271"
+      ],
+      "triangle_count": 3112,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_common_iliac_artery",
+      "name_ko": "오른온엉덩동맥",
+      "name_en": "Right common iliac artery",
+      "aliases": [
+        "우총장골동맥"
+      ],
+      "fma_id": "FMA14765",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_common_iliac_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3565"
+      ],
+      "triangle_count": 220,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_external_iliac_artery",
+      "name_ko": "오른바깥엉덩동맥",
+      "name_en": "Right external iliac artery",
+      "aliases": [
+        "우외장골동맥"
+      ],
+      "fma_id": "FMA18806",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_external_iliac_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3567"
+      ],
+      "triangle_count": 396,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_femoral_artery",
+      "name_ko": "오른넙다리동맥",
+      "name_en": "Right femoral artery",
+      "aliases": [
+        "우대퇴동맥"
+      ],
+      "fma_id": "FMA70249",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "arteries_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_femoral_artery"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2143"
+      ],
+      "triangle_count": 752,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_brachiocephalic_vein",
+      "name_ko": "오른팔머리정맥",
+      "name_en": "Right brachiocephalic vein",
+      "aliases": [
+        "우완두정맥"
+      ],
+      "fma_id": "FMA4751",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_brachiocephalic_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3583"
+      ],
+      "triangle_count": 546,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_brachiocephalic_vein",
+      "name_ko": "왼팔머리정맥",
+      "name_en": "Left brachiocephalic vein",
+      "aliases": [
+        "좌완두정맥"
+      ],
+      "fma_id": "FMA4761",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "left_brachiocephalic_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3482"
+      ],
+      "triangle_count": 748,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_internal_jugular_vein",
+      "name_ko": "오른속목정맥",
+      "name_en": "Right internal jugular vein",
+      "aliases": [
+        "우내경정맥"
+      ],
+      "fma_id": "FMA4754",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_internal_jugular_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3585"
+      ],
+      "triangle_count": 226,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_subclavian_vein",
+      "name_ko": "오른빗장밑정맥",
+      "name_en": "Right subclavian vein",
+      "aliases": [
+        "우쇄골하정맥"
+      ],
+      "fma_id": "FMA4755",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_subclavian_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3587"
+      ],
+      "triangle_count": 368,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_axillary_vein",
+      "name_ko": "오른겨드랑정맥",
+      "name_en": "Right axillary vein",
+      "aliases": [
+        "우액와정맥"
+      ],
+      "fma_id": "FMA13330",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_axillary_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2269"
+      ],
+      "triangle_count": 2146,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_cephalic_vein",
+      "name_ko": "오른노쪽피부정맥",
+      "name_en": "Right cephalic vein",
+      "aliases": [
+        "요측피정맥",
+        "두정맥"
+      ],
+      "fma_id": "FMA13325",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_cephalic_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2272"
+      ],
+      "triangle_count": 22622,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_basilic_vein",
+      "name_ko": "오른자쪽피부정맥",
+      "name_en": "Right basilic vein",
+      "aliases": [
+        "척측피정맥"
+      ],
+      "fma_id": "FMA22909",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_basilic_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2270"
+      ],
+      "triangle_count": 18150,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_common_iliac_vein",
+      "name_ko": "오른온엉덩정맥",
+      "name_en": "Right common iliac vein",
+      "aliases": [
+        "우총장골정맥"
+      ],
+      "fma_id": "FMA21387",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_common_iliac_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3566"
+      ],
+      "triangle_count": 358,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.left_common_iliac_vein",
+      "name_ko": "왼온엉덩정맥",
+      "name_en": "Left common iliac vein",
+      "aliases": [
+        "좌총장골정맥"
+      ],
+      "fma_id": "FMA21388",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "left_common_iliac_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3465"
+      ],
+      "triangle_count": 430,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_external_iliac_vein",
+      "name_ko": "오른바깥엉덩정맥",
+      "name_en": "Right external iliac vein",
+      "aliases": [
+        "우외장골정맥"
+      ],
+      "fma_id": "FMA18885",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_external_iliac_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ3568"
+      ],
+      "triangle_count": 724,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_femoral_vein",
+      "name_ko": "오른넙다리정맥",
+      "name_en": "Right femoral vein",
+      "aliases": [
+        "우대퇴정맥"
+      ],
+      "fma_id": "FMA21188",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_femoral_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2144"
+      ],
+      "triangle_count": 658,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
+    },
+    {
+      "anatomical_id": "cv.right_great_saphenous_vein",
+      "name_ko": "오른큰두렁정맥",
+      "name_en": "Right great saphenous vein",
+      "aliases": [
+        "우대복재정맥"
+      ],
+      "fma_id": "FMA21379",
+      "anatomical_system": "cardiovascular",
+      "anatomical_group": "veins_branch",
+      "parent_id": null,
+      "children": [],
+      "objects": [
+        {
+          "asset_id": "bp3d-cv-systemic-vessels",
+          "node": "right_great_saphenous_vein"
+        }
+      ],
+      "asset_ids": [
+        "bp3d-cv-systemic-vessels"
+      ],
+      "element_file_ids": [
+        "FJ2145"
+      ],
+      "triangle_count": 30036,
+      "model_status": "AVAILABLE",
+      "selectable": true,
+      "internal_structure_available": false,
+      "source": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+      "license": "CC-BY-4.0",
+      "verification_status": "SOURCE_TRACED (FMA/element ids from BodyParts3D metadata); NOT medically verified",
+      "notes": ""
     }
   ]
 }

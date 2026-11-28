@@ -40,6 +40,8 @@ def plan(spec_path):
     tree = spec['tree']
     index = cat.load_index(tree)
     cs, objs = index['concepts'], index['objs']
+    # STEP 04-B+: 파트마다 다른 트리(예: IS-A에만 있는 FJ2428 심실 벽)를 쓸 수 있다: part["tree"]
+    other = {t: cat.load_index(t) for t in cat.TREES if t != tree}
     assigned = {}                 # element → part id (전체 자산 공통, 중복 방지)
     problems = []
     assets = []
@@ -50,8 +52,12 @@ def plan(spec_path):
             for p in a['parts']:
                 if phase not in p:
                     continue
+                ptree = p.get('tree', tree)
+                pidx = index if ptree == tree else other[ptree]
+                pcs, pobjs = pidx['concepts'], pidx['objs']
+                p['_tree'] = ptree
                 if phase == 'concept':
-                    c = cs.get(p['concept'])
+                    c = pcs.get(p['concept'])
                     if not c:
                         problems.append(f"{p['id']}: concept {p['concept']} 없음")
                         p['_elements'] = []
@@ -60,20 +66,20 @@ def plan(spec_path):
                     p['_concept'] = {'concept_id': c['concept_id'], 'representation_id': c['representation_id'],
                                      'name': c['name'], 'kind': c['kind']}
                 else:
-                    c = cs.get(p['rest_of'])
+                    c = pcs.get(p['rest_of'])
                     if not c:
                         problems.append(f"{p['id']}: rest_of {p['rest_of']} 없음")
                         p['_elements'] = []
                         continue
                     kws = [k.lower() for k in p.get('keywords', [])]
                     wanted = [fj for fj in c['elements']
-                              if fj not in assigned and fj in objs
-                              and (not kws or any(k in objs[fj].get('name', '').lower() for k in kws))]
+                              if fj not in assigned and fj in pobjs
+                              and (not kws or any(k in pobjs[fj].get('name', '').lower() for k in kws))]
                     p['_concept'] = {'concept_id': c['concept_id'], 'representation_id': c['representation_id'],
                                      'name': c['name'], 'kind': c['kind'], 'filter_keywords': kws}
                 mine = []
                 for fj in wanted:
-                    if fj not in objs:
+                    if fj not in pobjs:
                         problems.append(f"{p['id']}: OBJ 없음 {fj}")
                         continue
                     if fj in assigned:
@@ -90,11 +96,15 @@ def plan(spec_path):
             if not els:
                 problems.append(f"{p['id']}: element 0개 (파트 생략)")
                 continue
+            ptree = p.get('_tree', tree)
+            pobjs = objs if ptree == tree else other[ptree]['objs']
             parts.append({
-                'id': p['id'], 'name': p['name'], 'material': p['material'], 'source': p['_concept'],
-                'elements': [{'file_id': fj, 'name': objs[fj].get('name'), 'concept_id': objs[fj].get('concept_id'),
-                              'representation_id': objs[fj].get('representation_id'),
-                              'bounds_mm': objs[fj].get('bounds_mm')} for fj in els],
+                'id': p['id'], 'name': p['name'], 'material': p['material'], 'source': {**p['_concept'], 'tree': ptree},
+                'note': p.get('note', ''),
+                'elements': [{'file_id': fj, 'tree': ptree, 'name': pobjs[fj].get('name'), 'concept_id': pobjs[fj].get('concept_id'),
+                              'representation_id': pobjs[fj].get('representation_id'),
+                              'bounds_mm': pobjs[fj].get('bounds_mm'),
+                              'path': str(cat.BP3D / 'extracted' / ptree / (fj + '.obj'))} for fj in els],
             })
         assets.append({'asset_id': a['asset_id'], 'file': a['file'], 'display_name': a['display_name'],
                        'note': a.get('note', ''), 'parts': parts})
@@ -146,11 +156,15 @@ def extract(spec_path):
         with manifest_path.open(encoding='utf-8') as f:
             for row in csv.DictReader(f):
                 manifest[(row['tree'], row['file_id'])] = row
-    index = cat.load_index(tree)
-    need = sorted({e['file_id'] for a in p['assets'] for part in a['parts'] for e in part['elements']})
+    need_all = sorted({(e.get('tree', tree), e['file_id']) for a in p['assets'] for part in a['parts'] for e in part['elements']})
     done = skipped = 0
-    zpath = cat.ARCH / index['zip']
-    with zipfile.ZipFile(zpath) as z:
+    for etree in sorted({t for t, _ in need_all}):
+      index = cat.load_index(etree)
+      dest = (cat.BP3D / 'extracted' / etree).resolve()
+      dest.mkdir(parents=True, exist_ok=True)
+      need = [fj for t, fj in need_all if t == etree]
+      zpath = cat.ARCH / index['zip']
+      with zipfile.ZipFile(zpath) as z:
         for fj in need:
             info = index['objs'].get(fj)
             if not info:
@@ -170,8 +184,8 @@ def extract(spec_path):
             else:
                 target.write_bytes(data)
                 done += 1
-            manifest[(tree, fj)] = {
-                'tree': tree, 'file_id': fj, 'source_zip': index['zip'], 'zip_member': member,
+            manifest[(etree, fj)] = {
+                'tree': etree, 'file_id': fj, 'source_zip': index['zip'], 'zip_member': member,
                 'zip_crc32': info['crc32'], 'sha256': digest, 'size': len(data),
                 'concept_id': info.get('concept_id', ''), 'name': info.get('name', ''),
                 'extracted_to': str(target.relative_to(cat.ROOT)).replace('\\', '/'),
@@ -182,7 +196,7 @@ def extract(spec_path):
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator='\n')
         w.writeheader()
         w.writerows(rows)
-    print(f'extract: 필요 {len(need)}개 · 새로 {done} · 이미 있음 {skipped} -> {dest}')
+    print(f'extract: 필요 {len(need_all)}개 · 새로 {done} · 이미 있음 {skipped}')
 
 
 def convert(spec_path):
@@ -220,7 +234,10 @@ def register(spec_path):
     rep = json.loads((out_dir / 'convert-report.json').read_text(encoding='utf-8'))
     plan_data = json.loads((out_dir / 'plan.json').read_text(encoding='utf-8'))
     out_rel = spec['output_dir']
-    source_archive = plan_data['source_zip']
+    # STEP 04-B+: element마다 트리(IS-A / PART-OF)가 다를 수 있다 → 자산별로 실제 쓴 ZIP을 적는다
+    tree_of = {e['file_id']: e.get('tree', plan_data.get('tree', 'partof'))
+               for a in plan_data['assets'] for part in a['parts'] for e in part['elements']}
+    tree_label = {'partof': 'PART-OF', 'isa': 'IS-A'}
     entries = list(rep['assets'])
     if rep.get('preview'):
         pv = dict(rep['preview'])
@@ -231,13 +248,16 @@ def register(spec_path):
     rows_new = []
     for e in entries:
         parts = e['parts']
+        trees = sorted({tree_of.get(fj, plan_data.get('tree', 'partof')) for p in parts for fj in p['element_file_ids']})
+        source_archive = ' + '.join(cat.ZIP_NAME[t] for t in trees)
+        source_label = ' + '.join(tree_label.get(t, t) for t in trees) + (' trees' if len(trees) > 1 else ' tree')
         meta = {
             'asset_id': e['asset_id'], 'display_name': e['display_name'], 'file': f"{out_rel}/{e['file']}",
             'original_name': '; '.join(sorted({p['concept_name'] for p in parts})),
             'concept_id': [p['concept_id'] for p in parts],
             'representation_id': [p['representation_id'] for p in parts],
             'element_file_ids': {p['id']: p['element_file_ids'] for p in parts},
-            'source_archive': source_archive, 'source_url': cat.SOURCE_URL + source_archive,
+            'source_archive': source_archive, 'source_url': ' + '.join(cat.SOURCE_URL + cat.ZIP_NAME[t] for t in trees),
             'license': LICENSE, 'license_url': LICENSE_URL, 'attribution': ATTRIBUTION,
             'coordinate_system': COORD, 'unit': 'm', 'transformation': TRANSFORM,
             'mesh_count': e['mesh_count'], 'triangle_count': e['triangle_count'],
@@ -257,8 +277,8 @@ def register(spec_path):
         rows_new.append({
             'asset_id': e['asset_id'], 'file_name': f"{out_rel}/{e['file']}", 'original_file_name': source_archive,
             'anatomical_system': spec['system'], 'anatomical_structure': meta['original_name'][:300],
-            'source': 'BodyParts3D 4.0 (Database Center for Life Science) — PART-OF tree, derived',
-            'source_url': cat.SOURCE_URL + source_archive, 'license': LICENSE, 'attribution': ATTRIBUTION,
+            'source': 'BodyParts3D 4.0 (Database Center for Life Science) — ' + source_label + ', derived',
+            'source_url': ' + '.join(cat.SOURCE_URL + cat.ZIP_NAME[t] for t in trees), 'license': LICENSE, 'attribution': ATTRIBUTION,
             'file_format': 'GLB (glTF 2.0 binary)', 'file_size': e['file_size'],
             'processing_status': 'CONVERTED (tools/asset-processing/bp3d_build.py + tools/blender/bp3d_to_glb.py)',
             'verification_status': meta['verification_status'], 'notes': e.get('note', ''),

@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 04-B(애니메이션·타임라인·Morph·변형 엔진, 심장주기 개념 모델)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
+현재 단계는 STEP 04-B+(해부학 자산 확장: 심장 v2·판막 리깅·가지 혈관·미세 개념 모델·04-C 준비 모델)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`, `docs/development/STEP_04B_ASSET_UPGRADE_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -87,16 +87,21 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **도구 위치:** `tools/asset-processing/`(검색·조사·계획·추출·등록)과 `tools/blender/bp3d_to_glb.py`(변환). 문서는 `docs/development/bp3d/ANATOMY_PIPELINE.md`에 있다.
 - **수업 범위 밖:** 이 도구들은 개발 도구라 zipfile, json, csv, argparse, pathlib, hashlib, bpy를 쓴다. 게임 로직 `py/`의 문법 제한(강의 범위)은 그대로 지킨다. 둘을 섞지 않는다.
 - **OBJ 찾기:** OBJ 파일명은 element file ID(`FJ…`)다. FMA ID나 BP ID로 OBJ를 찾지 않는다. COMPOUND는 `*_element_parts.txt`로 풀고, IS-A와 PART-OF 트리는 병합하지 않는다.
+  - (STEP 04-B+) 사양의 파트마다 트리를 고를 수 있다(`"tree": "isa"`). PART-OF 개념이 하위 가지 전체를 담으면(예: 팔머리동맥 93 element) IS-A 단일 element를 쓴다.
+  - 검색은 `bp3d_catalog.py find`(동의어·FMA·FJ·OBJ 머리글). 이름 검색 0건이 모델 없음은 아니다(예: 힘줄끈은 방실판막 첨판 element 안에 있다). `matched_by`와 형상을 확인한다.
 - **좌표:** 장기별 중심 정렬과 크기 정규화를 하지 않는다.
   - OBJ는 `forward_axis=Y, up_axis=Z`로 축 변환 없이 불러온다(자체 검사 있음).
   - mm→m는 모든 메시에 같은 배율로 적용한다.
   - 축 변환은 glTF `export_yup`에서 한 번만 한다.
   - 결과: glTF (x, y, z) = (X, Z, −Y) × 0.001, +X = 환자 왼쪽, +Y = 위, +Z = 앞
 - **변환 단위:** 한 element는 한 파트에만 넣는다(`bp3d_build.py plan`이 겹침을 검사). 원본 concept 이름이 내용과 다르면 element 이름 필터(`rest_of` + `keywords`)를 쓰고, 그 사실을 사양의 `note`에 남긴다.
-- **원본에 없는 구조:** 도형으로 만들어 실제 해부학 모델처럼 표시하지 않는다(현재 없음: 심실 심근 벽, 심실중격, 폐 실질).
+- **원본에 없는 구조:** 도형으로 만들어 실제 해부학 모델처럼 표시하지 않는다(현재 없음: 심실중격 독립 메시, 전도계, 폐 실질, 목동맥 갈림 부위, 척수 전체). 통합 심실 벽은 IS-A FJ2428로 있다(`heart-v2.glb`).
 - **결과물 관리:** 결과 GLB마다 `*.meta.json`을 두고 `asset_registry.csv` 행을 남긴다(`bp3d_build.py register`). `verification_status`에 의학적 검증 여부를 정직하게 적는다.
 - **출처 표기:** BodyParts3D 파생 모델은 CC BY 4.0이다. 해당 장면의 `credits`로 화면에 출처를 표시하고, 수정 내역은 `assets/licenses/bodyparts3d.md`에 적는다.
-- **Z-Anatomy:** 별도 라이선스 검토 전까지 쓰지 않는다.
+- **Z-Anatomy (STEP 04-B+, 사용자 허용):** 객체마다 라이선스를 확인하고 CC BY-SA 4.0 파생물은 **별도 GLB**로 둔다(BodyParts3D 메시와 합치지 않음).
+  - NC 모델(Inner Ear, Kidney by Lissie Cowley)과 출처 불명 모델("White matter" 계열, 척수 포함)은 쓰지 않는다.
+  - BLEND는 항상 `--disable-autoexec`로 연다. 좌표는 BodyParts3D와 같지 않다: 측정한 평행 이동 T = (+0.0013, +0.0975, +0.0643) m(Blender Z-up)를 빼서 맞춘다.
+  - 출처 표기는 `assets/licenses/z-anatomy.md`, 장면 `credits`에 CC-BY-SA를 적는다.
 
 ## 해부학 Explorer (STEP 03-B, 2026-11-28)
 - **화면 분리:** `explorer.html`은 사용자용, `index.html`은 개발자 Sandbox다. 공유 엔진 모듈(`js/engine/`)은 확장만 하고 Sandbox 동작을 깨지 않는다.
@@ -207,7 +212,8 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **Blocking:** 학습 진행에 필요한 애니메이션은 Edge `timeline_id`로 이동 명령과 같은 묶음에 넣는다(motion_link). 끝나야 `lesson.arrived`가 불린다. 실패·취소면 진행하지 않는다. 노드 도착 이벤트(scene event)는 Python이 이미 진행한 뒤에 실행되므로, 필수 애니메이션을 거기에 넣지 않는다.
 - **Non-blocking:** 끝나지 않는 장식은 타임라인 `wait:false`나 parallel 이벤트로 둔다. 같은 animation_id를 다시 재생하면 이전 재생이 끝나므로 쌓이지 않는다.
 - **판막·실제 모델:**
-  - BodyParts3D 판막은 리깅이 없어 움직이지 않는다. 상태 색(`indicators`)으로만 표시하고, 실제 개폐 모습이라고 설명하지 않는다.
+  - 기존 `heart.glb`(Play·Explorer) 판막은 리깅이 없어 움직이지 않는다. 상태 색(`indicators`)으로만 표시하고, 실제 개폐 모습이라고 설명하지 않는다.
+  - (STEP 04-B+) `heart-v2-valves-rig.glb`는 첨판별 경첩 회전 Shape Key(교육용 근사, Sandbox HV)다. 실제 첨판 변형이라고 설명하지 않는다.
   - 판막 개폐 형태와 심실 수축은 개념 모델(`content/animations/cardiac-concept.json`, CONCEPTUAL)에서만 보여 준다.
 - **닫힌 판막 통과 금지:** 타임라인 command 단계의 `through`에 구조를 적으면, 그 구조가 OPEN이 아닐 때 실행하지 않고 실패한다. 판막을 지나는 이동에는 반드시 `through`를 적는다.
 - **변형과 경로:**
@@ -224,6 +230,19 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 
 ## STEP 04 방향
 1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
-2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. 남은 것은 전공자 경로 검토와 나머지 폐정맥·대동맥 가지다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
-3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. 실제 모델의 판막 개폐·심실 변형은 라이선스가 확인된 리깅 모델이 생길 때까지 하지 않는다. 다음은 04-C(연속 생리 변수·인과·피드백)다.
+2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. STEP 04-B+에서 나머지 폐정맥·대동맥 가지·팔다리 혈관 경로 13개(GEOMETRY_CHECKED 9, APPROXIMATE 4)를 더했다. 남은 것은 전공자 경로 검토다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
+3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. STEP 04-B+에서 BodyParts3D 파생 판막 리깅·심실 벽 영역 모델(교육용 근사)을 Sandbox HV에 만들었다. Play 학습 화면 연결은 아직이다. 다음은 04-C(연속 생리 변수·인과·피드백)다.
 4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.
+
+## 해부학 자산 확장 (STEP 04-B+, 2026-11-29)
+- **버전 관리:** 기존 모델은 바꾸지 않고 새 파일로 만든다(`heart.glb` 그대로, `heart-v2*.glb` 추가). 학습 화면(Play)은 아직 v1을 쓴다.
+- **자산 대장:** `bp3d_build.py register` 뒤 `python tools/asset-processing/registry_extend.py`를 실행한다(파이프라인 밖 자산 meta·행, 확장 열). 모르는 값은 UNKNOWN, 검토 전은 NOT_REVIEWED.
+- **Blender 내보내기 주의**
+  - Blender 5.3은 새 Shape Key 값을 1로 둔다 → `value = 0`. NLA 클립을 내보내면 기본 가중치가 1이 될 수 있어 GLB를 고친다(`zero_weights`).
+  - 여러 메시에 걸친 클립은 `export_animation_mode='NLA_TRACKS'`(트랙 이름 = 클립 이름).
+  - 작은 메시 수백 개에 Morph를 달면 파일이 커진다 → 한 메시로 합치고 `export_morph_normal=False`.
+- **GLB 클립과 상태:** 클립이 끝나면 Mixer가 원래 값으로 되돌린다. 유지해야 하는 상태(판막, 혈관 긴장도)는 `morph` 애니메이션으로 만든다. 클립은 반복 장식에 쓴다.
+- **가지 혈관 경로:** `content/anatomy/cardiovascular/paths-branches.json`(지연 로딩 자산을 가리킴). Play가 읽는 `paths.json`에 넣지 않는다. Explorer 개발자 모드가 `requires_assets`를 불러온 뒤 더한다. 만들기: `tools/validation/trace-branch-paths.mjs` → `receive_json.py` → `tools/content/merge_branch_paths.py`.
+- **지연 로딩:** `anatomy-manager.ensureAsset`은 불러온 뒤 레이어 표시 상태를 다시 적용한다(꺼진 레이어 자산이 보이지 않게).
+- **04-C 준비 데이터:** `content/anatomy/regulation/prep-04c.json`(구조·Anchor·교육용 신호 경로). 게임 로직은 넣지 않는다.
+- **테스트:** 자산·데이터를 바꾸면 `python tools/asset-processing/test_asset_upgrade.py`(42개)를 실행한다.

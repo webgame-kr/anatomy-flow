@@ -221,6 +221,33 @@ commands = [
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
 
+## STEP 04-B+ 해부학 자산 확장
+
+- **Sandbox 새 장면** (`index.html?scene=<id>`)
+
+  | 장면 | 내용 |
+  |---|---|
+  | `heart_cmp` (HC) | 기존 `heart.glb`, `heart-v2.glb`(통합 심실 벽 FJ2428·첨판 분리), 심실 벽 영역(좌·우 자유벽, 중격 영역) 비교 |
+  | `heart_valves` (HV) | 판막 첨판 11개 개폐(경첩 회전 근사), 유두근 연결, 심실 벽 영역 수축, 닫힌 판막 통과 금지 |
+  | `micro_alv` (MA) | 폐포 개념 모델 |
+  | `micro_tis` (MB) | 조직 모세혈관 개념 모델 |
+  | `micro_ves` (MC) | 혈관 벽 단면 개념 모델(수축·확장) |
+  | `prep_04c` (RP) | STEP 04-C 준비 모델(숨뇌, 온목·속목동맥, 콩팥·부신, 가로막, 이자 + Z-Anatomy 미주신경·교감신경줄기·갑상샘) |
+
+- **Explorer:** "동맥 가지 / 정맥 가지" 레이어(기본 꺼짐), 개발자 모드에 가지 혈관 경로 13개(`paths-branches.json`)가 있다.
+- **모델·도구**
+  - 변환 사양: `tools/asset-processing/specs/cardiovascular-v2.json`, `systemic-vessels.json`, `regulation-prep.json`
+  - Blender: `tools/blender/split_ventricle_wall.py`, `rig_valves.py`, `make_micro_concepts.py`, `za_extract_regulation.py`
+  - 대장: `python tools/asset-processing/registry_extend.py`
+- **라이선스:** BodyParts3D 파생은 CC BY 4.0(`assets/licenses/bodyparts3d.md`)이다. Z-Anatomy 파생 `assets/anatomy/regulation/za-nerves-thyroid.glb`만 CC BY-SA 4.0(`assets/licenses/z-anatomy.md`, 별도 파일)이다.
+- **테스트:**
+
+  ```powershell
+  python tools/asset-processing/test_asset_upgrade.py
+  ```
+
+- **보고서:** `docs/development/STEP_04B_ASSET_UPGRADE_REPORT.md`. 모든 모델·경로는 의학적 검증 전이고, 판막·심실 변형은 교육용 근사다.
+
 ## STEP 04-B 애니메이션 엔진
 
 - **Play 「심장주기: 판막과 심실의 다섯 단계」** (`play.html?lesson=cv.cardiac_cycle`)

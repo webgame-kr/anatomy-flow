@@ -1,0 +1,83 @@
+{
+  "asset_id": "bp3d-reg-pancreas",
+  "display_name": "Pancreas (이자)",
+  "file": "assets/anatomy/regulation/pancreas.glb",
+  "original_name": "pancreas",
+  "concept_id": [
+    "FMA7198"
+  ],
+  "representation_id": [
+    "BP4631"
+  ],
+  "element_file_ids": {
+    "pancreas": [
+      "FJ1895"
+    ]
+  },
+  "source_archive": "isa_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 1,
+  "triangle_count": 4890,
+  "bounding_box": {
+    "min": [
+      -0.0479,
+      1.00436,
+      0.09541
+    ],
+    "max": [
+      0.07267,
+      1.0781,
+      0.14638
+    ],
+    "size": [
+      0.12058,
+      0.07374,
+      0.05097
+    ]
+  },
+  "file_size": 89748,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "pancreas",
+      "name": "Pancreas",
+      "concept_id": "FMA7198",
+      "concept_name": "pancreas",
+      "material": "gland",
+      "element_count": 1,
+      "triangles": 4890,
+      "mesh_check": {
+        "non_manifold_edges": 52,
+        "boundary_edges": 52,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.0479,
+          1.00436,
+          0.09541
+        ],
+        "max": [
+          0.07267,
+          1.0781,
+          0.14638
+        ],
+        "size": [
+          0.12058,
+          0.07374,
+          0.05097
+        ]
+      }
+    }
+  ]
+}

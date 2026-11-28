@@ -1,0 +1,32 @@
+{
+  "asset_id": "bp3d-cv-heart-v2-regions",
+  "file_name": "assets/anatomy/cardiovascular/heart-v2-ventricle-regions.glb",
+  "anatomical_system": "cardiovascular",
+  "anatomical_structure": "wall of ventricle (FJ2428) split into LV free wall / RV free wall / septal region",
+  "source": "BodyParts3D 4.0 IS-A FJ2428 + PART-OF cavities FJ2422, FJ2423 — derived (geometric split)",
+  "license": "CC-BY-4.0",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "processing_status": "GENERATED (tools/blender/split_ventricle_wall.py)",
+  "source_category": "BodyParts3D",
+  "source_version": "4.0 obj_99",
+  "verification_status": "GEOMETRY_DERIVED split (face-to-cavity distance, septum = between both cavities within 15 mm); NOT an anatomical segmentation; NOT medically verified",
+  "notes": "중격 영역 6,791면(면적 12%). 경계는 앞·뒤 심실사이고랑을 따르지 않는다. Morph contract는 교육용 근사.",
+  "modifications": "faces split into 3 objects by distance to LV/RV cavities; shape key contract (pull toward cavity centroid 12/15/5%); uniform scale mm->m; Z-up->Y-up",
+  "license_file": "assets/licenses/bodyparts3d.md",
+  "technical_status": "BUILT; independent select + morph tested in Sandbox (HC/HV)",
+  "glb": {
+    "bytes": 1332368,
+    "sha256": "a32b41a9d551a529823f969ccf5ae507559326e6c86eb0eb7369ec4fb53d5ae2",
+    "meshes": 3,
+    "mesh_nodes": [
+      "heart_wall_lv_free",
+      "heart_wall_rv_free",
+      "heart_wall_septum"
+    ],
+    "triangles": 37442,
+    "clips": [],
+    "morph_targets": [
+      "contract"
+    ]
+  }
+}

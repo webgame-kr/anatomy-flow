@@ -201,6 +201,16 @@ async function syncMotion() {
     motionLoaded = true;
     try {
       await E.kit.loadUrl(m.paths, m.actors);
+      // STEP 04-B+: 가지 혈관 경로는 별도 파일(지연 로딩 자산을 가리킴). 자산을 먼저 불러온 뒤 더한다.
+      // (Play는 이 파일을 읽지 않는다 — 불러오지 않은 자산을 가리키는 경로가 오류를 낸다)
+      if (m.branch_paths) {
+        const doc = await (await fetch(m.branch_paths, { cache: 'no-cache' })).json();
+        const sceneAssets = new Set(E.manager.scene.assets.map((a) => a.asset_id));
+        for (const a of doc.requires_assets || []) if (sceneAssets.has(a)) await E.manager.ensureAsset(a);
+        let added = 0;
+        for (const p of doc.paths || []) if (E.kit.paths.create(p)) added += 1;
+        log(`가지 혈관 경로 ${added}개 추가 (${m.branch_paths})`);
+      }
       E.editor.render();
     } catch (err) {
       motionLoaded = false;

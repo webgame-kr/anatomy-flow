@@ -1,0 +1,54 @@
+{
+  "asset_id": "bp3d-cv-heart-v2-valves-rig",
+  "file_name": "assets/anatomy/cardiovascular/heart-v2-valves-rig.glb",
+  "anatomical_system": "cardiovascular",
+  "anatomical_structure": "11 valve leaflets/cusps (incl. chordae in AV leaflet elements) + 5 papillary muscles, open shape keys",
+  "source": "BodyParts3D 4.0 PART-OF leaflet/cusp/papillary OBJs — derived (rig)",
+  "license": "CC-BY-4.0",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "processing_status": "GENERATED (tools/blender/rig_valves.py)",
+  "source_category": "BodyParts3D",
+  "source_version": "4.0 obj_99",
+  "verification_status": "EDUCATIONAL_APPROXIMATION (hinge-rotation shape keys); not tissue deformation; NOT medically verified",
+  "notes": "판막 그룹마다 Morph open(첨판·유두근 함께). 방실판막 첨판 element에 힘줄끈이 들어 있어 유두근 근처 정점은 유두근 변위를 따른다. 닫힌 모양을 기본으로 가정.",
+  "modifications": "shape key open per mesh (hinge rotation about annulus, AV +5 mm downstream push, chordae anchored near papillary); papillary open = +10% length; NLA clips <valve>_open/_close; uniform scale mm->m; Z-up->Y-up",
+  "license_file": "assets/licenses/bodyparts3d.md",
+  "technical_status": "BUILT; state transitions + through-blocking tested in Sandbox (HV); GLB clips play but reset at end (mixer restore) → states use morph type",
+  "glb": {
+    "bytes": 1318848,
+    "sha256": "7940aa2b4ba2df059203a5e1bdee9b06288d4b72d20fce33413d6fc1a7b3412c",
+    "meshes": 16,
+    "mesh_nodes": [
+      "heart_cusp_av_anterior",
+      "heart_cusp_av_left_posterior",
+      "heart_cusp_av_right_posterior",
+      "heart_leaflet_mv_anterior",
+      "heart_leaflet_mv_posterior",
+      "heart_papillary_lv_FJ2418",
+      "heart_papillary_lv_FJ2429",
+      "heart_cusp_pv_left_anterior",
+      "heart_cusp_pv_posterior",
+      "heart_cusp_pv_right_anterior",
+      "heart_leaflet_tv_anterior",
+      "heart_leaflet_tv_posterior",
+      "heart_leaflet_tv_septal",
+      "heart_papillary_rv_FJ2419",
+      "heart_papillary_rv_FJ2430",
+      "heart_papillary_rv_FJ2437"
+    ],
+    "triangles": 38792,
+    "clips": [
+      "aortic_open",
+      "aortic_close",
+      "mitral_open",
+      "mitral_close",
+      "pulmonary_open",
+      "pulmonary_close",
+      "tricuspid_open",
+      "tricuspid_close"
+    ],
+    "morph_targets": [
+      "open"
+    ]
+  }
+}

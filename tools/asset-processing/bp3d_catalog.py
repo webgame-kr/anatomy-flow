@@ -16,6 +16,8 @@ IS-A 트리와 PART-OF 트리는 따로 다룬다(같은 FMA ID라도 구성 ele
   python tools/asset-processing/bp3d_catalog.py search FMA7088 --exact --json out.json
   python tools/asset-processing/bp3d_catalog.py components FMA7088 --tree partof
   python tools/asset-processing/bp3d_catalog.py relations FMA7088 --tree partof
+  python tools/asset-processing/bp3d_catalog.py find "interventricular septum"   # 동의어·FJ·OBJ 머리글, 상태 구분
+  python tools/asset-processing/bp3d_catalog.py find FJ2428
 """
 import argparse
 import csv
@@ -154,6 +156,64 @@ def search(query, trees=TREES, exact=False):
     return results
 
 
+# STEP 04-B+: 동의어 표 (검색어가 BodyParts3D 이름과 달라서 생기는 누락을 줄인다)
+SYNONYMS = {
+    'ventricular wall': ['wall of ventricle', 'myocardium of ventricle', 'wall of left ventricle', 'wall of right ventricle'],
+    'myocardium': ['wall of ventricle', 'wall of atrium', 'myocardium'],
+    'interventricular septum': ['interventricular septum', 'septum of heart', 'muscular part of interventricular septum',
+                               'membranous part of interventricular septum', 'cardiac septum'],
+    'chordae tendineae': ['chordae tendineae', 'tendinous cord', 'chorda tendinea'],
+    'valve cusp': ['cusp', 'leaflet', 'valvule'],
+    'vagus nerve': ['vagus nerve', 'vagal nerve', 'tenth cranial nerve', 'cranial nerve x'],
+    'sympathetic trunk': ['sympathetic trunk', 'sympathetic chain', 'paravertebral ganglion', 'sympathetic ganglion'],
+    'conduction system': ['sinoatrial node', 'atrioventricular node', 'atrioventricular bundle', 'bundle of his',
+                          'purkinje', 'conducting system of heart'],
+    'thyroid gland': ['thyroid gland', 'lobe of thyroid gland', 'isthmus of thyroid gland'],
+    'lung parenchyma': ['lung', 'lobe of lung', 'parenchyma of lung', 'upper lobe of right lung'],
+    'carotid sinus': ['carotid sinus', 'carotid bifurcation', 'internal carotid artery'],
+    'lymph node': ['lymph node', 'lymphatic', 'thoracic duct'],
+}
+
+
+def find(query, trees=TREES):
+    """FMA ID, element file ID(FJ), 영문명, 동의어를 모두 써서 찾고 상태를 구분한다.
+    상태: MODEL_PRESENT(OBJ 있음) / NAME_FOUND_NO_OBJ(이름은 있으나 OBJ 없음) /
+          NO_MATCH(검색어가 일치하지 않음 — 다른 이름으로 있을 수 있으므로 '모델 없음'과 같지 않다)"""
+    q = query.strip()
+    ql = q.lower()
+    terms = [ql] + [t.lower() for t in SYNONYMS.get(ql, [])]
+    hits = {}
+    for tree in trees:
+        index = load_index(tree)
+        concepts, objs = index['concepts'], index['objs']
+        for c in concepts.values():
+            name = c['name'].lower()
+            ok = (re.fullmatch(r'fma\d+', ql) and c['concept_id'].lower() == ql) or                  (ELEMENT_RE.match(q) and q in c['elements']) or                  any(t in name for t in terms)
+            if ok:
+                s = summarize(index, c)
+                s['matched_by'] = 'id' if (ql.startswith('fma') or ELEMENT_RE.match(q)) else 'name'
+                s['zip_members'] = [objs[fj]['member'] for fj in c['elements'] if fj in objs][:5]
+                hits[(tree, c['concept_id'])] = s
+        # OBJ 머리글의 영문명(element 자체 이름)도 본다
+        for fid, o in objs.items():
+            nm = (o.get('name') or '').lower()
+            if fid == q or any(t in nm for t in terms):
+                key = (tree, o.get('concept_id'))
+                if key not in hits:
+                    hits[key] = {'tree': tree, 'concept_id': o.get('concept_id'), 'representation_id': o.get('representation_id'),
+                                 'name': o.get('name'), 'kind': 'ELEMENT(OBJ header)', 'element_count': 1, 'obj_present': 1,
+                                 'obj_missing': [], 'children': 0, 'parents': [], 'matched_by': 'obj_header', 'zip_members': [o['member']]}
+    # OBJ가 있는 것 먼저, 그다음 element 수가 적은(구체적인) 개념 먼저
+    rows = sorted(hits.values(), key=lambda r: (r['obj_present'] == 0, r['element_count'], len(r['name'] or ''), r['tree']))
+    if not rows:
+        status = 'NO_MATCH'
+    elif any(r['obj_present'] > 0 for r in rows):
+        status = 'MODEL_PRESENT'
+    else:
+        status = 'NAME_FOUND_NO_OBJ'
+    return {'query': q, 'terms': terms, 'status': status, 'count': len(rows), 'results': rows}
+
+
 def components(concept_id, tree):
     index = load_index(tree)
     c = index['concepts'].get(concept_id)
@@ -212,12 +272,21 @@ def main(argv=None):
     c.add_argument('--json'); c.add_argument('--csv')
     r = sub.add_parser('relations'); r.add_argument('concept_id'); r.add_argument('--tree', choices=TREES, required=True)
     i = sub.add_parser('index'); i.add_argument('--tree', choices=TREES)
+    f = sub.add_parser('find'); f.add_argument('query'); f.add_argument('--tree', choices=TREES); f.add_argument('--json')
     a = ap.parse_args(argv)
 
     if a.cmd == 'index':
         for t in ([a.tree] if a.tree else TREES):
             idx = build_index(t)
             print(t, 'concepts', len(idx['concepts']), 'objs', len(idx['objs']))
+        return
+    if a.cmd == 'find':
+        r = find(a.query, [a.tree] if a.tree else TREES)
+        print(json.dumps({k: v for k, v in r.items() if k != 'results'}, ensure_ascii=False))
+        for row in r['results'][:40]:
+            print(json.dumps(row, ensure_ascii=False))
+        if a.json:
+            Path(a.json).write_text(json.dumps(r, ensure_ascii=False, indent=2), encoding='utf-8')
         return
     if a.cmd == 'search':
         rows = search(a.query, [a.tree] if a.tree else TREES, a.exact)

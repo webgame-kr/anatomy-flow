@@ -1,0 +1,51 @@
+{
+  "system": "systemic-vessels",
+  "tree": "isa",
+  "output_dir": "assets/anatomy/cardiovascular",
+  "description": "STEP 04-B+ 체순환 주요 혈관: 대동맥 가지(팔머리동맥, 온목동맥, 빗장밑동맥 → 겨드랑동맥 → 위팔동맥), 다리 동맥(온엉덩동맥 → 바깥엉덩동맥 → 넙다리동맥), 상대정맥 유입(팔머리정맥, 속목정맥, 빗장밑정맥 → 겨드랑정맥), 팔 얕은정맥(노쪽피부정맥, 자쪽피부정맥), 하대정맥 유입(온엉덩정맥 → 바깥엉덩정맥 → 넙다리정맥, 큰두렁정맥). IS-A 트리의 단일 element를 쓴다(PART-OF 개념은 하위 가지 전체를 담아 수십 개 element가 된다).",
+  "transform": {
+    "source": "BodyParts3D OBJ: mm, +X = 환자 왼쪽, -Y = 앞(anterior), +Z = 위(superior)",
+    "blender_import": "obj_import forward_axis=Y, up_axis=Z (축 변환 없음)",
+    "scale": 0.001,
+    "export": "glTF export_yup=True 한 번만: glTF (x, y, z) = (X, Z, -Y) × 0.001",
+    "recentering": "없음 — heart.glb, aorta.glb, vena-cava.glb와 같은 원점"
+  },
+  "materials": {
+    "systemic_artery": {"color": "#d23c3c", "roughness": 0.45, "note": "체순환 동맥: 교육용 빨강"},
+    "systemic_vein": {"color": "#3c62c8", "roughness": 0.45, "note": "체순환 정맥: 교육용 파랑"},
+    "superficial_vein": {"color": "#6f8fe0", "roughness": 0.5, "note": "얕은정맥(피부정맥): 옅은 파랑"}
+  },
+  "preview": null,
+  "assets": [
+    {
+      "asset_id": "bp3d-cv-systemic-vessels",
+      "file": "systemic-vessels.glb",
+      "display_name": "Systemic vessels (체순환 주요 동맥·정맥)",
+      "note": "오른쪽 팔·다리만 넣었다(왼쪽은 대칭 구조라 학습 경로에 필요 없음). 왼쪽 온목·빗장밑동맥, 왼팔머리정맥, 왼온엉덩정맥은 넣었다.",
+      "parts": [
+        {"id": "brachiocephalic_artery", "name": "Brachiocephalic artery", "concept": "FMA3932", "material": "systemic_artery"},
+        {"id": "right_common_carotid_artery", "name": "Right common carotid artery", "concept": "FMA3941", "material": "systemic_artery"},
+        {"id": "left_common_carotid_artery", "name": "Left common carotid artery", "concept": "FMA4058", "material": "systemic_artery"},
+        {"id": "right_subclavian_artery", "name": "Right subclavian artery", "concept": "FMA3953", "material": "systemic_artery"},
+        {"id": "left_subclavian_artery", "name": "Left subclavian artery", "concept": "FMA4694", "material": "systemic_artery"},
+        {"id": "right_axillary_artery", "name": "Right axillary artery", "concept": "FMA22655", "material": "systemic_artery"},
+        {"id": "right_brachial_artery", "name": "Right brachial artery", "concept": "FMA22691", "material": "systemic_artery"},
+        {"id": "right_common_iliac_artery", "name": "Right common iliac artery", "concept": "FMA14765", "material": "systemic_artery"},
+        {"id": "right_external_iliac_artery", "name": "Right external iliac artery", "concept": "FMA18806", "material": "systemic_artery"},
+        {"id": "right_femoral_artery", "name": "Right femoral artery", "concept": "FMA70249", "material": "systemic_artery"},
+        {"id": "right_brachiocephalic_vein", "name": "Right brachiocephalic vein", "concept": "FMA4751", "material": "systemic_vein"},
+        {"id": "left_brachiocephalic_vein", "name": "Left brachiocephalic vein", "concept": "FMA4761", "material": "systemic_vein"},
+        {"id": "right_internal_jugular_vein", "name": "Right internal jugular vein", "concept": "FMA4754", "material": "systemic_vein"},
+        {"id": "right_subclavian_vein", "name": "Right subclavian vein", "concept": "FMA4755", "material": "systemic_vein"},
+        {"id": "right_axillary_vein", "name": "Right axillary vein", "concept": "FMA13330", "material": "systemic_vein"},
+        {"id": "right_cephalic_vein", "name": "Right cephalic vein", "concept": "FMA13325", "material": "superficial_vein"},
+        {"id": "right_basilic_vein", "name": "Right basilic vein", "concept": "FMA22909", "material": "superficial_vein"},
+        {"id": "right_common_iliac_vein", "name": "Right common iliac vein", "concept": "FMA21387", "material": "systemic_vein"},
+        {"id": "left_common_iliac_vein", "name": "Left common iliac vein", "concept": "FMA21388", "material": "systemic_vein"},
+        {"id": "right_external_iliac_vein", "name": "Right external iliac vein", "concept": "FMA18885", "material": "systemic_vein"},
+        {"id": "right_femoral_vein", "name": "Right femoral vein", "concept": "FMA21188", "material": "systemic_vein"},
+        {"id": "right_great_saphenous_vein", "name": "Right great saphenous vein", "concept": "FMA21379", "material": "superficial_vein"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+{
+ "version": 1,
+ "scene_id": "micro_models",
+ "verification_status": "CONCEPTUAL",
+ "description": "STEP 04-B+ 미세 구조 개념 모델(직접 제작 GLB 3종)의 반복 클립과 혈관 긴장도 상태. 해부 모델이 아니며 의학적 검증 전이다.",
+ "units": {
+  "time": "ms",
+  "morph": "0~1"
+ },
+ "groups": [],
+ "animations": [
+  {
+   "animation_id": "mc.alv.rbc_flow",
+   "target_id": "nf-micro-alveolus",
+   "animation_type": "clip",
+   "clip_name": "rbc_flow",
+   "loop": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.alv.gas",
+   "target_id": "nf-micro-alveolus",
+   "animation_type": "clip",
+   "clip_name": "gas_exchange",
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "O₂(파랑): 폐포 공기 → 모세혈관, CO₂(주황): 모세혈관 → 폐포. 입자는 분자 크기·개수가 아니다."
+  },
+  {
+   "animation_id": "mc.tis.rbc_flow",
+   "target_id": "nf-micro-tissue-capillary",
+   "animation_type": "clip",
+   "clip_name": "rbc_flow",
+   "loop": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.tis.exchange",
+   "target_id": "nf-micro-tissue-capillary",
+   "animation_type": "clip",
+   "clip_name": "tissue_exchange",
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "O₂(파랑)·영양소(초록): 모세혈관 → 세포, CO₂(주황)·노폐물(보라): 세포 → 모세혈관."
+  },
+  {
+   "animation_id": "mc.ves.constrict",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 600,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 0,
+      "dilate": 0
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 1,
+      "dilate": 0
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.ves.dilate",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 600,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 0,
+      "dilate": 0
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 0,
+      "dilate": 1
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.ves.c_to_base",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 600,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 1,
+      "dilate": 0
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 0,
+      "dilate": 0
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.ves.d_to_base",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 600,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 0,
+      "dilate": 1
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 0,
+      "dilate": 0
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.ves.c_to_d",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 1,
+      "dilate": 0
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 0,
+      "dilate": 1
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "mc.ves.d_to_c",
+   "target_id": "nf-micro-vessel-wall/vessel_wall_concept",
+   "animation_type": "morph",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "constrict": 0,
+      "dilate": 1
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "constrict": 1,
+      "dilate": 0
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  }
+ ],
+ "structures": [
+  {
+   "structure_id": "vessel.micro_wall_tone",
+   "name_ko": "혈관 긴장도 (개념 단면)",
+   "kind": "vessel",
+   "states": [
+    "BASELINE",
+    "VASOCONSTRICTION",
+    "VASODILATION"
+   ],
+   "initial": "BASELINE",
+   "transitions": {
+    "BASELINE->VASOCONSTRICTION": {
+     "animation": "mc.ves.constrict"
+    },
+    "BASELINE->VASODILATION": {
+     "animation": "mc.ves.dilate"
+    },
+    "VASOCONSTRICTION->BASELINE": {
+     "animation": "mc.ves.c_to_base"
+    },
+    "VASODILATION->BASELINE": {
+     "animation": "mc.ves.d_to_base"
+    },
+    "VASOCONSTRICTION->VASODILATION": {
+     "animation": "mc.ves.c_to_d"
+    },
+    "VASODILATION->VASOCONSTRICTION": {
+     "animation": "mc.ves.d_to_c"
+    }
+   },
+   "indicators": [],
+   "verification_status": "CONCEPTUAL",
+   "notes": "중막 민무늬근이 수축하면 내강이 좁아지고 중막이 두꺼워지는 모습을 단순화했다. 반지름 변화량은 교육용 값이다."
+  }
+ ],
+ "timelines": [
+  {
+   "timeline_id": "mc.ves.cycle",
+   "blocking": false,
+   "name_ko": "수축 → 기본 → 확장 → 기본",
+   "steps": [
+    {
+     "type": "state",
+     "set": {
+      "vessel.micro_wall_tone": "VASOCONSTRICTION"
+     },
+     "wait": true
+    },
+    {
+     "type": "delay",
+     "ms": 500
+    },
+    {
+     "type": "state",
+     "set": {
+      "vessel.micro_wall_tone": "BASELINE"
+     },
+     "wait": true
+    },
+    {
+     "type": "delay",
+     "ms": 300
+    },
+    {
+     "type": "state",
+     "set": {
+      "vessel.micro_wall_tone": "VASODILATION"
+     },
+     "wait": true
+    },
+    {
+     "type": "delay",
+     "ms": 500
+    },
+    {
+     "type": "state",
+     "set": {
+      "vessel.micro_wall_tone": "BASELINE"
+     },
+     "wait": true
+    }
+   ]
+  }
+ ],
+ "generator": "tools/content/make_micro_anim.py"
+}

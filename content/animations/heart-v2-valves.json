@@ -1,0 +1,830 @@
+{
+ "version": 1,
+ "scene_id": "heart_valves",
+ "verification_status": "EDUCATIONAL_APPROXIMATION",
+ "description": "heart-v2 판막 리깅(첨판 11개 경첩 회전 Shape Key, 방실판막 힘줄끈(원본 첨판 element에 포함)·유두근 연결)과 심실 벽 영역 수축. 교육용 근사이며 의학적 검증 전이다.",
+ "units": {
+  "time": "ms",
+  "morph": "0~1"
+ },
+ "groups": [],
+ "animations": [
+  {
+   "animation_id": "hv2.tricuspid.open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_tricuspid",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 330,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "첨판 경첩 회전 근사(Blender Shape Key). 실제 첨판 조직 변형·접합이 아니다. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "hv2.tricuspid.close",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_tricuspid",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 290,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.tricuspid.clip_open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig",
+   "animation_type": "clip",
+   "clip_name": "tricuspid_open",
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "GLB 내장 클립(같은 Shape Key). 클립 재생 확인용."
+  },
+  {
+   "animation_id": "hv2.mitral.open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_mitral",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 330,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "첨판 경첩 회전 근사(Blender Shape Key). 실제 첨판 조직 변형·접합이 아니다. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "hv2.mitral.close",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_mitral",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 290,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.mitral.clip_open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig",
+   "animation_type": "clip",
+   "clip_name": "mitral_open",
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "GLB 내장 클립(같은 Shape Key). 클립 재생 확인용."
+  },
+  {
+   "animation_id": "hv2.pulmonary.open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_pulmonary",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 330,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "첨판 경첩 회전 근사(Blender Shape Key). 실제 첨판 조직 변형·접합이 아니다. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "hv2.pulmonary.close",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_pulmonary",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 290,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.pulmonary.clip_open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig",
+   "animation_type": "clip",
+   "clip_name": "pulmonary_open",
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "GLB 내장 클립(같은 Shape Key). 클립 재생 확인용."
+  },
+  {
+   "animation_id": "hv2.aortic.open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_aortic",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 330,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "첨판 경첩 회전 근사(Blender Shape Key). 실제 첨판 조직 변형·접합이 아니다. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "hv2.aortic.close",
+   "target_id": "bp3d-cv-heart-v2-valves-rig/valve_aortic",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 290,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.aortic.clip_open",
+   "target_id": "bp3d-cv-heart-v2-valves-rig",
+   "animation_type": "clip",
+   "clip_name": "aortic_open",
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "GLB 내장 클립(같은 Shape Key). 클립 재생 확인용."
+  },
+  {
+   "animation_id": "hv2.lv_free.contract",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_lv_free",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 300,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "좌심실 자유벽: 내강 중심 쪽으로 당기는 교육용 근사. 실제 심근 수축 모양·양이 아니다. 영역 경계는 기하 분할(GEOMETRY_DERIVED)."
+  },
+  {
+   "animation_id": "hv2.lv_free.relax",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_lv_free",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 450,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.rv_free.contract",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_rv_free",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 300,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "우심실 자유벽: 내강 중심 쪽으로 당기는 교육용 근사. 실제 심근 수축 모양·양이 아니다. 영역 경계는 기하 분할(GEOMETRY_DERIVED)."
+  },
+  {
+   "animation_id": "hv2.rv_free.relax",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_rv_free",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 450,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  },
+  {
+   "animation_id": "hv2.septum.contract",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_septum",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 300,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "심실중격 영역: 내강 중심 쪽으로 당기는 교육용 근사. 실제 심근 수축 모양·양이 아니다. 영역 경계는 기하 분할(GEOMETRY_DERIVED)."
+  },
+  {
+   "animation_id": "hv2.septum.relax",
+   "target_id": "bp3d-cv-heart-v2-regions/heart_wall_septum",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 450,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "EDUCATIONAL_APPROXIMATION"
+  }
+ ],
+ "structures": [
+  {
+   "structure_id": "valve.tricuspid",
+   "name_ko": "삼첨판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "hv2.tricuspid.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "hv2.tricuspid.close"
+    }
+   },
+   "indicators": [],
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "BodyParts3D 첨판(첨판별 독립 Mesh)에 경첩 회전 Shape Key를 붙인 교육용 근사. 판막 상태가 OPEN이 아니면 through 이동이 막힌다."
+  },
+  {
+   "structure_id": "valve.mitral",
+   "name_ko": "승모판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "hv2.mitral.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "hv2.mitral.close"
+    }
+   },
+   "indicators": [],
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "BodyParts3D 첨판(첨판별 독립 Mesh)에 경첩 회전 Shape Key를 붙인 교육용 근사. 판막 상태가 OPEN이 아니면 through 이동이 막힌다."
+  },
+  {
+   "structure_id": "valve.pulmonary",
+   "name_ko": "폐동맥판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "hv2.pulmonary.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "hv2.pulmonary.close"
+    }
+   },
+   "indicators": [],
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "BodyParts3D 첨판(첨판별 독립 Mesh)에 경첩 회전 Shape Key를 붙인 교육용 근사. 판막 상태가 OPEN이 아니면 through 이동이 막힌다."
+  },
+  {
+   "structure_id": "valve.aortic",
+   "name_ko": "대동맥판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "hv2.aortic.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "hv2.aortic.close"
+    }
+   },
+   "indicators": [],
+   "verification_status": "EDUCATIONAL_APPROXIMATION",
+   "notes": "BodyParts3D 첨판(첨판별 독립 Mesh)에 경첩 회전 Shape Key를 붙인 교육용 근사. 판막 상태가 OPEN이 아니면 through 이동이 막힌다."
+  }
+ ],
+ "timelines": [
+  {
+   "timeline_id": "hv2.filling",
+   "blocking": true,
+   "name_ko": "심실 충만 (방실판막 열림)",
+   "steps": [
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "state",
+       "set": {
+        "valve.pulmonary": "CLOSED",
+        "valve.aortic": "CLOSED"
+       },
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "hv2.lv_free.relax",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "hv2.rv_free.relax",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "hv2.septum.relax",
+       "wait": true
+      }
+     ]
+    },
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "OPEN",
+      "valve.mitral": "OPEN"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "hv2_rbc_r",
+      "checkpoint_id": "cp.hv2.ra_rv.start"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "hv2_rbc_l",
+      "checkpoint_id": "cp.hv2.la_lv.start"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "hv2_rbc_r",
+        "checkpoint_id": "cp.hv2.ra_rv.end",
+        "duration": 1400
+       },
+       "wait": true,
+       "through": [
+        "valve.tricuspid"
+       ]
+      },
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "hv2_rbc_l",
+        "checkpoint_id": "cp.hv2.la_lv.end",
+        "duration": 1400
+       },
+       "wait": true,
+       "through": [
+        "valve.mitral"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "hv2.ejection",
+   "blocking": true,
+   "name_ko": "심실 박출 (방실판막 닫힘, 반월판 열림)",
+   "steps": [
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "CLOSED",
+      "valve.mitral": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "hv2.lv_free.contract",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "hv2.rv_free.contract",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "hv2.septum.contract",
+       "wait": true
+      },
+      {
+       "type": "state",
+       "set": {
+        "valve.pulmonary": "OPEN",
+        "valve.aortic": "OPEN"
+       },
+       "wait": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "hv2.blocked_test",
+   "blocking": true,
+   "name_ko": "닫힌 판막 통과 시도 (실패해야 정상)",
+   "steps": [
+    {
+     "type": "state",
+     "set": {
+      "valve.mitral": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "hv2_rbc_l",
+      "checkpoint_id": "cp.hv2.la_lv.start"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_move_to_checkpoint",
+      "target": "hv2_rbc_l",
+      "checkpoint_id": "cp.hv2.la_lv.end",
+      "duration": 1400
+     },
+     "wait": true,
+     "through": [
+      "valve.mitral"
+     ]
+    }
+   ]
+  }
+ ],
+ "motion": {
+  "scene_id": "heart_valves",
+  "marker_size": 0.002,
+  "paths": [
+   {
+    "path_id": "hv2.ra_rv",
+    "name_ko": "우심방 → 삼첨판 → 우심실 (근사)",
+    "curve_type": "catmull_rom",
+    "verification_status": "APPROXIMATE",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       -0.01408,
+       1.23136,
+       0.12083
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.00087,
+       1.21391,
+       0.1348
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.02021,
+       1.22624,
+       0.14494
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.hv2.ra_rv.start",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "시작"
+     },
+     {
+      "checkpoint_id": "cp.hv2.ra_rv.end",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "내강 중심 → 판막 중심(첨판 정점 평균) → 다음 공간을 이은 근사 경로. 내강 중심선 추적·기하 검사를 하지 않았다."
+   },
+   {
+    "path_id": "hv2.la_lv",
+    "name_ko": "좌심방 → 승모판 → 좌심실 (근사)",
+    "curve_type": "catmull_rom",
+    "verification_status": "APPROXIMATE",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       0.01881,
+       1.24362,
+       0.09301
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.03291,
+       1.21645,
+       0.10925
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.03537,
+       1.22233,
+       0.11952
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.hv2.la_lv.start",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "시작"
+     },
+     {
+      "checkpoint_id": "cp.hv2.la_lv.end",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "내강 중심 → 판막 중심(첨판 정점 평균) → 다음 공간을 이은 근사 경로. 내강 중심선 추적·기하 검사를 하지 않았다."
+   },
+   {
+    "path_id": "hv2.rv_pa",
+    "name_ko": "우심실 → 폐동맥판 → 폐동맥줄기 (근사)",
+    "curve_type": "catmull_rom",
+    "verification_status": "APPROXIMATE",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       0.02021,
+       1.22624,
+       0.14494
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.02661,
+       1.25455,
+       0.14362
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.0322,
+       1.27165,
+       0.14408
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.hv2.rv_pa.start",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "시작"
+     },
+     {
+      "checkpoint_id": "cp.hv2.rv_pa.end",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "내강 중심 → 판막 중심(첨판 정점 평균) → 다음 공간을 이은 근사 경로. 내강 중심선 추적·기하 검사를 하지 않았다."
+   },
+   {
+    "path_id": "hv2.lv_ao",
+    "name_ko": "좌심실 → 대동맥판 → 오름대동맥 (근사)",
+    "curve_type": "catmull_rom",
+    "verification_status": "APPROXIMATE",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       0.03537,
+       1.22233,
+       0.11952
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.02074,
+       1.24513,
+       0.12015
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.01261,
+       1.26116,
+       0.12102
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.hv2.lv_ao.start",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "시작"
+     },
+     {
+      "checkpoint_id": "cp.hv2.lv_ao.end",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "도착"
+     }
+    ],
+    "notes": "내강 중심 → 판막 중심(첨판 정점 평균) → 다음 공간을 이은 근사 경로. 내강 중심선 추적·기하 검사를 하지 않았다."
+   }
+  ],
+  "actors": [
+   {
+    "actor_id": "hv2_rbc_r",
+    "actor_type": "red_blood_cell",
+    "model_id": "rbc",
+    "name": "적혈구 (표시용 확대)",
+    "display_size": 0.006,
+    "path_id": "hv2.ra_rv",
+    "speed": 0.03,
+    "rotation_mode": "tangent",
+    "biological_state": {
+     "oxygenation": "deoxygenated"
+    }
+   },
+   {
+    "actor_id": "hv2_rbc_l",
+    "actor_type": "red_blood_cell",
+    "model_id": "rbc",
+    "name": "적혈구 (표시용 확대)",
+    "display_size": 0.006,
+    "path_id": "hv2.la_lv",
+    "speed": 0.03,
+    "rotation_mode": "tangent",
+    "biological_state": {
+     "oxygenation": "oxygenated"
+    }
+   }
+  ]
+ },
+ "generator": "tools/content/make_valve_rig_anim.py"
+}

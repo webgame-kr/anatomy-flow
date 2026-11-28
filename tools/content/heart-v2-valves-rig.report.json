@@ -1,0 +1,284 @@
+{
+ "source": "BodyParts3D 4.0 PART-OF leaflet/cusp OBJs, cavities, papillary muscles",
+ "fps": 24,
+ "valves": {
+  "tricuspid": {
+   "center_mm": [
+    0.87,
+    -134.8,
+    1213.91
+   ],
+   "normal": [
+    0.812,
+    -0.571,
+    -0.1213
+   ],
+   "pca_eigen_mm2": [
+    46.93,
+    125.16,
+    164.61
+   ],
+   "normal_vs_flow_deg": 0.0,
+   "max_open_deg": 30,
+   "leaflets": {
+    "heart_leaflet_tv_anterior": {
+     "verts": 4282,
+     "r_min_mm": 2.11,
+     "r_max_mm": 21.21,
+     "free_edge_move_downstream_mm": 4.95,
+     "free_edge_move_outward_mm": 6.05,
+     "max_disp_mm": 17.59,
+     "anchored_near_papillary_verts": 1034
+    },
+    "heart_leaflet_tv_posterior": {
+     "verts": 2729,
+     "r_min_mm": 0.97,
+     "r_max_mm": 23.44,
+     "free_edge_move_downstream_mm": 2.32,
+     "free_edge_move_outward_mm": 5.52,
+     "max_disp_mm": 9.88,
+     "anchored_near_papillary_verts": 592
+    },
+    "heart_leaflet_tv_septal": {
+     "verts": 2591,
+     "r_min_mm": 6.25,
+     "r_max_mm": 25.13,
+     "free_edge_move_downstream_mm": 3.01,
+     "free_edge_move_outward_mm": 5.4,
+     "max_disp_mm": 8.5,
+     "anchored_near_papillary_verts": 1189
+    }
+   }
+  },
+  "mitral": {
+   "center_mm": [
+    32.91,
+    -109.25,
+    1216.45
+   ],
+   "normal": [
+    0.4379,
+    -0.7008,
+    -0.5631
+   ],
+   "pca_eigen_mm2": [
+    55.28,
+    90.32,
+    161.86
+   ],
+   "normal_vs_flow_deg": 0.0,
+   "max_open_deg": 30,
+   "leaflets": {
+    "heart_leaflet_mv_anterior": {
+     "verts": 4052,
+     "r_min_mm": 0.23,
+     "r_max_mm": 21.56,
+     "free_edge_move_downstream_mm": 3.88,
+     "free_edge_move_outward_mm": 5.4,
+     "max_disp_mm": 12.67,
+     "anchored_near_papillary_verts": 1226
+    },
+    "heart_leaflet_mv_posterior": {
+     "verts": 2560,
+     "r_min_mm": 5.59,
+     "r_max_mm": 22.13,
+     "free_edge_move_downstream_mm": 4.12,
+     "free_edge_move_outward_mm": 5.02,
+     "max_disp_mm": 14.39,
+     "anchored_near_papillary_verts": 1088
+    }
+   }
+  },
+  "pulmonary": {
+   "center_mm": [
+    26.61,
+    -143.62,
+    1254.55
+   ],
+   "normal": [
+    0.3106,
+    -0.0256,
+    0.9502
+   ],
+   "pca_eigen_mm2": [
+    23.37,
+    69.56,
+    86.82
+   ],
+   "normal_vs_flow_deg": 6.7,
+   "max_open_deg": 55,
+   "leaflets": {
+    "heart_cusp_pv_left_anterior": {
+     "verts": 708,
+     "r_min_mm": 0.07,
+     "r_max_mm": 16.74,
+     "free_edge_move_downstream_mm": 10.62,
+     "free_edge_move_outward_mm": 7.29,
+     "max_disp_mm": 14.13,
+     "anchored_near_papillary_verts": 0
+    },
+    "heart_cusp_pv_right_anterior": {
+     "verts": 769,
+     "r_min_mm": 0.58,
+     "r_max_mm": 18.6,
+     "free_edge_move_downstream_mm": 12.82,
+     "free_edge_move_outward_mm": 6.01,
+     "max_disp_mm": 15.78,
+     "anchored_near_papillary_verts": 0
+    },
+    "heart_cusp_pv_posterior": {
+     "verts": 573,
+     "r_min_mm": 1.56,
+     "r_max_mm": 17.46,
+     "free_edge_move_downstream_mm": 9.81,
+     "free_edge_move_outward_mm": 8.73,
+     "max_disp_mm": 14.74,
+     "anchored_near_papillary_verts": 0
+    }
+   }
+  },
+  "aortic": {
+   "center_mm": [
+    20.74,
+    -120.15,
+    1245.13
+   ],
+   "normal": [
+    -0.4518,
+    -0.0482,
+    0.8908
+   ],
+   "pca_eigen_mm2": [
+    22.08,
+    41.28,
+    65.31
+   ],
+   "normal_vs_flow_deg": 5.9,
+   "max_open_deg": 55,
+   "leaflets": {
+    "heart_cusp_av_anterior": {
+     "verts": 508,
+     "r_min_mm": 0.15,
+     "r_max_mm": 14.74,
+     "free_edge_move_downstream_mm": 9.72,
+     "free_edge_move_outward_mm": 2.12,
+     "max_disp_mm": 12.56,
+     "anchored_near_papillary_verts": 0
+    },
+    "heart_cusp_av_left_posterior": {
+     "verts": 526,
+     "r_min_mm": 0.89,
+     "r_max_mm": 14.27,
+     "free_edge_move_downstream_mm": 8.51,
+     "free_edge_move_outward_mm": 2.78,
+     "max_disp_mm": 10.04,
+     "anchored_near_papillary_verts": 0
+    },
+    "heart_cusp_av_right_posterior": {
+     "verts": 215,
+     "r_min_mm": 2.65,
+     "r_max_mm": 16.21,
+     "free_edge_move_downstream_mm": 7.43,
+     "free_edge_move_outward_mm": 6.52,
+     "max_disp_mm": 10.8,
+     "anchored_near_papillary_verts": 0
+    }
+   }
+  }
+ },
+ "cavity_centroids_mm": {
+  "FJ2422": [
+   35.37,
+   -119.52,
+   1222.33
+  ],
+  "FJ2423": [
+   20.21,
+   -144.94,
+   1226.24
+  ],
+  "FJ2424": [
+   -14.08,
+   -120.83,
+   1231.36
+  ],
+  "FJ2425": [
+   18.81,
+   -93.01,
+   1243.62
+  ]
+ },
+ "papillary": {
+  "heart_papillary_lv_FJ2418": {
+   "side": "lv",
+   "length_mm": 40.57,
+   "valve_group": "valve_mitral"
+  },
+  "heart_papillary_rv_FJ2419": {
+   "side": "rv",
+   "length_mm": 37.76,
+   "valve_group": "valve_tricuspid"
+  },
+  "heart_papillary_lv_FJ2429": {
+   "side": "lv",
+   "length_mm": 50.18,
+   "valve_group": "valve_mitral"
+  },
+  "heart_papillary_rv_FJ2430": {
+   "side": "rv",
+   "length_mm": 30.07,
+   "valve_group": "valve_tricuspid"
+  },
+  "heart_papillary_rv_FJ2437": {
+   "side": "rv",
+   "length_mm": 26.71,
+   "valve_group": "valve_tricuspid"
+  }
+ },
+ "chordae_handling": "BodyParts3D AV leaflet elements already include chordae tendineae running to the papillary muscles. Leaflet body rotates (depth-weighted hinge); chordae displacement fades to the papillary displacement within 10.0 mm of the papillary surface so they stay attached. No separate chordae model was made.",
+ "clips": {
+  "tricuspid_open": {
+   "frames": 8,
+   "seconds": 0.333,
+   "meshes": 6
+  },
+  "tricuspid_close": {
+   "frames": 7,
+   "seconds": 0.292,
+   "meshes": 6
+  },
+  "mitral_open": {
+   "frames": 8,
+   "seconds": 0.333,
+   "meshes": 4
+  },
+  "mitral_close": {
+   "frames": 7,
+   "seconds": 0.292,
+   "meshes": 4
+  },
+  "pulmonary_open": {
+   "frames": 8,
+   "seconds": 0.333,
+   "meshes": 3
+  },
+  "pulmonary_close": {
+   "frames": 7,
+   "seconds": 0.292,
+   "meshes": 3
+  },
+  "aortic_open": {
+   "frames": 8,
+   "seconds": 0.333,
+   "meshes": 3
+  },
+  "aortic_close": {
+   "frames": 7,
+   "seconds": 0.292,
+   "meshes": 3
+  }
+ },
+ "file": "tools/out/heart-v2-valves-rig.glb",
+ "bytes": 1318848,
+ "verification_status": "EDUCATIONAL_APPROXIMATION; hinge-rotation shape keys; not tissue deformation; NOT medically verified"
+}

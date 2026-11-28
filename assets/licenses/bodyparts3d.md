@@ -29,3 +29,11 @@
 
 ## 의학적 검증
 이 모델들은 원본 ID와 형태를 추적해 확인한 것입니다. 전문가가 의학적으로 검증한 것은 **아닙니다**.
+
+## STEP 04-B+ 추가 (2026-11-29)
+- **IS-A 트리도 쓴다:** `isa_BP3D_4.0_obj_99.zip`(같은 BodyParts3D 4.0, 같은 라이선스). PART-OF 개념은 하위 가지 전체를 담아 element가 수십 개가 되는 경우가 있어, 단일 구조는 IS-A element를 쓴다. 자산별로 실제 쓴 아카이브를 `asset_registry.csv`의 `source_archive`에 적는다.
+- 새 변환 사양: `specs/cardiovascular-v2.json`(심장 v2: 통합 심실 벽 FJ2428, 첨판별 파트), `specs/systemic-vessels.json`(목·팔·다리 혈관 22개), `specs/regulation-prep.json`(숨뇌·척수 일부, 콩팥·부신, 가로막, 이자, 오른속목동맥). 변경 내용은 위 "수정 내역"과 같다(형태 변경 없음).
+- **형태를 바꾼 파생 모델 (변경 표시):**
+  - `cardiovascular/heart-v2-ventricle-regions.glb` — FJ2428 심실 벽의 면을 좌·우 심실 내강까지 거리로 나눠 좌심실 자유벽·우심실 자유벽·중격 영역 3개 객체로 분리하고, 내강 중심 쪽으로 당기는 Shape Key `contract`를 더했다(`tools/blender/split_ventricle_wall.py`). 기하 분할이며 해부학적 경계가 아니다.
+  - `cardiovascular/heart-v2-valves-rig.glb` — 첨판 11개와 유두근 5개에 개폐 Shape Key `open`(판륜 경첩 회전 근사)과 클립을 더했다(`tools/blender/rig_valves.py`). 교육용 근사이며 실제 첨판 변형이 아니다.
+- 화면 출처 표기: Sandbox 장면 HC·HV·RP의 `credits`.

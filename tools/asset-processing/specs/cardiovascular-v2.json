@@ -1,0 +1,221 @@
+{
+ "system": "cardiovascular-v2",
+ "tree": "partof",
+ "output_dir": "assets/anatomy/cardiovascular",
+ "description": "STEP 04-B+ 심장 v2: 통합 심실 벽(IS-A FJ2428) 추가, 판막을 첨판(엽)별 파트로 분리. 기존 heart.glb는 그대로 둔다.",
+ "transform": {
+  "source": "BodyParts3D OBJ: mm, +X = 환자 왼쪽, -Y = 앞(anterior), +Z = 위(superior) — 측정으로 확인",
+  "blender_import": "obj_import forward_axis=Y, up_axis=Z (Blender 좌표 = OBJ 좌표, 축 변환 없음)",
+  "scale": 0.001,
+  "export": "glTF export_yup=True 한 번만: glTF (x, y, z) = (X, Z, -Y) × 0.001",
+  "recentering": "없음 — 모든 파일이 같은 원점(BodyParts3D 원점)을 쓴다"
+ },
+ "materials": {
+  "heart_wall": {
+   "color": "#8b3a3a",
+   "roughness": 0.6,
+   "note": "심장 벽: 적갈색"
+  },
+  "heart_cavity": {
+   "color": "#c97b7b",
+   "roughness": 0.7,
+   "note": "심장 내강(혈액이 차는 공간의 형태): 옅은 적색"
+  },
+  "valve": {
+   "color": "#e8d5b0",
+   "roughness": 0.5,
+   "note": "판막: 옅은 베이지"
+  },
+  "papillary": {
+   "color": "#a34d4d",
+   "roughness": 0.6,
+   "note": "유두근"
+  },
+  "fibrous": {
+   "color": "#d9c7a8",
+   "roughness": 0.6,
+   "note": "섬유 골격"
+  },
+  "systemic_artery": {
+   "color": "#d23c3c",
+   "roughness": 0.45,
+   "note": "체순환 동맥(대동맥·관상동맥): 교육용 빨강"
+  },
+  "systemic_vein": {
+   "color": "#3c62c8",
+   "roughness": 0.45,
+   "note": "체순환 정맥(대정맥·심장 정맥): 교육용 파랑"
+  },
+  "pulmonary_artery": {
+   "color": "#6f4fc0",
+   "roughness": 0.45,
+   "note": "폐동맥: 보라 — 동맥이지만 산소가 적은 혈액이 흐르므로 체동맥과 구분"
+  },
+  "pulmonary_vein": {
+   "color": "#e06c8a",
+   "roughness": 0.45,
+   "note": "폐정맥: 분홍빛 빨강 — 정맥이지만 산소가 많은 혈액이 흐르므로 체정맥과 구분"
+  },
+  "airway": {
+   "color": "#f2b5bf",
+   "roughness": 0.7,
+   "note": "기관지 가지(폐): 부드러운 분홍"
+  },
+  "other": {
+   "color": "#b9a8a0",
+   "roughness": 0.6,
+   "note": "분류 밖 element"
+  }
+ },
+ "assets": [
+  {
+   "asset_id": "bp3d-cv-heart-v2",
+   "file": "heart-v2.glb",
+   "display_name": "Heart v2 (심장, 심실 벽·첨판 분리)",
+   "parts": [
+    {
+     "id": "heart_wall_right_atrium",
+     "name": "Wall of right atrium",
+     "concept": "FMA9457",
+     "material": "heart_wall"
+    },
+    {
+     "id": "heart_wall_left_atrium",
+     "name": "Wall of left atrium",
+     "concept": "FMA9531",
+     "material": "heart_wall"
+    },
+    {
+     "id": "heart_wall_ventricles",
+     "name": "Wall of ventricle (integrated)",
+     "concept": "FMA13884",
+     "tree": "isa",
+     "material": "heart_wall",
+     "note": "IS-A 트리에만 있는 통합 심실 벽 FJ2428. 좌·우 심실 벽과 심실중격이 한 메시로 붙어 있다. PART-OF의 wall of left/right ventricle(FMA9556/FMA9533)은 유두근만 담고 있어 쓰지 않는다."
+    },
+    {
+     "id": "heart_cavity_right_atrium",
+     "name": "Cavity of right atrium",
+     "concept": "FMA11359",
+     "material": "heart_cavity"
+    },
+    {
+     "id": "heart_cavity_right_ventricle",
+     "name": "Cavity of right ventricle",
+     "concept": "FMA9291",
+     "material": "heart_cavity"
+    },
+    {
+     "id": "heart_cavity_left_atrium",
+     "name": "Cavity of left atrium",
+     "concept": "FMA9465",
+     "material": "heart_cavity"
+    },
+    {
+     "id": "heart_cavity_left_ventricle",
+     "name": "Cavity of left ventricle",
+     "concept": "FMA9466",
+     "material": "heart_cavity"
+    },
+    {
+     "id": "heart_leaflet_tv_anterior",
+     "name": "Anterior leaflet of tricuspid valve",
+     "concept": "FMA7238",
+     "material": "valve"
+    },
+    {
+     "id": "heart_leaflet_tv_posterior",
+     "name": "Posterior leaflet of tricuspid valve",
+     "concept": "FMA7239",
+     "material": "valve"
+    },
+    {
+     "id": "heart_leaflet_tv_septal",
+     "name": "Septal leaflet of tricuspid valve",
+     "concept": "FMA7240",
+     "material": "valve"
+    },
+    {
+     "id": "heart_leaflet_mv_anterior",
+     "name": "Anterior leaflet of mitral valve",
+     "concept": "FMA7242",
+     "material": "valve"
+    },
+    {
+     "id": "heart_leaflet_mv_posterior",
+     "name": "Posterior leaflet of mitral valve",
+     "concept": "FMA7243",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_pv_left_anterior",
+     "name": "Left anterior cusp of pulmonary valve",
+     "concept": "FMA7247",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_pv_right_anterior",
+     "name": "Right anterior cusp of pulmonary valve",
+     "concept": "FMA7249",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_pv_posterior",
+     "name": "Posterior cusp of pulmonary valve",
+     "concept": "FMA7250",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_av_anterior",
+     "name": "Anterior cusp of aortic valve",
+     "concept": "FMA7253",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_av_left_posterior",
+     "name": "Left posterior cusp of aortic valve",
+     "concept": "FMA7254",
+     "material": "valve"
+    },
+    {
+     "id": "heart_cusp_av_right_posterior",
+     "name": "Right posterior cusp of aortic valve",
+     "concept": "FMA7252",
+     "material": "valve"
+    },
+    {
+     "id": "heart_papillary_muscles",
+     "name": "Papillary muscles",
+     "rest_of": "FMA7088",
+     "keywords": [
+      "papillary"
+     ],
+     "material": "papillary",
+     "note": "원본 'wall of right/left ventricle'(FMA9533/FMA9556)은 유두근(+승모판 후엽)만 담고 있어 벽 파트로 쓰지 않는다"
+    },
+    {
+     "id": "heart_coronary_veins",
+     "name": "Cardiac veins & coronary sinus",
+     "rest_of": "FMA7088",
+     "keywords": [
+      "vein",
+      "sinus"
+     ],
+     "material": "systemic_vein"
+    },
+    {
+     "id": "heart_coronary_arteries",
+     "name": "Coronary arteries",
+     "rest_of": "FMA7088",
+     "keywords": [
+      "artery",
+      "branch"
+     ],
+     "material": "systemic_artery"
+    }
+   ],
+   "note": "기존 heart.glb(v1)와 같은 원점·배율. 첨판별 파트는 판막 리깅(heart-v2-valves-rig)의 원본이다."
+  }
+ ],
+ "preview": null
+}

@@ -1,0 +1,34 @@
+{
+  "asset_id": "za-reg-nerves-thyroid",
+  "file_name": "assets/anatomy/regulation/za-nerves-thyroid.glb",
+  "anatomical_system": "nervous/endocrine (STEP 04-C prep)",
+  "anatomical_structure": "thyroid gland; left/right vagus nerve; left/right sympathetic trunk; left/right sympathetic trunk ganglia",
+  "source": "Z-Anatomy Startup.blend (Z-Anatomy.zip) — derived, separate file",
+  "license": "CC-BY-SA-4.0",
+  "attribution": "Z-Anatomy - The libre 3D atlas of anatomy - CC-BY-SA 4.0; includes BodyParts3D - The Database Center for Life Science - CC-BY-SA 2.1 Japan; vagus may be adapted from \"Cranial Nerves and Foramina - by University of Dundee, CAHID - CC-BY 4.0\"",
+  "processing_status": "GENERATED (tools/blender/za_extract_regulation.py, --disable-autoexec)",
+  "source_category": "Z-Anatomy",
+  "source_version": "Z-Anatomy.zip sha256 e029688545627bd0214b269e1063143abb580aad72b2c2445d6d8a9a0d9da736 (downloaded 2026-11-28)",
+  "verification_status": "LICENSE_CHECKED per object (not NC items); ALIGNED by measured translation (right vagus to right CCA median 12.6 mm); NOT medically verified",
+  "notes": "BodyParts3D 자산과 합치지 않은 별도 파일(CC BY-SA). 척수(White matter of spinal cord)는 Readme의 출처 불명 \"White matter\"와 관계를 확인하지 못해 넣지 않았다.",
+  "modifications": "modifiers applied (mirror/solidify/subsurf); curves to tube meshes (original bevel 0.5 mm); translated by -T=(-0.0013,-0.0975,-0.0643) m to BodyParts3D frame; Z-up->Y-up; materials recolored",
+  "license_file": "assets/licenses/z-anatomy.md",
+  "technical_status": "BUILT; loaded in Sandbox (RP)",
+  "glb": {
+    "bytes": 3727116,
+    "sha256": "f895c59ee5d195d5f127f49f596c858c634113f93b059300b381d279f974ddd0",
+    "meshes": 7,
+    "mesh_nodes": [
+      "left_sympathetic_ganglia",
+      "left_sympathetic_trunk",
+      "left_vagus_nerve",
+      "right_sympathetic_ganglia",
+      "right_sympathetic_trunk",
+      "right_vagus_nerve",
+      "thyroid_gland"
+    ],
+    "triangles": 164440,
+    "clips": [],
+    "morph_targets": []
+  }
+}

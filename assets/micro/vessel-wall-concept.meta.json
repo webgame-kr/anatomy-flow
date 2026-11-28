@@ -1,0 +1,41 @@
+{
+  "asset_id": "nf-micro-vessel-wall",
+  "file_name": "assets/micro/vessel-wall-concept.glb",
+  "anatomical_system": "cardiovascular (micro)",
+  "anatomical_structure": "artery wall cross-section 270°: intima, internal elastic lamina, media + smooth muscle cells, external elastic lamina, adventitia, vasa vasorum, lumen",
+  "source": "Project-made (tools/blender/make_micro_concepts.py)",
+  "license": "Project-made (same terms as this repository)",
+  "attribution": "NURSE FLOW 3D project",
+  "processing_status": "GENERATED",
+  "source_category": "Self-made",
+  "source_version": "project",
+  "verification_status": "CONCEPTUAL; simplified educational shapes; NOT an anatomical model; NOT medically verified",
+  "notes": "Shape Key constrict(내강 0.30→0.20, 중막 두꺼워짐)/dilate(내강 0.30→0.40). 층 두께·세포 수는 교육용 값.",
+  "modifications": "n/a (made from primitives)",
+  "license_file": "assets/licenses/nf-micro-concept.md",
+  "technical_status": "BUILT; tone states tested in Sandbox (MC)",
+  "glb": {
+    "bytes": 1905060,
+    "sha256": "5238917362ba92a073bff2bb26d7a15343cc9895652942329d0c15a5ab820895",
+    "meshes": 8,
+    "mesh_nodes": [
+      "external_elastic_lamina",
+      "internal_elastic_lamina",
+      "lumen",
+      "smooth_muscle_cells",
+      "tunica_adventitia",
+      "tunica_intima",
+      "tunica_media",
+      "vasa_vasorum.001"
+    ],
+    "triangles": 46648,
+    "clips": [
+      "vasoconstriction",
+      "vasodilation"
+    ],
+    "morph_targets": [
+      "constrict",
+      "dilate"
+    ]
+  }
+}

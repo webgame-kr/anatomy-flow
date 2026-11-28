@@ -1,0 +1,74 @@
+{
+ "verification_status": "CONCEPTUAL; project-made educational shapes; NOT anatomical models; NOT medically verified",
+ "models": {
+  "alveolus-concept": {
+   "file": "tools/out/micro/alveolus-concept.glb",
+   "bytes": 689904,
+   "meshes": 54,
+   "triangles": 33536,
+   "clips": [
+    "rbc_flow (96 f, loop)",
+    "gas_exchange (48 f, loop)"
+   ],
+   "capillary_segments": 147,
+   "scale_note": "폐포 반지름 0.26 m 표시. 실제 폐포 지름 약 200~300 µm(일반 참고값, 강의자료 미확인) → 1 m ≈ 0.5 mm. 적혈구·기체 입자는 보이게 키웠다."
+  },
+  "tissue-capillary-concept": {
+   "file": "tools/out/micro/tissue-capillary-concept.glb",
+   "bytes": 514616,
+   "meshes": 85,
+   "triangles": 22740,
+   "clips": [
+    "rbc_flow (120 f, loop)",
+    "tissue_exchange (60 f, loop)"
+   ],
+   "tissue_cells": 19,
+   "scale_note": "모세혈관 반지름 0.022 m 표시. 실제 모세혈관 지름 약 5~10 µm(일반 참고값, 강의자료 미확인) → 1 m ≈ 0.2 mm. 세포·입자 크기는 교육용."
+  },
+  "vessel-wall-concept": {
+   "file": "tools/out/micro/vessel-wall-concept.glb",
+   "bytes": 1905060,
+   "meshes": 8,
+   "triangles": 46648,
+   "shape_keys": [
+    "constrict",
+    "dilate"
+   ],
+   "clips": [
+    "vasoconstriction (18 f)",
+    "vasodilation (18 f)"
+   ],
+   "smooth_muscle_cells": 385,
+   "radii_baseline_m": {
+    "lumen": 0.3,
+    "intima": [
+     0.3,
+     0.32
+    ],
+    "media": [
+     0.33,
+     0.5
+    ],
+    "adventitia": [
+     0.51,
+     0.65
+    ]
+   },
+   "radii_constrict_m": {
+    "lumen": 0.2,
+    "media": [
+     0.23,
+     0.47
+    ]
+   },
+   "radii_dilate_m": {
+    "lumen": 0.4,
+    "media": [
+     0.43,
+     0.54
+    ]
+   },
+   "scale_note": "중간 크기 동맥 단면을 단순화. 층 두께 비율·민무늬근 세포 수는 교육용 값이며 실측이 아니다."
+  }
+ }
+}

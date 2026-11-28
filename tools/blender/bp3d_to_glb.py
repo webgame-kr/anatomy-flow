@@ -116,7 +116,8 @@ def gltf_bbox(obs):
 def build_part(part, root, extracted_dir, materials, scale):
     objs = []
     for el in part['elements']:
-        path = os.path.join(extracted_dir, el['file_id'] + '.obj')
+        # STEP 04-B+: 다른 트리에서 온 element는 계획에 경로가 있다
+        path = el.get('path') or os.path.join(extracted_dir, el['file_id'] + '.obj')
         if not os.path.exists(path):
             raise SystemExit(f'추출된 OBJ 없음: {path}')
         for ob in import_obj(path):

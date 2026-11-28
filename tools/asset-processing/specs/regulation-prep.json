@@ -1,0 +1,68 @@
+{
+  "system": "regulation-prep",
+  "tree": "isa",
+  "output_dir": "assets/anatomy/regulation",
+  "description": "STEP 04-C 준비(혈압 조절·RAAS·자율신경 기전에 쓸 구조): 숨뇌·척수, 콩팥·부신, 가로막, 이자, 오른속목동맥(목동맥팽대 위치 표시용). 게임 로직(RAAS·압력반사)은 만들지 않는다. 온목동맥·대동맥활은 systemic-vessels.glb·aorta.glb에 있다.",
+  "transform": {
+    "source": "BodyParts3D OBJ: mm, +X = 환자 왼쪽, -Y = 앞(anterior), +Z = 위(superior)",
+    "blender_import": "obj_import forward_axis=Y, up_axis=Z (축 변환 없음)",
+    "scale": 0.001,
+    "export": "glTF export_yup=True 한 번만: glTF (x, y, z) = (X, Z, -Y) × 0.001",
+    "recentering": "없음 — 심혈관계 자산과 같은 원점"
+  },
+  "materials": {
+    "neural": {"color": "#f1e3b5", "roughness": 0.6, "note": "중추신경(숨뇌·척수): 옅은 노랑"},
+    "kidney": {"color": "#9b4a3c", "roughness": 0.55, "note": "콩팥: 적갈색"},
+    "adrenal": {"color": "#e0a640", "roughness": 0.55, "note": "부신: 주황빛 노랑"},
+    "muscle": {"color": "#b5524f", "roughness": 0.6, "note": "가로막(근육)"},
+    "gland": {"color": "#e6b48a", "roughness": 0.6, "note": "이자(샘 조직)"},
+    "systemic_artery": {"color": "#d23c3c", "roughness": 0.45, "note": "체순환 동맥: 교육용 빨강"}
+  },
+  "preview": null,
+  "assets": [
+    {
+      "asset_id": "bp3d-reg-brainstem-spinal",
+      "file": "medulla-spinal-cord.glb",
+      "display_name": "Medulla oblongata & spinal cord (숨뇌·척수)",
+      "parts": [
+        {"id": "medulla_oblongata", "name": "Medulla oblongata", "concept": "FMA62004", "material": "neural"},
+        {"id": "spinal_cord", "name": "Spinal cord", "concept": "FMA7647", "tree": "partof", "material": "neural", "note": "IS-A에는 중심관만 있어 PART-OF 개념을 쓴다"}
+      ]
+    },
+    {
+      "asset_id": "bp3d-reg-kidneys-adrenals",
+      "file": "kidneys-adrenals.glb",
+      "display_name": "Kidneys & adrenal glands (콩팥·부신)",
+      "parts": [
+        {"id": "right_kidney", "name": "Right kidney", "concept": "FMA7204", "material": "kidney"},
+        {"id": "left_kidney", "name": "Left kidney", "concept": "FMA7205", "material": "kidney"},
+        {"id": "right_adrenal_gland", "name": "Right adrenal gland", "concept": "FMA15629", "material": "adrenal"},
+        {"id": "left_adrenal_gland", "name": "Left adrenal gland", "concept": "FMA15630", "material": "adrenal"}
+      ]
+    },
+    {
+      "asset_id": "bp3d-reg-diaphragm",
+      "file": "diaphragm.glb",
+      "display_name": "Diaphragm (가로막)",
+      "parts": [
+        {"id": "diaphragm", "name": "Diaphragm", "concept": "FMA13295", "material": "muscle"}
+      ]
+    },
+    {
+      "asset_id": "bp3d-reg-pancreas",
+      "file": "pancreas.glb",
+      "display_name": "Pancreas (이자)",
+      "parts": [
+        {"id": "pancreas", "name": "Pancreas", "concept": "FMA7198", "material": "gland"}
+      ]
+    },
+    {
+      "asset_id": "bp3d-reg-carotid-branch",
+      "file": "internal-carotid.glb",
+      "display_name": "Right internal carotid artery (오른속목동맥 — 목동맥팽대 위치 표시용)",
+      "parts": [
+        {"id": "right_internal_carotid_artery", "name": "Right internal carotid artery", "concept": "FMA3949", "material": "systemic_artery", "note": "목동맥팽대(carotid sinus)는 BodyParts3D에 별도 구조가 없다. 온목동맥 끝·속목동맥 시작 부위에 Anchor로만 표시한다."}
+      ]
+    }
+  ]
+}

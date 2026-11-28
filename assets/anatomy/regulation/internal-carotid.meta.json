@@ -1,0 +1,83 @@
+{
+  "asset_id": "bp3d-reg-carotid-branch",
+  "display_name": "Right internal carotid artery (오른속목동맥 — 목동맥팽대 위치 표시용)",
+  "file": "assets/anatomy/regulation/internal-carotid.glb",
+  "original_name": "right internal carotid artery",
+  "concept_id": [
+    "FMA3949"
+  ],
+  "representation_id": [
+    "BP7618"
+  ],
+  "element_file_ids": {
+    "right_internal_carotid_artery": [
+      "FJ1682"
+    ]
+  },
+  "source_archive": "isa_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 1,
+  "triangle_count": 1272,
+  "bounding_box": {
+    "min": [
+      -0.03747,
+      1.43454,
+      0.09404
+    ],
+    "max": [
+      -0.00984,
+      1.53772,
+      0.11456
+    ],
+    "size": [
+      0.02762,
+      0.10318,
+      0.02052
+    ]
+  },
+  "file_size": 24632,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "right_internal_carotid_artery",
+      "name": "Right internal carotid artery",
+      "concept_id": "FMA3949",
+      "concept_name": "right internal carotid artery",
+      "material": "systemic_artery",
+      "element_count": 1,
+      "triangles": 1272,
+      "mesh_check": {
+        "non_manifold_edges": 36,
+        "boundary_edges": 36,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.03747,
+          1.43454,
+          0.09404
+        ],
+        "max": [
+          -0.00984,
+          1.53772,
+          0.11456
+        ],
+        "size": [
+          0.02762,
+          0.10318,
+          0.02052
+        ]
+      }
+    }
+  ]
+}

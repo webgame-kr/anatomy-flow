@@ -86,6 +86,8 @@ export function createAnatomyManager(ctx) {
         const result = await loader.loadUrl(url, assetId);
         if (!registry.has(assetId)) scenes.addModel(result, assetId, { display_name: assetId });
         anatomy.resolve();
+        // 꺼진 레이어의 자산을 다른 이유(예: 경로 점)로 불러와도 레이어 표시 상태를 따르게 한다 (STEP 04-B+)
+        apply({ silent: true });
         log(`지연 로딩: ${assetId} ${Math.round(performance.now() - t0)}ms`);
         emit('assets', { assetId });
         return true;

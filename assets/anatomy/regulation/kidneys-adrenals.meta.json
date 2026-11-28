@@ -1,0 +1,197 @@
+{
+  "asset_id": "bp3d-reg-kidneys-adrenals",
+  "display_name": "Kidneys & adrenal glands (콩팥·부신)",
+  "file": "assets/anatomy/regulation/kidneys-adrenals.glb",
+  "original_name": "left adrenal gland; left kidney; right adrenal gland; right kidney",
+  "concept_id": [
+    "FMA7204",
+    "FMA7205",
+    "FMA15629",
+    "FMA15630"
+  ],
+  "representation_id": [
+    "BP8907",
+    "BP9289",
+    "BP9132",
+    "BP9014"
+  ],
+  "element_file_ids": {
+    "right_kidney": [
+      "FJ3147"
+    ],
+    "left_kidney": [
+      "FJ3145"
+    ],
+    "right_adrenal_gland": [
+      "FJ3130"
+    ],
+    "left_adrenal_gland": [
+      "FJ3129"
+    ]
+  },
+  "source_archive": "isa_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 4,
+  "triangle_count": 11582,
+  "bounding_box": {
+    "min": [
+      -0.08758,
+      0.96681,
+      0.05959
+    ],
+    "max": [
+      0.09038,
+      1.10822,
+      0.11186
+    ],
+    "size": [
+      0.17796,
+      0.14141,
+      0.05226
+    ]
+  },
+  "file_size": 213028,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "right_kidney",
+      "name": "Right kidney",
+      "concept_id": "FMA7204",
+      "concept_name": "right kidney",
+      "material": "kidney",
+      "element_count": 1,
+      "triangles": 2310,
+      "mesh_check": {
+        "non_manifold_edges": 22,
+        "boundary_edges": 22,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.08758,
+          0.96681,
+          0.0647
+        ],
+        "max": [
+          -0.03043,
+          1.07124,
+          0.11186
+        ],
+        "size": [
+          0.05715,
+          0.10443,
+          0.04715
+        ]
+      }
+    },
+    {
+      "id": "left_kidney",
+      "name": "Left kidney",
+      "concept_id": "FMA7205",
+      "concept_name": "left kidney",
+      "material": "kidney",
+      "element_count": 1,
+      "triangles": 2982,
+      "mesh_check": {
+        "non_manifold_edges": 10,
+        "boundary_edges": 10,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.03284,
+          0.98449,
+          0.05959
+        ],
+        "max": [
+          0.09038,
+          1.09044,
+          0.10018
+        ],
+        "size": [
+          0.05754,
+          0.10595,
+          0.04059
+        ]
+      }
+    },
+    {
+      "id": "right_adrenal_gland",
+      "name": "Right adrenal gland",
+      "concept_id": "FMA15629",
+      "concept_name": "right adrenal gland",
+      "material": "adrenal",
+      "element_count": 1,
+      "triangles": 2294,
+      "mesh_check": {
+        "non_manifold_edges": 0,
+        "boundary_edges": 0,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.06253,
+          1.04552,
+          0.07511
+        ],
+        "max": [
+          -0.03063,
+          1.0878,
+          0.10234
+        ],
+        "size": [
+          0.0319,
+          0.04228,
+          0.02724
+        ]
+      }
+    },
+    {
+      "id": "left_adrenal_gland",
+      "name": "Left adrenal gland",
+      "concept_id": "FMA15630",
+      "concept_name": "left adrenal gland",
+      "material": "adrenal",
+      "element_count": 1,
+      "triangles": 3996,
+      "mesh_check": {
+        "non_manifold_edges": 0,
+        "boundary_edges": 0,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          0.02732,
+          1.06334,
+          0.06313
+        ],
+        "max": [
+          0.07549,
+          1.10822,
+          0.08329
+        ],
+        "size": [
+          0.04818,
+          0.04488,
+          0.02015
+        ]
+      }
+    }
+  ]
+}

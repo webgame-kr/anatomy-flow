@@ -1,0 +1,122 @@
+{
+  "asset_id": "bp3d-reg-brainstem-spinal",
+  "display_name": "Medulla oblongata & spinal cord (숨뇌·척수)",
+  "file": "assets/anatomy/regulation/medulla-spinal-cord.glb",
+  "original_name": "medulla oblongata; spinal cord",
+  "concept_id": [
+    "FMA62004",
+    "FMA7647"
+  ],
+  "representation_id": [
+    "BP5693",
+    "BP6706"
+  ],
+  "element_file_ids": {
+    "medulla_oblongata": [
+      "FJ1769",
+      "FJ1831"
+    ],
+    "spinal_cord": [
+      "FJ1737"
+    ]
+  },
+  "source_archive": "isa_BP3D_4.0_obj_99.zip + partof_BP3D_4.0_obj_99.zip",
+  "source_url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip + https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+  "license": "CC-BY-4.0",
+  "license_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+  "attribution": "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+  "coordinate_system": "glTF Y-up: +X = patient left, +Y = superior, +Z = anterior (BodyParts3D origin, no recentering)",
+  "unit": "m",
+  "transformation": "glTF (x, y, z) = (X_obj, Z_obj, -Y_obj) * 0.001; same for every file",
+  "mesh_count": 2,
+  "triangle_count": 12824,
+  "bounding_box": {
+    "min": [
+      -0.01402,
+      1.4586,
+      0.05124
+    ],
+    "max": [
+      0.01271,
+      1.50578,
+      0.08444
+    ],
+    "size": [
+      0.02673,
+      0.04718,
+      0.0332
+    ]
+  },
+  "file_size": 244848,
+  "verification_status": "SOURCE_TRACED (ids, element files, bbox checked); NOT medically verified",
+  "modifications": "Selected ELEMENT OBJs joined per part; uniform scale mm->m; axis conversion Z-up->Y-up at glTF export; project materials assigned; no decimation, no recentering, no shape edits",
+  "note": "",
+  "parts": [
+    {
+      "id": "medulla_oblongata",
+      "name": "Medulla oblongata",
+      "concept_id": "FMA62004",
+      "concept_name": "medulla oblongata",
+      "material": "neural",
+      "element_count": 2,
+      "triangles": 12096,
+      "mesh_check": {
+        "non_manifold_edges": 968,
+        "boundary_edges": 968,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.01402,
+          1.4645,
+          0.05124
+        ],
+        "max": [
+          0.01271,
+          1.50578,
+          0.08444
+        ],
+        "size": [
+          0.02673,
+          0.04128,
+          0.0332
+        ]
+      }
+    },
+    {
+      "id": "spinal_cord",
+      "name": "Spinal cord",
+      "concept_id": "FMA7647",
+      "concept_name": "spinal cord",
+      "material": "neural",
+      "element_count": 1,
+      "triangles": 728,
+      "mesh_check": {
+        "non_manifold_edges": 134,
+        "boundary_edges": 134,
+        "inconsistent_winding_edges": 0,
+        "degenerate_faces": 0,
+        "loose_vertices": 0
+      },
+      "bbox_gltf_m": {
+        "min": [
+          -0.00176,
+          1.4586,
+          0.05187
+        ],
+        "max": [
+          0.00046,
+          1.49419,
+          0.065
+        ],
+        "size": [
+          0.00222,
+          0.03559,
+          0.01313
+        ]
+      }
+    }
+  ]
+}

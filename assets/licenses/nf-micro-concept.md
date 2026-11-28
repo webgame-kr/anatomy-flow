@@ -29,3 +29,14 @@
   - 기체 입자는 분자보다 훨씬 크게 그렸다. 보이게 하려는 표시이며 개수와 속도는 의미가 없다.
   - 색은 교육용 구분이다.
 - 화면 표시: 스케일 표시 상자에 "개념 모델" 배지, 단위 설명, 확대 설명을 띄운다.
+
+## STEP 04-B+ GLB 개념 모델 (2026-11-29)
+- **파일:** `assets/micro/alveolus-concept.glb`, `assets/micro/tissue-capillary-concept.glb`, `assets/micro/vessel-wall-concept.glb`
+- **만든 방법:** `tools/blender/make_micro_concepts.py`(Blender 5.3, 기본 도형·곡선·Remesh·Boolean). 외부 모델이나 텍스처를 쓰지 않았다.
+- **애니메이션 데이터:** `content/animations/micro-concepts.json`(`tools/content/make_micro_anim.py`로 생성). Sandbox 장면 MA·MB·MC.
+- **검증 상태:** `CONCEPTUAL`. 해부 모델이 아니며 의학적으로 검증하지 않았다.
+- 단순화한 점
+  - 폐포: 폐포 7개와 폐포관을 합친 주머니를 한 사분면만 잘라 보였다. 모세혈관 그물은 폐포 바깥 점을 이웃끼리 이은 것이고 실제 배치가 아니다. 교환 부위 확대판의 층 두께는 보이게 키운 값이다.
+  - 조직 모세혈관: 모세혈관 5줄과 가로 연결, 세포 배치는 교육용이다. 세동맥 고리는 모세혈관앞 조임근을 단순화한 표시다.
+  - 혈관 벽: 중간 크기 동맥 단면의 층 순서만 따랐다. 층 두께·민무늬근 세포 수·수축/확장 때 반지름 변화는 실측이 아니다.
+  - 적혈구·기체·물질 입자의 크기·개수·속도는 의미가 없다.
