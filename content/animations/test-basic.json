@@ -1,0 +1,97 @@
+{
+ "version": 1,
+ "scene_id": "anim_a",
+ "verification_status": "TEST",
+ "description": "Animation Test A: 위치·회전·크기 Keyframe과 GLB 내장 AnimationClip(Spin, Inflate, Flap) 재생",
+ "units": {
+  "time": "ms",
+  "position": "m",
+  "rotation": "deg"
+ },
+ "animations": [
+  {
+   "animation_id": "a.cube_path",
+   "target_id": "anim_cube",
+   "animation_type": "transform",
+   "duration_ms": 2400,
+   "loop": false,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "position": [
+       -1.2,
+       0.3,
+       0
+      ],
+      "rotation": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1
+     }
+    },
+    {
+     "time": 0.5,
+     "value": {
+      "position": [
+       -1.2,
+       1.0,
+       0
+      ],
+      "rotation": [
+       0,
+       180,
+       0
+      ],
+      "scale": 1.5
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "position": [
+       -1.2,
+       0.3,
+       0
+      ],
+      "rotation": [
+       0,
+       360,
+       0
+      ],
+      "scale": 1
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "a.glb_spin",
+   "target_id": "nf-anim-test",
+   "animation_type": "clip",
+   "clip_name": "Spin",
+   "loop": true,
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "a.glb_inflate",
+   "target_id": "nf-anim-test",
+   "animation_type": "clip",
+   "clip_name": "Inflate",
+   "loop": true,
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "a.glb_flap",
+   "target_id": "nf-anim-test",
+   "animation_type": "clip",
+   "clip_name": "Flap",
+   "loop": true,
+   "verification_status": "TEST"
+  }
+ ]
+}

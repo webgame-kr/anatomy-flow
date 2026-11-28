@@ -24,6 +24,7 @@ import { createAnchorManager } from '../anatomy/anchor-manager.js';
 import { createMotionKit } from '../motion/motion-kit.js';
 import { createScaleManager } from '../scale/scale-manager.js';
 import { createMicroScene } from '../scale/micro-scene.js';
+import { createAnimationKit } from '../animation/animation-kit.js';
 
 export { checkWebGL };
 export const DEFAULT_WALL_OPACITY = 0.55;
@@ -34,6 +35,7 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
   e.viewport = createViewport(container, {
     onFrame: (dt) => {
       e.objects.tick(dt);
+      e.anim.tick(dt);         // STEP 04-B: 애니메이션 (경로 갱신·이동보다 먼저)
       e.kit.tick(dt);
       e.camera.tick(dt);
       if (e.manager) e.manager.tick();
@@ -41,6 +43,7 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
       if (e.labels) e.labels.update();
       for (const m of e.micro) m.tick(dt, camera);
       viewTick(dt);
+      conceptLabelsTick();
     },
     onStats: (s) => { e.stats = s; onStats(s); },
     onContextLost: () => log('그래픽 컨텍스트를 잃었습니다. 페이지를 새로고침하세요.', 'error'),
@@ -78,12 +81,18 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
     camera: e.camera, actors: e.kit.actors, motion: e.kit.motion, paths: e.kit.paths, overlay: fadeEl, log,
     hooks: { onChanged: (id, spec) => { if (e.labels) e.labels.setVisible(spec.level === 'ORGAN' && e.userLabels !== false); } },
   });
+  // STEP 04-B: 애니메이션·타임라인·구조 상태. 실제 모델 대상(anatomical_id)은 Anatomy Manager로 풀어 준다
+  const resolveAny = (t) => (e.registry.has(t) ? [t] : (e.manager ? e.manager.resolveTargets(t) : []));
+  e.anim = createAnimationKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, resolve: resolveAny, log });
+  e.kit.paths.setVertexResolver((mesh, i) => e.anim.morph.deformedVertex(mesh, i));
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
     resolve: (t) => (e.manager ? e.manager.resolveTargets(t) : []), focusMany: (ids) => (e.manager ? e.manager.focusObjects(ids) : null),
     motion: e.kit.commands,
     scale: e.scale.commands,
+    animation: e.anim.commands,
   });
+  e.anim.setRunner(e.runner);
   e.client = createPythonClient({ onStatus: onPythonStatus });
   e.selection.onSelect(() => e.selection.select(null));   // Play 화면은 클릭 선택을 쓰지 않는다 (Hover만)
 
@@ -125,7 +134,93 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
   }
   let organSceneId = null;
 
-  async function loadAnatomy(url, { micro = null } = {}) {
+  // ---------- 애니메이션 개념 모델 (STEP 04-B, content/animations/*.json) ----------
+  // 개념 모델·애니메이션·구조 상태·타임라인을 불러오고, 그 장면을 스케일 장면(scale_scene)으로 등록한다.
+  // 같은 논리 Actor(rbc_01)를 쓴다: 개념 장면으로 전환하면 그 장면 Checkpoint로 옮기고 표시 크기만 바꾼다.
+  let conceptDoc = null;
+  const conceptLabels = { layer: null, items: [], on: false };
+  function addConceptMotion() {
+    const m = conceptDoc && conceptDoc.motion;
+    if (!m) return;
+    for (const p of m.paths || []) if (!e.kit.paths.has(p.path_id)) e.kit.paths.create(p);
+    for (const a of m.actors || []) {
+      if (e.kit.actors.has(a.actor_id)) continue;
+      const r = e.kit.actors.create(a);
+      if (r.ok && a.path_id) e.kit.motion.setPath(a.actor_id, a.path_id);
+    }
+  }
+  function buildConceptLabels() {
+    if (conceptLabels.layer) conceptLabels.layer.remove();
+    conceptLabels.items = [];
+    conceptLabels.layer = null;
+    if (!conceptDoc || !conceptDoc.labels) return;
+    const layer = document.createElement('div');
+    layer.className = 'micro-labels';
+    layer.hidden = true;
+    labelContainer.appendChild(layer);
+    for (const l of conceptDoc.labels) {
+      const el = document.createElement('div');
+      el.className = 'micro-label';
+      el.textContent = l.text;
+      layer.appendChild(el);
+      conceptLabels.items.push({ el, pos: new THREE.Vector3(...l.position) });
+    }
+    conceptLabels.layer = layer;
+  }
+  const projV = new THREE.Vector3();
+  function conceptLabelsTick() {
+    if (!conceptLabels.on || !conceptLabels.layer) return;
+    const w = labelContainer.clientWidth;
+    const h = labelContainer.clientHeight;
+    for (const it of conceptLabels.items) {
+      projV.copy(it.pos).project(camera);
+      const vis = projV.z < 1 && projV.z > -1;
+      it.el.hidden = !vis;
+      if (vis) it.el.style.transform = `translate(-50%, -50%) translate(${((projV.x + 1) / 2) * w}px, ${((1 - projV.y) / 2) * h}px)`;
+    }
+  }
+  async function loadConcept(url) {
+    if (conceptDoc && conceptDoc.scale_scene) e.scale.unregister(conceptDoc.scale_scene.scene_id);
+    conceptDoc = null;
+    if (!url) { e.anim.unload(); buildConceptLabels(); return; }
+    const r = await e.anim.loadUrl(url);
+    if (!r.ok) log(`애니메이션 데이터 오류: ${r.errors.slice(0, 3).join(' / ')}`, 'error');
+    conceptDoc = e.anim.data;
+    addConceptMotion();
+    buildConceptLabels();
+    const sc = conceptDoc.scale_scene;
+    if (sc) {
+      const groups = (conceptDoc.groups || []).map((g) => g.group_id);
+      e.scale.register(sc.scene_id, {
+        level: sc.level || 'ORGAN', conceptual: conceptDoc.verification_status === 'CONCEPTUAL', title_ko: sc.title_ko,
+        unit_note: sc.unit_note, magnification_note: sc.magnification_note, actor_display_size: sc.actor_display_size, follow: sc.follow, view_direction: sc.view_direction,
+        enter: () => { for (const g of groups) e.anim.builder.setVisible(g, true); conceptLabels.on = true; if (conceptLabels.layer) conceptLabels.layer.hidden = false; },
+        exit: () => { for (const g of groups) e.anim.builder.setVisible(g, false); conceptLabels.on = false; if (conceptLabels.layer) conceptLabels.layer.hidden = true; },
+        bounds: () => { const b = new THREE.Box3(); for (const g of groups) { const x = e.anim.builder.bounds(g); if (x) b.union(x); } if (!b.isEmpty()) b.expandByScalar(0.08); return b; },
+        path_ids: ((conceptDoc.motion && conceptDoc.motion.paths) || []).map((p) => p.path_id),
+      });
+      for (const g of groups) e.anim.builder.setVisible(g, false);
+    }
+  }
+  // 단계가 끝난 모습으로 즉시 맞추기 (자유 관찰 종료·복구·재시작). 학습 상태(Python)는 바꾸지 않는다
+  e.applyVisualState = (map) => e.anim.visual.setMany(map || {}, { instant: true });
+  e.applyPhaseEnd = async (phaseKey) => {
+    const ph = conceptDoc && (conceptDoc.phases || []).find((p) => p.phase_key === phaseKey);
+    if (!ph) return false;
+    e.anim.cancelAll('phase_restore');
+    await e.applyVisualState(ph.visual_state);
+    const end = ph.end_state || {};
+    for (const [id, w] of Object.entries(end.morph || {})) e.anim.morph.setMany(id, w);
+    for (const id of ['cc.lv', 'cc.rv']) if (e.registry.has(id)) e.materials.setColor(id, (end.tint || {})[id] || null);
+    for (const [aid, cp] of Object.entries(end.actors || {})) if (e.kit.actors.has(aid)) e.kit.motion.placeAtCheckpoint(aid, cp);
+    e.anim.timeline.setPhase(ph.phase);
+    return true;
+  };
+  e.conceptPhases = () => (conceptDoc && conceptDoc.phases) || [];
+  e.conceptSceneId = () => (conceptDoc && conceptDoc.scale_scene ? conceptDoc.scale_scene.scene_id : null);
+  e.organSceneId = () => organSceneId;
+
+  async function loadAnatomy(url, { micro = null, animations = null, start_scale = null } = {}) {
     e.kind = 'anatomy';
     if (!e.manager) {
       e.manager = createAnatomyManager({
@@ -144,7 +239,11 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
     registerOrgan(def);
     await loadMicro(micro);
     sceneInfo.micro = micro;
+    await loadConcept(animations);
+    sceneInfo.animations = animations;
+    sceneInfo.start_scale = start_scale;
     e.scale.reset(organSceneId);
+    await enterStartScale();
     e.kit.paths.setShowPaths(false);
     e.labels.setMode('both');
     // 물질이 심장·혈관 안쪽을 지나므로 기본으로 반투명하게 둔다 (설정에서 바꿀 수 있음)
@@ -155,9 +254,21 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
     return ms;
   }
 
+  // 콘텐츠가 시작 장면을 정하면(예: 심장주기 개념 모델) 그 장면으로 즉시 전환
+  async function enterStartScale() {
+    const sid = sceneInfo && sceneInfo.start_scale;
+    if (!sid || !e.scale.has(sid)) return;
+    const spec = e.scale.get(sid);
+    const actor = e.kit.actors.list()[0];
+    const first = ((conceptDoc && conceptDoc.motion && conceptDoc.motion.paths) || [])[0];
+    const cp = first && first.checkpoints && first.checkpoints[0] ? first.checkpoints[0].checkpoint_id : null;
+    if (actor) await e.scale.change({ action: 'scale_change', target: actor.actor_id, level: spec.level, scene_id: sid, checkpoint_id: cp, duration: 0 });
+  }
+
   async function loadSandbox(catalogUrl, sceneId) {
     e.kind = 'sandbox';
     await loadMicro(null);
+    await loadConcept(null);
     e.viewport.grid.visible = true;
     const t0 = performance.now();
     await e.scenes.loadCatalog(catalogUrl);
@@ -174,7 +285,11 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
     if (e.kind === 'anatomy') {
       await e.kit.loadUrl(sceneInfo.motion.paths, sceneInfo.motion.actors);
       for (const m of e.micro) m.addPaths();
+      // 개념 모델: 형태·판막·타임라인을 처음 상태로 (데이터를 다시 적용) 뒤 경로·Actor 다시 추가
+      if (conceptDoc) { const doc = conceptDoc; e.anim.apply(doc); conceptDoc = e.anim.data; addConceptMotion(); }
       e.scale.reset(organSceneId);
+      if (conceptDoc && conceptDoc.scale_scene) for (const g of conceptDoc.groups || []) e.anim.builder.setVisible(g.group_id, false);
+      await enterStartScale();
     } else await e.kit.loadUrl(sceneInfo.motion.paths);
     e.kit.paths.setShowPaths(e.kind === 'sandbox');
   }
@@ -242,7 +357,7 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
   function wantedView() {
     if (viewSt.mode !== 'auto') return viewSt.mode;
     const sp = e.scale.currentSpec;
-    if (sp && sp.level !== 'ORGAN') return 'translucent';
+    if (sp && e.scale.current !== organSceneId) return 'translucent';   // 기관 모델이 아닌 장면에는 자동 단면을 쓰지 않는다
     const hb = heartBox();
     const a = actorObj();
     if (hb && a && hb.containsPoint(a.getWorldPosition(tmpC))) return 'dynamic';
@@ -289,7 +404,8 @@ export function createPlayEngine({ container, labelContainer, log, onStats = () 
     },
     overview(duration = 700) {
       const sp = e.scale.currentSpec;
-      if (sp && sp.level !== 'ORGAN') { const b = sp.bounds(); return b ? e.camera.focusBox(b, { duration, direction: sp.view_direction ? new THREE.Vector3(...sp.view_direction) : null }) : false; }
+      // 기관 모델(BodyParts3D)이 아닌 장면: 그 장면의 범위로 (개념 장면은 ORGAN 수준이어도 여기로)
+      if (sp && e.scale.current !== organSceneId) { const b = sp.bounds(); return b ? e.camera.focusBox(b, { duration, direction: sp.view_direction ? new THREE.Vector3(...sp.view_direction) : null }) : false; }
       if (e.manager) return e.manager.view('heart');
       return e.camera.overview({ duration });
     },

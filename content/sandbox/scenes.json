@@ -2,6 +2,11 @@
   "version": 1,
   "default_scene": "scene_a",
   "assets": {
+    "nf-anim-test": {
+      "url": "assets/animations/anim-test.glb",
+      "license": "project-made (tools/blender/make_anim_test_glb.py)",
+      "public": true
+    },
     "nf-test-rig": {
       "url": "assets/sandbox/nf-test-rig.glb",
       "license": "project-made (tools/blender/make_test_rig.py)",
@@ -145,6 +150,66 @@
     {"scene_id": "motion_e", "scene_name": "ME — Motion: Basic Path (요구서 Scene E)", "description": "직선·곡선 이동, 호 길이 기반 일정 속도, 정방향·역방향, 완료·초기화", "python": "motion", "motion": "content/sandbox/motion/basic.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []},
     {"scene_id": "motion_f", "scene_name": "MF — Motion: Checkpoint (요구서 Scene F)", "description": "여러 Checkpoint, 지정 지점 정지, Next로 재개, 이벤트 기록", "python": "motion", "motion": "content/sandbox/motion/checkpoint.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []},
     {"scene_id": "motion_g", "scene_name": "MG — Motion: Branch & Loop (요구서 Scene G)", "description": "연결 경로, 분기, 순환·반복, 종료 조건, 객체 로컬 좌표 경로", "python": "motion", "motion": "content/sandbox/motion/branch-loop.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "groups": [{"id": "turntable", "name": "Turntable (경로 기준 객체)", "position": [0, 0, 3.4]}], "objects": [{"id": "turntable_disc", "kind": "cylinder", "name": "회전판", "parent": "turntable", "position": [0, 0.05, 0], "scale": [2.2, 0.1, 2.2], "color": "#cfd6e0"}]},
-    {"scene_id": "motion_h", "scene_name": "MH — Motion: Multiple Actors (요구서 Scene H)", "description": "여러 Actor 동시 이동, 서로 다른 속도, 개별 정지·재개, 공유 리소스", "python": "motion", "motion": "content/sandbox/motion/multi.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []}
+    {"scene_id": "motion_h", "scene_name": "MH — Motion: Multiple Actors (요구서 Scene H)", "description": "여러 Actor 동시 이동, 서로 다른 속도, 개별 정지·재개, 공유 리소스", "python": "motion", "motion": "content/sandbox/motion/multi.json", "coordinate_system": {"up": "+Y", "front": "+Z", "unit": "m"}, "camera_defaults": {"position": [6, 5.5, 8], "target": [0, 0.8, 0], "fov": 50}, "lighting": "studio", "background": "#f3f5f8", "assets": [], "objects": []},
+    {
+      "scene_id": "anim_a",
+      "scene_name": "AA — Animation: Basic (Transform·GLB Clip)",
+      "description": "위치·회전·크기 Keyframe, GLB 내장 클립(Spin·Inflate·Flap), 재생·일시정지 (STEP 04-B)",
+      "animation": "content/animations/test-basic.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0.2, 1.4, 3.6], "target": [-0.2, 0.45, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [{ "asset_id": "nf-anim-test", "display_name": "Animation Test GLB", "position": [0.3, 0, 0] }],
+      "objects": [{ "id": "anim_cube", "kind": "box", "name": "Transform 시험 상자", "position": [-1.2, 0.3, 0], "scale": 0.35, "color": "#2f6fde" }]
+    },
+    {
+      "scene_id": "anim_b",
+      "scene_name": "AB — Animation: Morph·모델 전환",
+      "description": "Morph 가중치·혼합·복원, Crossfade 모델 전환, 변형을 따라가는 경로 점(mesh_vertex) (STEP 04-B)",
+      "animation": "content/animations/test-morph.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0.2, 1.3, 3.8], "target": [0.15, 0.6, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [],
+      "objects": []
+    },
+    {
+      "scene_id": "anim_c",
+      "scene_name": "AC — Animation: Timeline",
+      "description": "순차·병렬·반복·지연 타임라인, Blocking과 Non-blocking (STEP 04-B)",
+      "animation": "content/animations/test-timeline.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0, 1.2, 3.4], "target": [0, 0.5, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [],
+      "objects": []
+    },
+    {
+      "scene_id": "anim_d",
+      "scene_name": "AD — Animation: Cardiac Cycle (개념 모델)",
+      "description": "심장주기 5단계, 판막 상태, 판막과 혈액 이동 연동. 교육용 개념 모델 (STEP 04-B)",
+      "animation": "content/animations/cardiac-concept.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [100.0, 0.25, 2.6], "target": [100.0, 0.15, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#1d2130",
+      "assets": [],
+      "objects": []
+    },
+    {
+      "scene_id": "anim_e",
+      "scene_name": "AE — Animation: Vessel Deformation",
+      "description": "혈관 수축·확장, 중심선 유지, 혈관 안 Actor 위치 (STEP 04-B)",
+      "animation": "content/animations/test-vessel.json",
+      "coordinate_system": { "up": "+Y", "front": "+Z", "unit": "m" },
+      "camera_defaults": { "position": [0, 1.4, 3.6], "target": [0, 0.55, 0], "fov": 45 },
+      "lighting": "studio",
+      "background": "#f3f5f8",
+      "assets": [],
+      "objects": []
+    }
   ]
 }

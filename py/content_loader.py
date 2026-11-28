@@ -85,6 +85,8 @@ def scene_actions():
         names.add(name)
     for name in scene_commands.MOTION:
         names.add(name)
+    for name in scene_commands.ANIMATION:
+        names.add(name)
     return names
 
 
@@ -369,6 +371,8 @@ def check_node3d(node, where, errors, warnings):
         errors.append('{}: 알 수 없는 검증 상태 "{}"'.format(where, status))
     if status == None:
         warnings.append('{}: verification_status가 없습니다.'.format(where))
+    if 'visual_state' in node and type(node['visual_state']) != dict:
+        errors.append('{}: visual_state는 구조ID-상태 딕셔너리여야 합니다.'.format(where))
     if 'revisit' in node and node['revisit'] not in REVISIT:
         errors.append('{}: revisit은 relearn 또는 review'.format(where))
 
@@ -389,6 +393,8 @@ def check_edge3d(edge, where, node_ids, model_ids, errors):
                 errors.append('{}: scale.scene_id가 필요합니다.'.format(where))
             if 'checkpoint_id' in scale and not is_text(scale['checkpoint_id']):
                 errors.append('{}: scale.checkpoint_id는 글자여야 합니다.'.format(where))
+    if 'timeline_id' in edge and not is_text(edge['timeline_id']):
+        errors.append('{}: timeline_id는 글자여야 합니다.'.format(where))
     if 'pre_checkpoint_id' in edge and not is_text(edge['pre_checkpoint_id']):
         errors.append('{}: pre_checkpoint_id는 글자여야 합니다.'.format(where))
     if 'path' in edge and not is_text(edge['path']):

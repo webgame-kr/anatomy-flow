@@ -2,6 +2,7 @@
   "version": 1,
   "lessons": [
     { "id": "cv.blood_circulation", "url": "content/lessons/cardiovascular/blood-circulation.json", "system": "심혈관계", "title": "혈액순환: 정맥 환류에서 체순환까지", "kind": "anatomy" },
+    { "id": "cv.cardiac_cycle", "url": "content/lessons/cardiac-cycle/cardiac-cycle.json", "system": "심혈관계", "title": "심장주기: 판막과 심실의 다섯 단계 (개념 모델)", "kind": "anatomy" },
     { "id": "test.sequential", "url": "content/lessons/test/sequential.json", "system": "테스트", "title": "[개념 장면] 기본 진행 테스트", "kind": "concept" },
     { "id": "test.branch_cycle", "url": "content/lessons/test/branch-cycle.json", "system": "테스트", "title": "[개념 장면] 분기·순환 기능 테스트", "kind": "concept" }
   ]

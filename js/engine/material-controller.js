@@ -140,6 +140,23 @@ export function createMaterialController({ registry }) {
     mark(id, 'nfOpacity', 1);
   }
 
+  // STEP 04-B: 상태 층 읽기 (애니메이션이 끝나거나 취소될 때 이전 값으로 되돌리기 위해)
+  // 첫 Mesh의 값을 돌려준다. 같은 객체 아래 Mesh는 같은 상태 층 값을 갖는다.
+  function getState(id) {
+    const meshes = registry.meshesOf(id);
+    if (!meshes.length) return null;
+    const st = state(meshes[0]);
+    const entry = registry.get(id);
+    const visible = entry ? (entry.object3D.isMesh ? st.userVisible : entry.object3D.visible) : true;
+    return { color: st.color, opacity: st.opacity, visible, highlight: { ...st.hl } };
+  }
+  function setState(id, s) {
+    if (!s) return;
+    each(id, (st) => { st.color = s.color; st.opacity = s.opacity; });
+    mark(id, 'nfOpacity', s.opacity);
+    if (typeof s.visible === 'boolean') setVisible(id, s.visible);
+  }
+
   // ---------- 표시 ----------
   // 그룹/모델은 Object3D.visible로, Mesh는 상태 층을 거쳐 반영한다
   function setVisible(id, visible) {
@@ -271,6 +288,8 @@ export function createMaterialController({ registry }) {
     setOpacity,
     setVisible,
     restore,
+    getState,
+    setState,
     setHighlight,
     isolate,
     ghostOthers,

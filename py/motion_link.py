@@ -44,7 +44,7 @@ def to_motion(game_commands):
             continue
         edge_id = one.get('edge')
         if edge_id not in edge_map and one.get('path') == None and one.get('checkpoint', '') == '' \
-                and one.get('transition', 'move') == 'move':
+                and one.get('transition', 'move') == 'move' and one.get('timeline', '') == '':
             errors.append('3D 경로가 연결되지 않은 Edge: {}'.format(edge_id))
             continue
         info = info_of(one)
@@ -82,6 +82,10 @@ def to_motion(game_commands):
                              'path_id': info['path_id'], 'direction': direction})
             commands.append({'action': 'actor_move', 'target': who, 'duration': duration,
                              'until': 'end', 'wait': True})
+        # STEP 04-B: 필수 애니메이션 타임라인. 이동 명령 뒤에 두고 끝까지 기다린다.
+        # 실패·취소되면 도착 처리를 하지 않는다 (학습 단계가 앞서가지 않게)
+        if one.get('timeline', '') != '':
+            commands.append({'action': 'timeline_play', 'target': one['timeline'], 'wait': True})
         move_count += 1
         waiting['edge'] = edge_id
         waiting['count'] = move_count

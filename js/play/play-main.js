@@ -4,6 +4,7 @@
 import { checkWebGL, createPlayEngine, DEFAULT_WALL_OPACITY } from './play-engine.js';
 import { createGameplayController } from './gameplay-controller.js';
 import { createGameplayUi } from './gameplay-ui.js';
+import { createCyclePanel } from './cycle-panel.js';
 import { createLearningMode, MODES } from './learning-mode.js';
 import { createSessionManager } from './session-manager.js';
 import { setupTyping } from '../shared/typing-input.js';
@@ -41,11 +42,18 @@ async function boot() {
   });
   const game = createGameplayController({ engine, session, mode, log });
   const ui = createGameplayUi({ game, mode, session, engine });
+  // STEP 04-B: 단계형 애니메이션 콘텐츠(심장주기)의 상태 표시·자유 관찰. 관찰 중에는 입력을 막는다 (Python 상태를 바꾸지 않게)
+  const cycle = createCyclePanel({
+    engine, game, container: $('cc-panel'), log,
+    onObserveChange: (on) => { $('answer').disabled = on; $('btn-submit').disabled = on; },
+    canRevealAll: () => mode.id === 'guide' || game.state === 'completed',
+  });
 
   // ---------- 입력 ----------
   const input = $('answer');
   const typing = setupTyping(input, $('btn-submit'), {
     onSubmit: async (value) => {
+      if (cycle.observing) return;
       const r = await game.submit(value);
       if (r === 'wrong') {
         const box = document.querySelector('.pl-typing');
@@ -242,7 +250,7 @@ async function boot() {
     fit();
   }
 
-  window.__play = { engine, game, mode, session, logs, typing };
+  window.__play = { engine, game, mode, session, logs, typing, cycle };
   ui.renderAll(typing);
   await game.loadLesson(pick.url);
   if (params.get('autostart') === '1' && game.state === 'ready') { $('ov-start').hidden = true; await game.start(mode.id); }

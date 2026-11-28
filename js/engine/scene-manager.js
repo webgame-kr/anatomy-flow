@@ -111,7 +111,7 @@ export function createSceneManager(ctx) {
       animationNames: result.report.animations,
     });
     log(`모델 등록: ${id} · 노드 ${result.report.nodes} · Mesh ${result.report.meshes} · 재질 ${result.report.materials} · 삼각형 ${result.report.triangles} · 애니메이션 [${result.report.animations.join(', ')}]`);
-    emit('model', { id, report: result.report });
+    emit('model', { id, report: result.report, root, clips: result.animations || [] });   // STEP 04-B: GLB AnimationClip 전달
     return id;
   }
 

@@ -71,7 +71,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const sc = lesson.scene || {};
     try {
       emit('loading', { text: '3D 모델을 불러오는 중…' });
-      if (sc.type === 'anatomy') await engine.loadAnatomy(sc.url, { micro: sc.micro || null });
+      if (sc.type === 'anatomy') await engine.loadAnatomy(sc.url, { micro: sc.micro || null, animations: sc.animations || null, start_scale: sc.start_scale || null });
       else if (sc.type === 'sandbox') await engine.loadSandbox(sc.catalog, sc.scene_id);
       else throw new Error(`알 수 없는 장면 종류: ${sc.type}`);
     } catch (err) {
@@ -141,6 +141,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (ed.actor_id && !kit.actors.has(ed.actor_id)) errors.push(`${id}: 없는 Actor ${ed.actor_id}`);
       const target = nodeOf(ed.target_node || ed.to);
       if (ed.pre_checkpoint_id && !kit.paths.findCheckpoint(ed.pre_checkpoint_id)) errors.push(`${id}: 없는 Checkpoint ${ed.pre_checkpoint_id}`);
+      if (ed.timeline_id && !engine.anim.timeline.has(ed.timeline_id)) errors.push(`${id}: 없는 타임라인 ${ed.timeline_id}`);
       if (ed.transition_type === 'scene') {
         const sc = ed.scale || {};
         const spec = engine.scale.get(sc.scene_id);
@@ -148,7 +149,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
         else if (spec.level !== sc.level) errors.push(`${id}: 장면 ${sc.scene_id}의 수준은 ${spec.level} (콘텐츠 ${sc.level})`);
         if (sc.checkpoint_id && !kit.paths.findCheckpoint(sc.checkpoint_id)) errors.push(`${id}: 없는 Checkpoint ${sc.checkpoint_id}`);
       }
-      if ((ed.transition_type || 'move') === 'move' && !path && !(target && target.checkpoint_id) && !ed.checkpoint_id) {
+      if ((ed.transition_type || 'move') === 'move' && !path && !(target && target.checkpoint_id) && !ed.checkpoint_id && !ed.timeline_id) {
         errors.push(`${id}: 이동(move) Edge인데 Path·Checkpoint가 없습니다 (이동 없는 구간은 transition_type "jump")`);
       }
       checkEvents(ed.events, id, errors);
@@ -185,10 +186,12 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
   }
 
   async function resetScene() {
+    engine.anim.cancelAll('restart');
     engine.kit.motion.cancelAll('restart');
     engine.camera.stopFollow();
     await engine.resetMotion();
     engine.highlightStructures([]);
+    if (lesson && lesson.initial_visual_state) await engine.applyVisualState(lesson.initial_visual_state);
     engine.overview(0);
   }
 
@@ -260,6 +263,13 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     return runMotion(r.commands, r.move, target);
   }
 
+  // 노드로 들어오는 Edge의 타임라인 (그 단계의 모양을 되돌릴 때)
+  function edgeTimelineTo(node) {
+    const id = node.node_id || node.id;
+    const ed = (lesson.edges || []).find((x) => (x.target_node || x.to) === id && x.timeline_id);
+    return ed ? ed.timeline_id : null;
+  }
+
   function edgeTarget(edgeId) {
     const ed = (lesson.edges || []).find((x) => (x.edge_id || x.id) === edgeId);
     return ed ? (ed.target_node || ed.to) : null;
@@ -310,7 +320,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     const d = options.reducedMotion ? 0 : Math.round(700 / options.cameraSpeed);
     if (options.reducedMotion && !structureId) return;
     const sp = engine.scale.currentSpec;
-    if (sp && sp.level !== 'ORGAN') { engine.overview(d); return; }   // 개념 장면: 기관 구조 대신 장면 정면(교환 부위 전체)
+    if (sp && engine.scale.current !== engine.organSceneId()) { engine.overview(d); return; }   // 개념·조직 장면   // 개념 장면: 기관 구조 대신 장면 정면(교환 부위 전체)
     if (structureId && engine.kind === 'anatomy') await engine.focusStructure(structureId, d);
     else engine.focusActor(actorId(), null, d);
   }
@@ -410,6 +420,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
   function pause() {
     if (!sm.can('pause')) return false;
     engine.kit.motion.pauseAll();
+    engine.anim.pauseAll();
     engine.scale.pause();
     engine.camera.stopFollow();
     session.hold('pause');
@@ -422,6 +433,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
     if (!sm.can('resume')) return false;
     const back = sm.beforePause || 'waiting_input';
     engine.kit.motion.resumeAll();
+    engine.anim.resumeAll();
     engine.scale.resume();
     if (back === 'transitioning' && options.cameraMode === 'auto' && !options.reducedMotion) engine.camera.startFollow(actorId());
     session.release('pause');
@@ -455,6 +467,12 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
         await engine.runner.run([{ action: 'scale_change', target: actorId(), level: spec.level, scene_id: sid, checkpoint_id: r.checkpoint_id, duration: 0, wait: true }]);
       }
       await engine.runner.run([{ action: 'actor_place_at_checkpoint', target: actorId(), checkpoint_id: r.checkpoint_id }]);
+      // STEP 04-B: 마지막 정상 노드의 단계 모양(판막·형태)으로 되돌린다
+      const node = view && view.current ? nodeOf(view.current) : null;
+      const tl = node ? edgeTimelineTo(node) : null;
+      const ph = tl ? engine.conceptPhases().find((p) => p.timeline_id === tl) : null;
+      if (ph) await engine.applyPhaseEnd(ph.phase_key);
+      else if (r.visual_state && Object.keys(r.visual_state).length) await engine.applyVisualState(r.visual_state);
     } else {
       await engine.resetMotion();
     }
@@ -483,7 +501,7 @@ export function createGameplayController({ engine, session, mode, log, onUpdate 
       if (k === 'showPath') engine.kit.paths.setShowPaths(!!v);
       if (k === 'cameraMode' && v === 'free') engine.camera.stopFollow();
       if (k === 'reducedMotion' && v) engine.camera.stopFollow();
-      if (k === 'reducedMotion') engine.scale.setReducedMotion(!!v);
+      if (k === 'reducedMotion') { engine.scale.setReducedMotion(!!v); engine.anim.setReducedMotion(!!v); }
       emit('options');
     },
     onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); },

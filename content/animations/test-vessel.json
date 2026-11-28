@@ -1,0 +1,285 @@
+{
+ "version": 1,
+ "scene_id": "anim_e",
+ "verification_status": "TEST",
+ "description": "Animation Test E: 혈관 내강 지름 변화(BASELINE / VASOCONSTRICTION / VASODILATION). 중심선과 길이는 그대로 두고 반지름만 바꾼다. 배율은 교육용 값.",
+ "units": {
+  "time": "ms",
+  "radius_scale": "배 (1 = 기준)"
+ },
+ "groups": [
+  {
+   "group_id": "test.vessel",
+   "name_ko": "혈관 변형 시험 모델",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "backdrop": null,
+   "verification_status": "TEST",
+   "objects": [
+    {
+     "id": "vessel_test",
+     "name_ko": "교육용 혈관 (시험)",
+     "shape": "tube",
+     "points": [
+      [
+       -1.6,
+       0.6,
+       0
+      ],
+      [
+       -0.8,
+       0.75,
+       0.1
+      ],
+      [
+       0.0,
+       0.6,
+       0
+      ],
+      [
+       0.8,
+       0.45,
+       -0.1
+      ],
+      [
+       1.6,
+       0.6,
+       0
+      ]
+     ],
+     "radius": 0.16,
+     "color": "#c05a5a",
+     "opacity": 0.45
+    }
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "animation_id": "e.constrict",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.0
+    },
+    {
+     "time": 1,
+     "value": 0.6
+    }
+   ],
+   "verification_status": "TEST",
+   "notes": "수축 배율 0.6은 교육용 값"
+  },
+  {
+   "animation_id": "e.dilate",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.0
+    },
+    {
+     "time": 1,
+     "value": 1.35
+    }
+   ],
+   "verification_status": "TEST",
+   "notes": "확장 배율 1.35는 교육용 값"
+  },
+  {
+   "animation_id": "e.c_to_base",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 900,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0.6
+    },
+    {
+     "time": 1,
+     "value": 1.0
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "e.d_to_base",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 900,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.35
+    },
+    {
+     "time": 1,
+     "value": 1.0
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "e.c_to_d",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 1200,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0.6
+    },
+    {
+     "time": 1,
+     "value": 1.35
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "e.d_to_c",
+   "target_id": "vessel_test",
+   "animation_type": "deform",
+   "duration_ms": 1200,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1.35
+    },
+    {
+     "time": 1,
+     "value": 0.6
+    }
+   ],
+   "verification_status": "TEST"
+  }
+ ],
+ "structures": [
+  {
+   "structure_id": "vessel.test_tone",
+   "name_ko": "혈관 긴장도 (시험)",
+   "kind": "vessel",
+   "states": [
+    "BASELINE",
+    "VASOCONSTRICTION",
+    "VASODILATION"
+   ],
+   "initial": "BASELINE",
+   "transitions": {
+    "BASELINE->VASOCONSTRICTION": {
+     "animation": "e.constrict"
+    },
+    "BASELINE->VASODILATION": {
+     "animation": "e.dilate"
+    },
+    "VASOCONSTRICTION->BASELINE": {
+     "animation": "e.c_to_base"
+    },
+    "VASODILATION->BASELINE": {
+     "animation": "e.d_to_base"
+    },
+    "VASOCONSTRICTION->VASODILATION": {
+     "animation": "e.c_to_d"
+    },
+    "VASODILATION->VASOCONSTRICTION": {
+     "animation": "e.d_to_c"
+    }
+   },
+   "verification_status": "TEST"
+  }
+ ],
+ "motion": {
+  "scene_id": "anim_e",
+  "marker_size": 0.03,
+  "follow": {
+   "distance": 0.8,
+   "height": 0.3,
+   "side": 0.3,
+   "smooth": 5
+  },
+  "paths": [
+   {
+    "path_id": "e.centerline",
+    "name_ko": "혈관 중심선 (시험)",
+    "curve_type": "catmull_rom",
+    "closed": false,
+    "verification_status": "TEST_PATH",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       -1.6,
+       0.6,
+       0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       -0.8,
+       0.75,
+       0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.0,
+       0.6,
+       0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       0.8,
+       0.45,
+       -0.1
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       1.6,
+       0.6,
+       0
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.e.end",
+      "path_progress": 1,
+      "stop_on_arrival": true
+     }
+    ],
+    "notes": "관을 만든 점과 같은 중심선. 지름이 바뀌어도 경로는 그대로다."
+   }
+  ],
+  "actors": [
+   {
+    "actor_id": "rbc_vessel",
+    "actor_type": "red_blood_cell",
+    "model_id": "rbc",
+    "display_size": 0.1,
+    "path_id": "e.centerline",
+    "speed": 0.35,
+    "rotation_mode": "tangent",
+    "biological_state": {
+     "oxygenation": "oxygenated"
+    }
+   }
+  ]
+ }
+}

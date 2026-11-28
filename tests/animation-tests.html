@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NURSE FLOW · Animation Tests</title>
+  <style>
+    body { font: 14px/1.5 system-ui, sans-serif; margin: 16px; background: #f6f7f9; color: #1d2330; }
+    li.fail { color: #c62828; font-weight: 600; }
+    li.pass::marker { color: #2e7d32; }
+    code { background: #eceff3; padding: 1px 4px; border-radius: 4px; }
+  </style>
+  <script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <h1>STEP 04-B 애니메이션 엔진 테스트</h1>
+  <p>렌더링 루프와 분리된 독립 인스턴스에 dt를 직접 넣어 검사합니다. 로컬 서버에서 <code>/tests/animation-tests.html</code>로 엽니다.</p>
+  <p id="sum">실행 중…</p>
+  <ol id="out"></ol>
+  <script type="module">
+    import { run } from './animation-tests.js';
+    const out = document.getElementById('out');
+    const r = await run({ log: (s) => { const li = document.createElement('li'); li.textContent = s; li.className = s.startsWith('FAIL') ? 'fail' : (s.startsWith('PASS') ? 'pass' : ''); out.appendChild(li); } });
+    document.getElementById('sum').textContent = `결과: ${r.passed}/${r.total} 통과`;
+    window.__motionTests = r;
+  </script>
+</body>
+</html>

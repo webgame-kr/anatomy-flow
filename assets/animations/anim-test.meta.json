@@ -1,0 +1,15 @@
+{
+  "asset_id": "nf-anim-test",
+  "file": "assets/animations/anim-test.glb",
+  "source": "Project-made with tools/blender/make_anim_test_glb.py (Blender 5.3, factory settings)",
+  "license": "Project-made (same terms as this repository)",
+  "verification_status": "TEST — engine test model, not anatomical",
+  "unit": "m",
+  "fps": 24,
+  "clips": [
+    {"name": "Spin", "type": "transform", "duration_s": 1.958, "targets": ["spin_box"]},
+    {"name": "Inflate", "type": "morph", "duration_s": 1.958, "targets": ["inflate_ball (shape key Inflated)"]},
+    {"name": "Flap", "type": "skeletal", "duration_s": 1.958, "targets": ["flap_rig bones root, tip", "flap (skinned plane)"]}
+  ],
+  "note": "Used by Sandbox scene Animation Test A to check GLB AnimationClip playback through animation-manager."
+}

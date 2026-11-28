@@ -113,3 +113,16 @@ body.play { background: var(--bg); }
 .micro-label.co2 { background: rgba(170,100,20,.85); }
 .micro-label.io { background: rgba(80,80,80,.7); font-size: 11px; }
 @media (max-width: 720px) { .scale-ind { bottom: 30px; font-size: 11px; max-width: calc(100% - 20px); } .scale-ind .si-note + .si-note { display: none; } }
+
+/* STEP 04-B 생리 단계 패널 */
+.cc-panel { position: absolute; right: 10px; top: 10px; width: min(330px, calc(100% - 20px)); max-height: calc(100% - 70px); overflow: auto; padding: 8px 10px; border-radius: 8px; background: rgba(255,255,255,.93); color: #223; font-size: 12px; line-height: 1.35; z-index: 5; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+.cc-panel .cc-head { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 0; font: inherit; font-weight: 700; margin-bottom: 4px; cursor: pointer; color: inherit; min-height: 0; }
+.cc-panel.collapsed .cc-kv, .cc-panel.collapsed .cc-note { display: none; }
+.cc-panel.collapsed .cc-head { margin-bottom: 2px; }
+.cc-panel .cc-head.observing { color: #6b4fd8; }
+.cc-panel .cc-kv { margin: 0 0 6px; }
+.cc-panel .cc-kv dt { color: #667; }
+.cc-panel .cc-ctrl { flex-wrap: wrap; gap: 4px; }
+.cc-panel .cc-ctrl button, .cc-panel .cc-ctrl select { font-size: 11px; min-height: 26px; padding: 0 6px; }
+.cc-panel .cc-note { margin: 6px 0 0; font-size: 11px; color: #556; }
+@media (max-width: 720px) { .cc-panel { top: 8px; bottom: auto; max-height: 45%; font-size: 11px; } .cc-panel .cc-note { display: none; } }

@@ -150,3 +150,11 @@ code { background: var(--bg); padding: 1px 4px; border-radius: 4px; }
 .pe button.mini { min-height: 22px; min-width: 22px; padding: 0 5px; font-size: 11px; }
 .pe .kv input[type=text], .pe .kv select { width: 100%; min-width: 0; }
 .pe select { max-width: 100%; }
+
+/* STEP 04-B 애니메이션 편집기 */
+.ae .ae-json { width: 100%; font: 11px/1.35 ui-monospace, Consolas, monospace; box-sizing: border-box; }
+.ae .ae-keys .row { gap: 4px; }
+.ae .ae-keys input[type=number] { width: 54px; }
+.ae .ae-val { flex: 1; min-width: 0; font: 11px ui-monospace, Consolas, monospace; }
+.ae .ae-val.bad { outline: 2px solid #d63c3f; }
+.pe-row .vs.TEST, .pe-row .vs.TEST_PATH { color: #667; border-color: #aab; }

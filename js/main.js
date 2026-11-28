@@ -20,6 +20,8 @@ import { createInspectorPanel } from './ui/inspector-panel.js';
 import { createDebugPanel } from './ui/debug-panel.js';
 import { createMotionKit } from './motion/motion-kit.js';
 import { createPathEditor } from './motion/path-editor.js';
+import { createAnimationKit } from './animation/animation-kit.js';
+import { createAnimationEditor } from './animation/animation-editor.js';
 
 window.__nf3dBooted = true;
 
@@ -69,6 +71,7 @@ function buildEngine() {
   e.viewport = createViewport($('viewport'), {
     onFrame: (dt) => {
       e.objects.tick(dt);
+      e.anim.tick(dt);         // STEP 04-B: 애니메이션 (Morph 변형이 경로 점에 반영되도록 경로 갱신보다 먼저)
       e.kit.tick(dt);          // STEP 03-C: 경로 갱신과 Actor 이동 (카메라 추적보다 먼저)
       e.camera.tick(dt);
       e.selection.tick();
@@ -111,10 +114,15 @@ function buildEngine() {
   });
   // STEP 03-C: 경로·Actor·이동 (Sandbox에는 Anchor가 없어 scene/object_local 좌표만 쓴다)
   e.kit = createMotionKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, camera: e.camera, log });
+  // STEP 04-B: 애니메이션·타임라인·Morph·변형·구조 상태
+  e.anim = createAnimationKit({ scene, registry: e.registry, tracker: e.tracker, materials: e.materials, log });
+  e.kit.paths.setVertexResolver((mesh, i) => e.anim.morph.deformedVertex(mesh, i));
   e.runner = createCommandRunner(e.objects, {
     registry: e.registry, materials: e.materials, camera: e.camera, scenes: e.scenes, onLog: log,
     motion: e.kit.commands,
+    animation: e.anim.commands,
   });
+  e.anim.setRunner(e.runner);
   e.bridge = createPythonBridge({ client, runner: e.runner, log, guard: () => e.kit.motion.session });
 
   e.hierarchy = createHierarchyPanel($('hierarchy'), $('hier-count'), {
@@ -201,6 +209,7 @@ function wireUi(e) {
   });
   e.scenes.onChange((kind, data) => {
     if (kind === 'loading') {
+      e.anim.unload();         // STEP 04-B: 재생·타임라인 취소, 개념 모델·Mixer 해제
       e.kit.unload();          // 이전 장면의 이동·이벤트·경로 정리 (session 증가)
       $('btn-reset').disabled = true;
       sceneSelect.disabled = true;
@@ -218,6 +227,8 @@ function wireUi(e) {
       loadMotion(data.scene).then(() => onSceneReady(data.scene));
     }
     if (kind === 'model') {
+      const n = e.anim.registerClips(data.id, data.root, data.clips);
+      if (n) log(`GLB 애니메이션 클립 ${n}개 연결: ${e.anim.anim.clipNames(data.id).join(', ')}`);
       if (data.report.meshes > 12) e.hierarchy.collapseDeep(data.id, 1);
       if (data.report.duplicateNames.length) log(`같은 이름 노드: ${data.report.duplicateNames.join(', ')} (ID는 고유하게 부여)`, 'warn');
     }
@@ -315,7 +326,20 @@ function wireUi(e) {
     container: $('motion-panel'), kit: e.kit, camera3d: camera3d(e), renderer: e.viewport.renderer, controls: e.viewport.controls,
     cameraCtl: e.camera, scene: e.viewport.scene, log, getFps: () => e.fps ?? '-',
   });
+  // STEP 04-B: 애니메이션 편집기 (Sandbox 오른쪽 패널)
+  e.animEditor = createAnimationEditor({ container: $('anim-panel'), kit: e.anim, motionKit: e.kit, registry: e.registry, camera: e.camera, log });
   async function loadMotion(sceneDef) {
+    // 애니메이션 데이터를 먼저: 개념 모델이 있어야 경로 점(object_local, mesh_vertex)이 계산된다
+    if (sceneDef.animation) {
+      try {
+        const r = await e.anim.loadUrl(sceneDef.animation);
+        if (!r.ok) log(`애니메이션 데이터 오류 ${r.errors.length}개`, 'error');
+        if (e.anim.data && e.anim.data.motion) e.kit.apply(e.anim.data.motion);
+      } catch (err) {
+        log(`애니메이션 데이터를 읽지 못했습니다: ${err.message}`, 'error');
+      }
+    }
+    e.animEditor.render();
     if (!sceneDef.motion) { e.editor.render(); return; }
     try {
       await e.kit.loadUrl(sceneDef.motion);

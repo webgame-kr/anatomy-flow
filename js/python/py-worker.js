@@ -23,6 +23,8 @@ const ALLOWED = new Set([
   // STEP 03-C 이동 명령
   'scene_commands.set_paths', 'scene_commands.route_demo', 'scene_commands.motion_error_test',
   'scene_commands.move_to',
+  // STEP 04-B 애니메이션 명령 검사용 ID 목록
+  'scene_commands.set_animations',
   'motion_link.setup', 'motion_link.to_motion', 'motion_link.motion_done',
   // STEP 03-D 학습 게임 (규칙 판정·진행·기록은 Python)
   'lesson.load', 'lesson.reset', 'lesson.submit', 'lesson.arrived', 'lesson.retry', 'lesson.recover',

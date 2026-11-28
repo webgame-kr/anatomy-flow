@@ -111,6 +111,8 @@ def submit(text):
     cmd['transition'] = edge.get('transition_type', 'move')
     # STEP 04-A: 스케일 전환 (전환 전 이동할 Checkpoint, 전환 정보)
     cmd['pre_checkpoint'] = edge.get('pre_checkpoint_id', '')
+    # STEP 04-B: 이동과 함께 끝까지 기다릴 필수(Blocking) 타임라인
+    cmd['timeline'] = edge.get('timeline_id', '')
     scale = edge.get('scale')
     if type(scale) == dict:
         cmd['scale'] = {'level': scale.get('level', ''), 'scene_id': scale.get('scene_id', ''),

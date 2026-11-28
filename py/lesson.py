@@ -72,9 +72,14 @@ def recover(reason):
     if view != None and view['current'] != None:
         node = game.index['nodes'][view['current']]
     checkpoint = ''
+    visual = {}
     if node != None:
         checkpoint = node.get('checkpoint_id', '')
-    return {'result': back['result'], 'view': view, 'checkpoint_id': checkpoint}
+        # STEP 04-B: 마지막 정상 노드의 보이는 상태 (판막 등). 복사본을 보낸다
+        state = node.get('visual_state', {})
+        for key in state:
+            visual[key] = state[key]
+    return {'result': back['result'], 'view': view, 'checkpoint_id': checkpoint, 'visual_state': visual}
 
 
 def retry():

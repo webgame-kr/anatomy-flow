@@ -27,6 +27,8 @@ export function createResourceTracker() {
   function eachResource(object3D, fn) {
     object3D.traverse((o) => {
       if (o.geometry) fn(o.geometry);
+      // STEP 04-B: 뼈대가 있는 Mesh는 Skeleton이 뼈 행렬 텍스처(boneTexture)를 가진다. dispose하지 않으면 장면마다 텍스처가 하나씩 남는다
+      if (o.isSkinnedMesh && o.skeleton) fn(o.skeleton);
       for (const m of materialsOf(o)) {
         fn(m);
         for (const t of texturesOf(m)) fn(t);

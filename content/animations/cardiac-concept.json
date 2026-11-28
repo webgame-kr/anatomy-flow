@@ -1,0 +1,2087 @@
+{
+ "version": 1,
+ "scene_id": "concept.cardiac",
+ "verification_status": "CONCEPTUAL",
+ "description": "STEP 04-B 심장주기 개념 모델. 해부 모델이 아니라 직접 만든 단순 형태다. 심실 근육 벽·심실중격이 원본(BodyParts3D)에 없어서 만들었다. 모양·비율·시간은 교육용 값이며 실제 혈류역학 계산이 아니다.",
+ "lecture_refs": "HA6 p5(심장주기 5단계 그림·심음), HA6 p17, 교재 p614(확장기 구분, EDV·ESV), 산소화요구 p7. 단계 지속시간·압력 수치는 자료에 없어 쓰지 않는다.",
+ "units": {
+  "time": "ms",
+  "length": "m (개념 장면 단위, 실제 크기 아님)",
+  "morph": "0~1 가중치"
+ },
+ "scale_scene": {
+  "scene_id": "concept.cardiac",
+  "level": "ORGAN",
+  "title_ko": "심장주기 개념 모델",
+  "unit_note": "모양·크기는 교육용 개념 모델 (실제 비율 아님)",
+  "magnification_note": "심실 수축은 용적이 줄어드는 것을 보이게 한 축소이며 실제 모양 변화가 아니다. 단계 시간도 교육용 값이다.",
+  "actor_display_size": 0.05,
+  "follow": {
+   "distance": 0.6,
+   "height": 0.2,
+   "side": 0.2,
+   "smooth": 5
+  },
+  "view_direction": [
+   0,
+   0.1,
+   1
+  ]
+ },
+ "groups": [
+  {
+   "group_id": "concept.cardiac",
+   "name_ko": "심장주기 개념 모델",
+   "origin": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "backdrop": {
+    "radius": 7,
+    "color": "#1d2130"
+   },
+   "verification_status": "CONCEPTUAL",
+   "objects": [
+    {
+     "id": "cc.ra",
+     "name_ko": "우심방 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -0.36,
+      0.36,
+      0.0
+     ],
+     "radius": [
+      0.22,
+      0.18,
+      0.18
+     ],
+     "color": "#7d8fd6",
+     "opacity": 0.42,
+     "logical_id": "cv.right_atrium",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.82,
+        0.86,
+        0.82
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.la",
+     "name_ko": "좌심방 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      0.36,
+      0.38,
+      -0.06
+     ],
+     "radius": [
+      0.21,
+      0.17,
+      0.17
+     ],
+     "color": "#d67d7d",
+     "opacity": 0.42,
+     "logical_id": "cv.left_atrium",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.82,
+        0.86,
+        0.82
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.rv",
+     "name_ko": "우심실 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      -0.3,
+      -0.26,
+      0.05
+     ],
+     "radius": [
+      0.25,
+      0.32,
+      0.21
+     ],
+     "color": "#6f82cc",
+     "opacity": 0.42,
+     "logical_id": "cv.right_ventricle",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.76,
+        0.86,
+        0.76
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.lv",
+     "name_ko": "좌심실 (개념)",
+     "shape": "ellipsoid",
+     "center": [
+      0.3,
+      -0.27,
+      -0.01
+     ],
+     "radius": [
+      0.27,
+      0.35,
+      0.23
+     ],
+     "color": "#cc6f6f",
+     "opacity": 0.42,
+     "logical_id": "cv.left_ventricle",
+     "morphs": {
+      "contract": {
+       "scale": [
+        0.76,
+        0.86,
+        0.76
+       ]
+      }
+     }
+    },
+    {
+     "id": "cc.valve_tv",
+     "name_ko": "삼첨판 (개념, 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.085,
+     "center": [
+      -0.33,
+      0.12,
+      0.02
+     ],
+     "normal": [
+      0,
+      -1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.tricuspid",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_mv",
+     "name_ko": "승모판 (개념, 첨판 2)",
+     "shape": "leaflets",
+     "count": 2,
+     "radius": 0.085,
+     "center": [
+      0.33,
+      0.13,
+      -0.03
+     ],
+     "normal": [
+      0,
+      -1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.mitral",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_pv",
+     "name_ko": "폐동맥판 (개념, 반달 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.06,
+     "center": [
+      -0.12,
+      0.08,
+      0.2
+     ],
+     "normal": [
+      0.25,
+      1,
+      0.15
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.pulmonary",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.valve_av",
+     "name_ko": "대동맥판 (개념, 반달 첨판 3)",
+     "shape": "leaflets",
+     "count": 3,
+     "radius": 0.065,
+     "center": [
+      0.1,
+      0.06,
+      0.04
+     ],
+     "normal": [
+      -0.2,
+      1,
+      0
+     ],
+     "color": "#7a7f8c",
+     "logical_id": "cv.valve.aortic",
+     "morphs": {
+      "open": {
+       "angle_deg": 72
+      }
+     }
+    },
+    {
+     "id": "cc.svc",
+     "name_ko": "상대정맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       -0.42,
+       0.95,
+       0.0
+      ],
+      [
+       -0.4,
+       0.7,
+       0.0
+      ],
+      [
+       -0.37,
+       0.48,
+       0.0
+      ]
+     ],
+     "radius": 0.07,
+     "color": "#5a6fc0",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.pa",
+     "name_ko": "폐동맥줄기 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       -0.12,
+       0.08,
+       0.2
+      ],
+      [
+       -0.06,
+       0.45,
+       0.2
+      ],
+      [
+       0.05,
+       0.72,
+       0.15
+      ],
+      [
+       -0.25,
+       0.82,
+       0.1
+      ],
+      [
+       -0.6,
+       0.78,
+       0.05
+      ]
+     ],
+     "radius": 0.06,
+     "color": "#5a6fc0",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.pv",
+     "name_ko": "폐정맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.85,
+       0.48,
+       -0.12
+      ],
+      [
+       0.68,
+       0.42,
+       -0.08
+      ],
+      [
+       0.52,
+       0.4,
+       -0.06
+      ]
+     ],
+     "radius": 0.05,
+     "color": "#c05a5a",
+     "opacity": 0.4
+    },
+    {
+     "id": "cc.aorta",
+     "name_ko": "대동맥 (개념)",
+     "shape": "tube",
+     "points": [
+      [
+       0.1,
+       0.06,
+       0.04
+      ],
+      [
+       0.06,
+       0.5,
+       0.04
+      ],
+      [
+       0.15,
+       0.85,
+       0.0
+      ],
+      [
+       0.45,
+       0.9,
+       -0.08
+      ],
+      [
+       0.62,
+       0.65,
+       -0.12
+      ],
+      [
+       0.64,
+       0.2,
+       -0.14
+      ]
+     ],
+     "radius": 0.065,
+     "color": "#c05a5a",
+     "opacity": 0.4
+    }
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "animation_id": "valve.tricuspid.open",
+   "target_id": "cc.valve_tv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 350,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "개념 첨판을 경첩축으로 젖히는 교육용 형태. 실제 첨판 움직임이 아님. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "valve.tricuspid.close",
+   "target_id": "cc.valve_tv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 300,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "valve.mitral.open",
+   "target_id": "cc.valve_mv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 350,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "개념 첨판을 경첩축으로 젖히는 교육용 형태. 실제 첨판 움직임이 아님. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "valve.mitral.close",
+   "target_id": "cc.valve_mv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 300,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "valve.pulmonary.open",
+   "target_id": "cc.valve_pv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 350,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "개념 첨판을 경첩축으로 젖히는 교육용 형태. 실제 첨판 움직임이 아님. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "valve.pulmonary.close",
+   "target_id": "cc.valve_pv",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 300,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "valve.aortic.open",
+   "target_id": "cc.valve_av",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 350,
+   "easing": "ease_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "개념 첨판을 경첩축으로 젖히는 교육용 형태. 실제 첨판 움직임이 아님. 시간은 교육용 값."
+  },
+  {
+   "animation_id": "valve.aortic.close",
+   "target_id": "cc.valve_av",
+   "animation_type": "morph",
+   "morph_target": "open",
+   "duration_ms": 300,
+   "easing": "ease_in",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.ra.contract",
+   "target_id": "cc.ra",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 700,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "용적 감소를 보이게 한 교육용 축소. 실제 비율·모양 아님."
+  },
+  {
+   "animation_id": "cc.ra.relax",
+   "target_id": "cc.ra",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.la.contract",
+   "target_id": "cc.la",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 700,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "용적 감소를 보이게 한 교육용 축소. 실제 비율·모양 아님."
+  },
+  {
+   "animation_id": "cc.la.relax",
+   "target_id": "cc.la",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.rv.contract",
+   "target_id": "cc.rv",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 700,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "용적 감소를 보이게 한 교육용 축소. 실제 비율·모양 아님."
+  },
+  {
+   "animation_id": "cc.rv.relax",
+   "target_id": "cc.rv",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.lv.contract",
+   "target_id": "cc.lv",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 700,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 1,
+     "value": 1
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "용적 감소를 보이게 한 교육용 축소. 실제 비율·모양 아님."
+  },
+  {
+   "animation_id": "cc.lv.relax",
+   "target_id": "cc.lv",
+   "animation_type": "morph",
+   "morph_target": "contract",
+   "duration_ms": 900,
+   "easing": "ease_in_out",
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.rv.pressure_up",
+   "target_id": "cc.rv",
+   "animation_type": "material",
+   "duration_ms": 500,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "color": "#6f82cc"
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "color": "#e8a33d"
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "심실 압력이 오르는 구간 표시용 색. 수치 아님."
+  },
+  {
+   "animation_id": "cc.rv.pressure_down",
+   "target_id": "cc.rv",
+   "animation_type": "material",
+   "duration_ms": 500,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "color": "#e8a33d"
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "color": "#6f82cc"
+     }
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.lv.pressure_up",
+   "target_id": "cc.lv",
+   "animation_type": "material",
+   "duration_ms": 500,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "color": "#cc6f6f"
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "color": "#e8a33d"
+     }
+    }
+   ],
+   "restore_on_cancel": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "심실 압력이 오르는 구간 표시용 색. 수치 아님."
+  },
+  {
+   "animation_id": "cc.lv.pressure_down",
+   "target_id": "cc.lv",
+   "animation_type": "material",
+   "duration_ms": 500,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": {
+      "color": "#e8a33d"
+     }
+    },
+    {
+     "time": 1,
+     "value": {
+      "color": "#cc6f6f"
+     }
+    }
+   ],
+   "verification_status": "CONCEPTUAL"
+  },
+  {
+   "animation_id": "cc.aorta.pulse",
+   "target_id": "cc.aorta",
+   "animation_type": "procedural",
+   "procedure": "deform_cycle",
+   "duration_ms": 600,
+   "params": {
+    "period_ms": 600,
+    "scale": 1.12
+   },
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "장식용 반복. Non-blocking."
+  },
+  {
+   "animation_id": "cc.pa.pulse",
+   "target_id": "cc.pa",
+   "animation_type": "procedural",
+   "procedure": "deform_cycle",
+   "duration_ms": 600,
+   "params": {
+    "period_ms": 600,
+    "scale": 1.12
+   },
+   "loop": true,
+   "verification_status": "CONCEPTUAL",
+   "notes": "장식용 반복. Non-blocking."
+  }
+ ],
+ "structures": [
+  {
+   "structure_id": "valve.tricuspid",
+   "name_ko": "삼첨판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "valve.tricuspid.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "valve.tricuspid.close"
+    }
+   },
+   "indicators": [
+    {
+     "target": "cc.valve_tv",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#7a7f8c"
+     }
+    },
+    {
+     "target": "cv.valve.tricuspid",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#8a8f9c"
+     },
+     "real_model": true
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "실제 모델(BodyParts3D) 판막은 첨판 리깅이 없어 움직이지 않는다. 색으로 상태만 표시한다."
+  },
+  {
+   "structure_id": "valve.mitral",
+   "name_ko": "승모판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "valve.mitral.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "valve.mitral.close"
+    }
+   },
+   "indicators": [
+    {
+     "target": "cc.valve_mv",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#7a7f8c"
+     }
+    },
+    {
+     "target": "cv.valve.mitral",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#8a8f9c"
+     },
+     "real_model": true
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "실제 모델(BodyParts3D) 판막은 첨판 리깅이 없어 움직이지 않는다. 색으로 상태만 표시한다."
+  },
+  {
+   "structure_id": "valve.pulmonary",
+   "name_ko": "폐동맥판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "valve.pulmonary.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "valve.pulmonary.close"
+    }
+   },
+   "indicators": [
+    {
+     "target": "cc.valve_pv",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#7a7f8c"
+     }
+    },
+    {
+     "target": "cv.valve.pulmonary",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#8a8f9c"
+     },
+     "real_model": true
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "실제 모델(BodyParts3D) 판막은 첨판 리깅이 없어 움직이지 않는다. 색으로 상태만 표시한다."
+  },
+  {
+   "structure_id": "valve.aortic",
+   "name_ko": "대동맥판",
+   "kind": "valve",
+   "states": [
+    "CLOSED",
+    "OPENING",
+    "OPEN",
+    "CLOSING"
+   ],
+   "initial": "CLOSED",
+   "transitions": {
+    "CLOSED->OPEN": {
+     "via": "OPENING",
+     "animation": "valve.aortic.open"
+    },
+    "OPEN->CLOSED": {
+     "via": "CLOSING",
+     "animation": "valve.aortic.close"
+    }
+   },
+   "indicators": [
+    {
+     "target": "cc.valve_av",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#7a7f8c"
+     }
+    },
+    {
+     "target": "cv.valve.aortic",
+     "state_colors": {
+      "OPEN": "#3cb371",
+      "OPENING": "#9acd32",
+      "CLOSING": "#e0a040",
+      "CLOSED": "#8a8f9c"
+     },
+     "real_model": true
+    }
+   ],
+   "verification_status": "CONCEPTUAL",
+   "notes": "실제 모델(BodyParts3D) 판막은 첨판 리깅이 없어 움직이지 않는다. 색으로 상태만 표시한다."
+  }
+ ],
+ "timelines": [
+  {
+   "timeline_id": "cc.phase.filling",
+   "blocking": true,
+   "name_ko": "심실 충만",
+   "steps": [
+    {
+     "type": "marker",
+     "name": "phase",
+     "phase": 5,
+     "label": "후기 심실확장기 (심실 충만기)"
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "animation_stop",
+      "target": "cc.aorta.pulse",
+      "restore": true
+     },
+     "wait": false
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "animation_stop",
+      "target": "cc.pa.pulse",
+      "restore": true
+     },
+     "wait": false
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "state",
+       "set": {
+        "valve.tricuspid": "OPEN",
+        "valve.mitral": "OPEN",
+        "valve.pulmonary": "CLOSED",
+        "valve.aortic": "CLOSED"
+       },
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.lv.relax",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.rv.relax",
+       "wait": true
+      }
+     ]
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "rbc_01",
+      "checkpoint_id": "cp.cc.la"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "rbc_right",
+      "checkpoint_id": "cp.cc.ra"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "rbc_01",
+        "checkpoint_id": "cp.cc.lv_fill",
+        "duration": 1800
+       },
+       "wait": true,
+       "through": [
+        "valve.mitral"
+       ]
+      },
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "rbc_right",
+        "checkpoint_id": "cp.cc.rv",
+        "duration": 1800
+       },
+       "wait": true,
+       "through": [
+        "valve.tricuspid"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.phase.atrial_systole",
+   "blocking": true,
+   "name_ko": "심방수축",
+   "steps": [
+    {
+     "type": "marker",
+     "name": "phase",
+     "phase": 1,
+     "label": "심방수축기"
+    },
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "OPEN",
+      "valve.mitral": "OPEN",
+      "valve.pulmonary": "CLOSED",
+      "valve.aortic": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "cc.ra.contract",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.la.contract",
+       "wait": true
+      },
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "rbc_01",
+        "checkpoint_id": "cp.cc.lv",
+        "duration": 900
+       },
+       "wait": true,
+       "through": [
+        "valve.mitral"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "cc.ra.relax",
+       "wait": false
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.la.relax",
+       "wait": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.phase.isovolumetric_contraction",
+   "blocking": true,
+   "name_ko": "등용적 수축",
+   "steps": [
+    {
+     "type": "marker",
+     "name": "phase",
+     "phase": 2,
+     "label": "전기 심실수축기 (등용적 수축)"
+    },
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "CLOSED",
+      "valve.mitral": "CLOSED",
+      "valve.pulmonary": "CLOSED",
+      "valve.aortic": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "cc.lv.pressure_up",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.rv.pressure_up",
+       "wait": true
+      }
+     ]
+    },
+    {
+     "type": "delay",
+     "ms": 300
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.phase.ejection",
+   "blocking": true,
+   "name_ko": "심실 박출",
+   "steps": [
+    {
+     "type": "marker",
+     "name": "phase",
+     "phase": 3,
+     "label": "후기 심실수축기 (심실 박출)"
+    },
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "CLOSED",
+      "valve.mitral": "CLOSED",
+      "valve.pulmonary": "OPEN",
+      "valve.aortic": "OPEN"
+     },
+     "wait": true
+    },
+    {
+     "type": "animation",
+     "animation_id": "cc.aorta.pulse",
+     "wait": false
+    },
+    {
+     "type": "animation",
+     "animation_id": "cc.pa.pulse",
+     "wait": false
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_set_path",
+      "target": "rbc_01",
+      "path_id": "cc.left_eject"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_set_path",
+      "target": "rbc_right",
+      "path_id": "cc.right_eject"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "cc.lv.contract",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.rv.contract",
+       "wait": true
+      },
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "rbc_01",
+        "checkpoint_id": "cp.cc.aorta",
+        "duration": 1600
+       },
+       "wait": true,
+       "through": [
+        "valve.aortic"
+       ]
+      },
+      {
+       "type": "command",
+       "command": {
+        "action": "actor_move_to_checkpoint",
+        "target": "rbc_right",
+        "checkpoint_id": "cp.cc.pa",
+        "duration": 1600
+       },
+       "wait": true,
+       "through": [
+        "valve.pulmonary"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.phase.isovolumetric_relaxation",
+   "blocking": true,
+   "name_ko": "등용적 이완",
+   "steps": [
+    {
+     "type": "marker",
+     "name": "phase",
+     "phase": 4,
+     "label": "전기 심실확장기 (등용적 이완)"
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "animation_stop",
+      "target": "cc.aorta.pulse",
+      "restore": true
+     },
+     "wait": false
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "animation_stop",
+      "target": "cc.pa.pulse",
+      "restore": true
+     },
+     "wait": false
+    },
+    {
+     "type": "state",
+     "set": {
+      "valve.tricuspid": "CLOSED",
+      "valve.mitral": "CLOSED",
+      "valve.pulmonary": "CLOSED",
+      "valve.aortic": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "cc.lv.pressure_down",
+       "wait": true
+      },
+      {
+       "type": "animation",
+       "animation_id": "cc.rv.pressure_down",
+       "wait": true
+      }
+     ]
+    },
+    {
+     "type": "delay",
+     "ms": 300
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.cycle.observe",
+   "blocking": false,
+   "name_ko": "심장주기 한 바퀴 (관찰)",
+   "steps": [
+    {
+     "type": "command",
+     "command": {
+      "action": "timeline_play",
+      "target": "cc.phase.filling"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "timeline_play",
+      "target": "cc.phase.atrial_systole"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "timeline_play",
+      "target": "cc.phase.isovolumetric_contraction"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "timeline_play",
+      "target": "cc.phase.ejection"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "timeline_play",
+      "target": "cc.phase.isovolumetric_relaxation"
+     },
+     "wait": true
+    }
+   ]
+  },
+  {
+   "timeline_id": "cc.test.closed_valve_move",
+   "blocking": true,
+   "name_ko": "(시험) 닫힌 판막 통과 시도",
+   "steps": [
+    {
+     "type": "state",
+     "set": {
+      "valve.mitral": "CLOSED"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_place_at_checkpoint",
+      "target": "rbc_01",
+      "checkpoint_id": "cp.cc.la"
+     },
+     "wait": true
+    },
+    {
+     "type": "command",
+     "command": {
+      "action": "actor_move_to_checkpoint",
+      "target": "rbc_01",
+      "checkpoint_id": "cp.cc.lv_fill",
+      "duration": 800
+     },
+     "wait": true,
+     "through": [
+      "valve.mitral"
+     ]
+    }
+   ]
+  }
+ ],
+ "phases": [
+  {
+   "phase": 5,
+   "phase_key": "filling",
+   "name_ko": "후기 심실확장기 (심실 충만기)",
+   "atria": "이완",
+   "ventricles": "이완",
+   "av_valves": "열림",
+   "semilunar_valves": "닫힘",
+   "flow": "심방 → 심실 (방실판막을 지나 채워짐)",
+   "pressure_relation": "심실 < 심방, 심실 < 동맥",
+   "heart_sound": "S3: 이완기 초기 빠른 충만 때 들릴 수 있음",
+   "visual_state": {
+    "valve.tricuspid": "OPEN",
+    "valve.mitral": "OPEN",
+    "valve.pulmonary": "CLOSED",
+    "valve.aortic": "CLOSED"
+   },
+   "lecture_refs": [
+    "HA6 p5 그림 ⑤",
+    "교재 p614"
+   ],
+   "timeline_id": "cc.phase.filling",
+   "end_state": {
+    "morph": {
+     "cc.lv": {
+      "contract": 0
+     },
+     "cc.rv": {
+      "contract": 0
+     },
+     "cc.la": {
+      "contract": 0
+     },
+     "cc.ra": {
+      "contract": 0
+     }
+    },
+    "tint": {},
+    "actors": {
+     "rbc_01": "cp.cc.lv_fill",
+     "rbc_right": "cp.cc.rv"
+    }
+   }
+  },
+  {
+   "phase": 1,
+   "phase_key": "atrial_systole",
+   "name_ko": "심방수축기",
+   "atria": "수축",
+   "ventricles": "이완",
+   "av_valves": "열림",
+   "semilunar_valves": "닫힘",
+   "flow": "심방 → 심실 (마지막 충만)",
+   "pressure_relation": "심실 < 심방, 심실 < 동맥",
+   "heart_sound": "S4: 이완기 말 심방수축 때 들릴 수 있음",
+   "visual_state": {
+    "valve.tricuspid": "OPEN",
+    "valve.mitral": "OPEN",
+    "valve.pulmonary": "CLOSED",
+    "valve.aortic": "CLOSED"
+   },
+   "lecture_refs": [
+    "HA6 p5 그림 ①",
+    "교재 p614"
+   ],
+   "timeline_id": "cc.phase.atrial_systole",
+   "end_state": {
+    "morph": {
+     "cc.lv": {
+      "contract": 0
+     },
+     "cc.rv": {
+      "contract": 0
+     },
+     "cc.la": {
+      "contract": 0
+     },
+     "cc.ra": {
+      "contract": 0
+     }
+    },
+    "tint": {},
+    "actors": {
+     "rbc_01": "cp.cc.lv",
+     "rbc_right": "cp.cc.rv"
+    }
+   }
+  },
+  {
+   "phase": 2,
+   "phase_key": "isovolumetric_contraction",
+   "name_ko": "전기 심실수축기 (등용적 수축)",
+   "atria": "이완",
+   "ventricles": "수축 (용적 일정)",
+   "av_valves": "닫힘",
+   "semilunar_valves": "닫힘",
+   "flow": "판막을 지나는 이동 없음",
+   "pressure_relation": "심실 > 심방, 심실 < 동맥",
+   "heart_sound": "S1: 방실판막이 닫힐 때",
+   "visual_state": {
+    "valve.tricuspid": "CLOSED",
+    "valve.mitral": "CLOSED",
+    "valve.pulmonary": "CLOSED",
+    "valve.aortic": "CLOSED"
+   },
+   "lecture_refs": [
+    "HA6 p5 그림 ②",
+    "HA6 p17"
+   ],
+   "timeline_id": "cc.phase.isovolumetric_contraction",
+   "end_state": {
+    "morph": {
+     "cc.lv": {
+      "contract": 0
+     },
+     "cc.rv": {
+      "contract": 0
+     },
+     "cc.la": {
+      "contract": 0
+     },
+     "cc.ra": {
+      "contract": 0
+     }
+    },
+    "tint": {
+     "cc.lv": "#e8a33d",
+     "cc.rv": "#e8a33d"
+    },
+    "actors": {
+     "rbc_01": "cp.cc.lv",
+     "rbc_right": "cp.cc.rv"
+    }
+   }
+  },
+  {
+   "phase": 3,
+   "phase_key": "ejection",
+   "name_ko": "후기 심실수축기 (심실 박출)",
+   "atria": "이완",
+   "ventricles": "수축",
+   "av_valves": "닫힘",
+   "semilunar_valves": "열림",
+   "flow": "심실 → 대동맥·폐동맥줄기",
+   "pressure_relation": "심실 > 심방, 심실 > 동맥",
+   "heart_sound": "",
+   "visual_state": {
+    "valve.tricuspid": "CLOSED",
+    "valve.mitral": "CLOSED",
+    "valve.pulmonary": "OPEN",
+    "valve.aortic": "OPEN"
+   },
+   "lecture_refs": [
+    "HA6 p5 그림 ③"
+   ],
+   "timeline_id": "cc.phase.ejection",
+   "end_state": {
+    "morph": {
+     "cc.lv": {
+      "contract": 1
+     },
+     "cc.rv": {
+      "contract": 1
+     },
+     "cc.la": {
+      "contract": 0
+     },
+     "cc.ra": {
+      "contract": 0
+     }
+    },
+    "tint": {
+     "cc.lv": "#e8a33d",
+     "cc.rv": "#e8a33d"
+    },
+    "actors": {
+     "rbc_01": "cp.cc.aorta",
+     "rbc_right": "cp.cc.pa"
+    }
+   }
+  },
+  {
+   "phase": 4,
+   "phase_key": "isovolumetric_relaxation",
+   "name_ko": "전기 심실확장기 (등용적 이완)",
+   "atria": "이완",
+   "ventricles": "이완 (용적 일정)",
+   "av_valves": "닫힘",
+   "semilunar_valves": "닫힘",
+   "flow": "판막을 지나는 이동 없음",
+   "pressure_relation": "심실 > 심방, 심실 < 동맥",
+   "heart_sound": "S2: 반월판막이 닫힐 때",
+   "visual_state": {
+    "valve.tricuspid": "CLOSED",
+    "valve.mitral": "CLOSED",
+    "valve.pulmonary": "CLOSED",
+    "valve.aortic": "CLOSED"
+   },
+   "lecture_refs": [
+    "HA6 p5 그림 ④",
+    "교재 p614"
+   ],
+   "timeline_id": "cc.phase.isovolumetric_relaxation",
+   "end_state": {
+    "morph": {
+     "cc.lv": {
+      "contract": 1
+     },
+     "cc.rv": {
+      "contract": 1
+     },
+     "cc.la": {
+      "contract": 0
+     },
+     "cc.ra": {
+      "contract": 0
+     }
+    },
+    "tint": {},
+    "actors": {
+     "rbc_01": "cp.cc.aorta",
+     "rbc_right": "cp.cc.pa"
+    }
+   }
+  }
+ ],
+ "motion": {
+  "scene_id": "concept.cardiac",
+  "marker_size": 0.02,
+  "follow": {
+   "distance": 0.6,
+   "height": 0.2,
+   "side": 0.2,
+   "smooth": 5
+  },
+  "paths": [
+   {
+    "path_id": "cc.left_fill",
+    "name_ko": "좌심방 → 승모판 → 좌심실 (개념)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.36,
+       0.38,
+       -0.06
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.33,
+       0.21,
+       -0.03
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.33,
+       0.13,
+       -0.03
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.31,
+       0.01,
+       -0.03
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.3,
+       -0.18,
+       0.0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.28,
+       -0.32,
+       0.0
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.cc.la",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "좌심방"
+     },
+     {
+      "checkpoint_id": "cp.cc.mitral",
+      "path_progress": 0.33,
+      "stop_on_arrival": false,
+      "label": "승모판"
+     },
+     {
+      "checkpoint_id": "cp.cc.lv_fill",
+      "path_progress": 0.72,
+      "stop_on_arrival": true,
+      "label": "좌심실 (빠른 충만)"
+     },
+     {
+      "checkpoint_id": "cp.cc.lv",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "좌심실 (충만 끝)"
+     }
+    ],
+    "links": [
+     {
+      "to": "cc.left_eject"
+     }
+    ],
+    "source": "project concept model",
+    "notes": "개념 모델 경로. 해부학 경로 아님."
+   },
+   {
+    "path_id": "cc.left_eject",
+    "name_ko": "좌심실 → 대동맥판 → 대동맥 (개념)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       100.28,
+       -0.32,
+       0.0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.18,
+       -0.12,
+       0.03
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.1,
+       0.0,
+       0.04
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.1,
+       0.06,
+       0.04
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.06,
+       0.5,
+       0.04
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.15,
+       0.85,
+       0.0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.45,
+       0.9,
+       -0.08
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.cc.lv_out",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "좌심실"
+     },
+     {
+      "checkpoint_id": "cp.cc.av",
+      "path_progress": 0.3,
+      "stop_on_arrival": false,
+      "label": "대동맥판"
+     },
+     {
+      "checkpoint_id": "cp.cc.aorta",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "대동맥"
+     }
+    ],
+    "source": "project concept model",
+    "notes": "개념 모델 경로."
+   },
+   {
+    "path_id": "cc.right_fill",
+    "name_ko": "우심방 → 삼첨판 → 우심실 (개념)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       99.64,
+       0.36,
+       0.0
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.67,
+       0.2,
+       0.02
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.67,
+       0.12,
+       0.02
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.67,
+       0.0,
+       0.02
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.7,
+       -0.3,
+       0.05
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.cc.ra",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "우심방"
+     },
+     {
+      "checkpoint_id": "cp.cc.rv",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "우심실"
+     }
+    ],
+    "links": [
+     {
+      "to": "cc.right_eject"
+     }
+    ],
+    "source": "project concept model"
+   },
+   {
+    "path_id": "cc.right_eject",
+    "name_ko": "우심실 → 폐동맥판 → 폐동맥 (개념)",
+    "curve_type": "catmull_rom",
+    "verification_status": "CONCEPTUAL",
+    "points": [
+     {
+      "space": "scene",
+      "position": [
+       99.7,
+       -0.3,
+       0.05
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.8,
+       -0.08,
+       0.15
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.86,
+       0.02,
+       0.2
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.88,
+       0.08,
+       0.2
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.94,
+       0.45,
+       0.2
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       100.05,
+       0.72,
+       0.15
+      ]
+     },
+     {
+      "space": "scene",
+      "position": [
+       99.75,
+       0.82,
+       0.1
+      ]
+     }
+    ],
+    "checkpoints": [
+     {
+      "checkpoint_id": "cp.cc.rv_out",
+      "path_progress": 0,
+      "stop_on_arrival": false,
+      "label": "우심실"
+     },
+     {
+      "checkpoint_id": "cp.cc.pa",
+      "path_progress": 1,
+      "stop_on_arrival": true,
+      "label": "폐동맥"
+     }
+    ],
+    "source": "project concept model"
+   }
+  ],
+  "actors": [
+   {
+    "actor_id": "rbc_01",
+    "actor_type": "red_blood_cell",
+    "model_id": "rbc",
+    "name": "적혈구 (교육용 확대)",
+    "display_size": 0.05,
+    "path_id": "cc.left_fill",
+    "speed": 0.4,
+    "rotation_mode": "tangent",
+    "biological_state": {
+     "oxygenation": "oxygenated"
+    }
+   },
+   {
+    "actor_id": "rbc_right",
+    "actor_type": "red_blood_cell",
+    "model_id": "rbc",
+    "name": "적혈구 (오른쪽, 장식)",
+    "display_size": 0.05,
+    "path_id": "cc.right_fill",
+    "speed": 0.4,
+    "rotation_mode": "tangent",
+    "biological_state": {
+     "oxygenation": "deoxygenated"
+    }
+   }
+  ]
+ },
+ "labels": [
+  {
+   "text": "우심방",
+   "position": [
+    99.64,
+    0.6,
+    0.1
+   ]
+  },
+  {
+   "text": "좌심방",
+   "position": [
+    100.4,
+    0.62,
+    0.0
+   ]
+  },
+  {
+   "text": "우심실",
+   "position": [
+    99.58,
+    -0.6,
+    0.15
+   ]
+  },
+  {
+   "text": "좌심실",
+   "position": [
+    100.42,
+    -0.62,
+    0.1
+   ]
+  },
+  {
+   "text": "대동맥",
+   "position": [
+    100.5,
+    0.98,
+    -0.05
+   ]
+  },
+  {
+   "text": "폐동맥줄기",
+   "position": [
+    99.55,
+    0.92,
+    0.1
+   ]
+  }
+ ]
+}

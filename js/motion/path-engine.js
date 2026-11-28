@@ -5,6 +5,9 @@
 //     { anchor_id }                                  → Anchor Manager가 장면 좌표로 바꿔 준다(object-local Anchor 포함)
 //     { space: 'object_local', object_id, position } → 레지스트리 객체의 matrixWorld × position
 //     { space: 'scene', position }                   → 그대로
+//     { space: 'mesh_vertex', object_id, vertex_index } → (STEP 04-B) Morph 변형까지 반영한 정점 위치.
+//        object_local과 Anchor는 객체 Transform만 따라가고 Mesh 변형(Morph)은 따라가지 않는다. 변형을 따라야 하는 점에 쓴다.
+//        setVertexResolver(fn)로 animation-kit의 morph.deformedVertex를 연결해야 계산된다. 가중치가 바뀌면 곡선을 다시 만든다.
 // - 모델 가공 때 적용한 축·단위 변환(glTF)은 이미 GLB에 들어 있으므로 여기서 다시 적용하지 않는다.
 // - 점이 참조하는 객체가 움직이면(matrixWorld 변경) 다음 프레임에 곡선과 길이 캐시를 다시 만든다.
 //
@@ -52,7 +55,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
   // ---------- 점 해석 ----------
   function objectOfPoint(p) {
     if (p.anchor_id) return null;
-    if (p.space === 'object_local' && p.object_id && registry.has(p.object_id)) return registry.get(p.object_id).object3D;
+    if ((p.space === 'object_local' || p.space === 'mesh_vertex') && p.object_id && registry.has(p.object_id)) return registry.get(p.object_id).object3D;
     return null;
   }
 
@@ -61,6 +64,14 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     if (p.anchor_id) {
       if (!anchors) return null;
       const w = anchors.worldOf(p.anchor_id);
+      return w ? out.copy(w) : null;
+    }
+    // STEP 04-B: 변형되는 Mesh의 정점에 묶인 점 (Morph 변형을 따라간다). object_local은 Transform만 따라간다.
+    if (p.space === 'mesh_vertex') {
+      const obj = objectOfPoint(p);
+      if (!obj || !vertexResolver || !Number.isInteger(p.vertex_index)) return null;
+      const mesh = obj.isMesh ? obj : null;
+      const w = mesh ? vertexResolver(mesh, p.vertex_index) : null;
       return w ? out.copy(w) : null;
     }
     if (!isVec3(p.position)) return null;
@@ -97,6 +108,18 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     return null;
   }
 
+  // mesh_vertex 점이 쓰는 Mesh의 Morph 가중치 (바뀌면 곡선을 다시 만든다)
+  let vertexResolver = null;
+  function morphSignature(def) {
+    let sig = '';
+    for (const p of def.points) {
+      if (p.space !== 'mesh_vertex') continue;
+      const o = objectOfPoint(p);
+      if (o && o.morphTargetInfluences) sig += o.morphTargetInfluences.map((w) => w.toFixed(4)).join(',') + ';';
+    }
+    return sig;
+  }
+
   // ---------- 곡선과 캐시 ----------
   function build(id) {
     const rec = paths.get(id);
@@ -126,6 +149,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     rec.cache = {
       curve, points: pts, missing, length,
       objects: objs, matrices: objs.map((o) => { o.updateWorldMatrix(true, false); return o.matrixWorld.clone(); }),
+      morphSig: morphSignature(def),
       checkpoints: resolveCheckpoints(def, curve, length),
     };
     updateView(id);
@@ -177,6 +201,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
         o.updateWorldMatrix(true, false);
         if (!o.matrixWorld.equals(c.matrices[i])) { build(id); emit('rebuild', { id }); break; }
       }
+      if (c.morphSig && rec.cache === c && morphSignature(rec.def) !== c.morphSig) { build(id); emit('rebuild', { id }); }
     }
   }
 
@@ -277,7 +302,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
       if (ids.has(p.path_id)) errors.push(`#${i + 1}: 경로 ID 중복 ${p.path_id}`);
       ids.add(p.path_id);
       (p.points || []).forEach((pt, j) => {
-        if (!pt.anchor_id && !isVec3(pt.position)) errors.push(`${p.path_id} 점 ${j + 1}: 좌표가 숫자 3개가 아닙니다 (NaN·무한대 포함)`);
+        if (!pt.anchor_id && pt.space !== 'mesh_vertex' && !isVec3(pt.position)) errors.push(`${p.path_id} 점 ${j + 1}: 좌표가 숫자 3개가 아닙니다 (NaN·무한대 포함)`);
       });
     });
     return { ok: errors.length === 0, errors };
@@ -293,7 +318,8 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     const c = cacheOf(id);
     for (const p of def.points) {
       if (p.anchor_id && anchors && !anchors.get(p.anchor_id)) errors.push(`${id}: 없는 Anchor ${p.anchor_id}`);
-      if (p.space === 'object_local' && !registry.has(p.object_id)) errors.push(`${id}: 없는 객체 ${p.object_id}`);
+      if ((p.space === 'object_local' || p.space === 'mesh_vertex') && !registry.has(p.object_id)) errors.push(`${id}: 없는 객체 ${p.object_id}`);
+      if (p.space === 'mesh_vertex' && !Number.isInteger(p.vertex_index)) errors.push(`${id}: mesh_vertex 점에 vertex_index가 없습니다`);
       if (!p.anchor_id && p.position && !isVec3(p.position)) errors.push(`${id}: 잘못된 좌표`);
     }
     if (c.missing.length) errors.push(`${id}: 계산할 수 없는 점 ${c.missing.map((i) => i + 1).join(', ')}번`);
@@ -637,6 +663,7 @@ export function createPathEngine({ scene, registry, anchors = null, log = () => 
     create,
     snapshot,
     restore,
+    setVertexResolver(fn) { vertexResolver = fn; for (const id of paths.keys()) build(id); },
     remove,
     update,
     insertPoint,

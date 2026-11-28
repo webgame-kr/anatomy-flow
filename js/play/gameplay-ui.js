@@ -101,7 +101,8 @@ export function createGameplayUi({ game, mode, session, engine }) {
     vars.innerHTML = '';
     const declared = Object.keys((game.lesson && game.lesson.variables) || {});
     for (const key of declared) {
-      const [label, map] = VAR_LABEL[key] || [key, {}];
+      const custom = game.lesson && game.lesson.variable_labels && game.lesson.variable_labels[key];
+      const [label, map] = VAR_LABEL[key] || [custom || key, {}];
       let value = v.vars[key];
       if (key === 'current_structure' && value === '') value = '-';
       vars.append(el('dt', '', label), el('dd', '', map[value] || String(value)));

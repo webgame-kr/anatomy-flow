@@ -1,0 +1,252 @@
+{
+ "version": 1,
+ "scene_id": "anim_c",
+ "verification_status": "TEST",
+ "description": "Animation Test C: 순차·병렬·반복·지연 타임라인, Blocking과 Non-blocking 구분",
+ "groups": [
+  {
+   "group_id": "test.timeline",
+   "name_ko": "타임라인 시험 모델",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "backdrop": null,
+   "verification_status": "TEST",
+   "objects": [
+    {
+     "id": "tl_a",
+     "name_ko": "시험 구 A",
+     "shape": "sphere",
+     "radius": 0.22,
+     "center": [
+      -1.0,
+      0.5,
+      0
+     ],
+     "color": "#e5484d",
+     "morphs": {
+      "inflate": {
+       "scale": [
+        1.5,
+        1.5,
+        1.5
+       ]
+      }
+     }
+    },
+    {
+     "id": "tl_b",
+     "name_ko": "시험 구 B",
+     "shape": "sphere",
+     "radius": 0.22,
+     "center": [
+      0.0,
+      0.5,
+      0
+     ],
+     "color": "#46a758",
+     "morphs": {
+      "inflate": {
+       "scale": [
+        1.5,
+        1.5,
+        1.5
+       ]
+      }
+     }
+    },
+    {
+     "id": "tl_c",
+     "name_ko": "시험 구 C",
+     "shape": "sphere",
+     "radius": 0.22,
+     "center": [
+      1.0,
+      0.5,
+      0
+     ],
+     "color": "#2f6fde",
+     "morphs": {
+      "inflate": {
+       "scale": [
+        1.5,
+        1.5,
+        1.5
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "animation_id": "c.pop_a",
+   "target_id": "tl_a",
+   "animation_type": "morph",
+   "morph_target": "inflate",
+   "duration_ms": 600,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 0.5,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "c.pop_b",
+   "target_id": "tl_b",
+   "animation_type": "morph",
+   "morph_target": "inflate",
+   "duration_ms": 600,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 0.5,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "c.pop_c",
+   "target_id": "tl_c",
+   "animation_type": "morph",
+   "morph_target": "inflate",
+   "duration_ms": 600,
+   "keyframes": [
+    {
+     "time": 0,
+     "value": 0
+    },
+    {
+     "time": 0.5,
+     "value": 1
+    },
+    {
+     "time": 1,
+     "value": 0
+    }
+   ],
+   "verification_status": "TEST"
+  },
+  {
+   "animation_id": "c.decor_spin",
+   "target_id": "tl_b",
+   "animation_type": "procedural",
+   "procedure": "pulse",
+   "duration_ms": 500,
+   "params": {
+    "period_ms": 500,
+    "amplitude": 0.15
+   },
+   "loop": true,
+   "verification_status": "TEST",
+   "notes": "끝나지 않는 장식 애니메이션"
+  }
+ ],
+ "timelines": [
+  {
+   "timeline_id": "c.sequence",
+   "blocking": true,
+   "steps": [
+    {
+     "type": "animation",
+     "animation_id": "c.pop_a"
+    },
+    {
+     "type": "animation",
+     "animation_id": "c.pop_b"
+    },
+    {
+     "type": "animation",
+     "animation_id": "c.pop_c"
+    }
+   ]
+  },
+  {
+   "timeline_id": "c.parallel",
+   "blocking": true,
+   "steps": [
+    {
+     "type": "parallel",
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "c.pop_a"
+      },
+      {
+       "type": "animation",
+       "animation_id": "c.pop_b"
+      },
+      {
+       "type": "animation",
+       "animation_id": "c.pop_c"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "c.repeat_delay",
+   "blocking": true,
+   "steps": [
+    {
+     "type": "repeat",
+     "count": 3,
+     "steps": [
+      {
+       "type": "animation",
+       "animation_id": "c.pop_a"
+      },
+      {
+       "type": "delay",
+       "ms": 200
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "timeline_id": "c.blocking_with_decor",
+   "blocking": true,
+   "steps": [
+    {
+     "type": "animation",
+     "animation_id": "c.decor_spin",
+     "wait": false
+    },
+    {
+     "type": "marker",
+     "name": "decor_started"
+    },
+    {
+     "type": "animation",
+     "animation_id": "c.pop_c"
+    },
+    {
+     "type": "marker",
+     "name": "blocking_done"
+    }
+   ]
+  }
+ ]
+}

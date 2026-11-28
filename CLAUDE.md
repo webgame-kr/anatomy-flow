@@ -3,7 +3,7 @@
 ## 프로젝트
 실시간 3D 인체 모델에서 간호학·해부생리학 기전을 타이핑과 시각적 이동으로 학습하는 웹게임.
 GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔드·DB·유료 API는 쓰지 않는다.
-현재 단계는 STEP 04-A(중심선 경로, 경로 검증 상태, 다중 스케일 개념 장면, 심장 내부 보기)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
+현재 단계는 STEP 04-B(애니메이션·타임라인·Morph·변형 엔진, 심장주기 개념 모델)까지 진행했다. 보고서는 `docs/development/STEP_04A_REPORT.md`, `docs/development/STEP_04B_REPORT.md`다. 학습자 화면은 `play.html`이다. 엔진 구조는 `docs/ARCHITECTURE.md`, 사용법은 README의 "STEP 02 엔진", "STEP 03-B Anatomy Explorer", "STEP 03-C 이동 엔진"에 있다. 이동 데이터 형식은 `docs/development/MOTION_DATA_SPEC.md`에 있다.
 
 ## 아키텍처 원칙
 - **실시간 3D 전용:** Three.js 0.160.0(WebGL)만 쓴다. 2D SVG 엔진은 쓰지 않는다(기록은 태그 `v0.1-svg`).
@@ -195,8 +195,35 @@ GitHub Pages 정적 사이트(webgame-kr/anatomy-flow)로 운영하며, 백엔�
 - **단면:** clipping-controller는 기본으로 `actor` type을 자르지 않는다. Play 보기 모드(`engine.setViewMode`)는 바꿀 때마다 `clipping.reset()`으로 재질을 되돌린다.
 - **테스트:** 이동·명령을 바꾸면 `tests/motion-tests.html`(32개), `python tests/test_motion_commands.py`(37개), `python tests/test_lesson.py`(63개)를 실행한다.
 
+## 애니메이션 엔진 (STEP 04-B, 2026-11-28)
+- **모듈 위치:** `js/animation/`. Sandbox(main.js)와 Play(play-engine.js)는 `animation-kit.js`로 같은 방식으로 조립한다. 같은 역할 모듈을 새로 만들지 말고 여기서 확장한다.
+  - `animation-manager.js`: 재생 (transform, morph, clip, material, visibility, deform, procedural)
+  - `animation-timeline.js`: 순차·병렬·지연·반복·조건·marker
+  - `morph-controller.js`, `deformation-controller.js`, `visual-state.js`(판막·혈관 상태), `model-transition.js`, `concept-model-builder.js`, `animation-commands.js`, `animation-editor.js`
+  - 재질 애니메이션은 material-controller 상태 층을 쓴다(`getState`/`setState`). 별도 재질 모듈을 만들지 않았다.
+- **렌더링 루프:** `kit.tick(dt)`만 기존 루프에서 부른다(경로·이동보다 먼저). requestAnimationFrame을 따로 만들지 않는다. dt는 0.25초로 자른다.
+- **GLB 클립:** scene-manager `model` 이벤트가 클립을 넘긴다. 모델마다 AnimationMixer는 하나이며, 시간은 직접 맞춘다(일시정지·구간 이동·역방향). 장면을 내릴 때 `kit.unload()`가 Mixer를 해제한다. 데이터만 다시 불러올 때(`apply`)는 Mixer를 남긴다.
+- **역할:** Python이 언제 무엇을 재생할지 정한다(Edge `timeline_id`, 노드 `visual_state`). JS는 프레임 보간만 한다. Python을 프레임마다 부르지 않는다.
+- **Blocking:** 학습 진행에 필요한 애니메이션은 Edge `timeline_id`로 이동 명령과 같은 묶음에 넣는다(motion_link). 끝나야 `lesson.arrived`가 불린다. 실패·취소면 진행하지 않는다. 노드 도착 이벤트(scene event)는 Python이 이미 진행한 뒤에 실행되므로, 필수 애니메이션을 거기에 넣지 않는다.
+- **Non-blocking:** 끝나지 않는 장식은 타임라인 `wait:false`나 parallel 이벤트로 둔다. 같은 animation_id를 다시 재생하면 이전 재생이 끝나므로 쌓이지 않는다.
+- **판막·실제 모델:**
+  - BodyParts3D 판막은 리깅이 없어 움직이지 않는다. 상태 색(`indicators`)으로만 표시하고, 실제 개폐 모습이라고 설명하지 않는다.
+  - 판막 개폐 형태와 심실 수축은 개념 모델(`content/animations/cardiac-concept.json`, CONCEPTUAL)에서만 보여 준다.
+- **닫힌 판막 통과 금지:** 타임라인 command 단계의 `through`에 구조를 적으면, 그 구조가 OPEN이 아닐 때 실행하지 않고 실패한다. 판막을 지나는 이동에는 반드시 `through`를 적는다.
+- **변형과 경로:**
+  - object_local Anchor·경로 점은 Morph 변형을 따라가지 않는다. 따라가야 하면 `space: 'mesh_vertex'` 점을 쓴다.
+  - 혈관 변형은 `deformation-controller`로 반지름만 바꾼다. 객체 전체 Scale로 수축을 표현하지 않는다.
+- **자유 관찰 (Play `cycle-panel.js`):** Python을 부르지 않는다. 관찰 중에는 입력을 막는다. 끝내면 `engine.applyPhaseEnd`로 학습 단계 모양으로 되돌린다. 암기·추론 모드에서는 관찰 중 단계 이름(정답)을 숨긴다.
+- **개념 모델 데이터:** `content/animations/*.json`과 심장주기 콘텐츠는 `tools/content/make_*.py`로 만든다. 직접 고치지 말고 생성기를 고친 뒤 다시 만든다.
+- **리소스:** resource-tracker는 SkinnedMesh의 Skeleton(boneTexture)도 해제한다. 장면 전환 뒤 GPU geo/tex 수가 늘지 않는지 Sandbox AA↔A로 확인한다.
+- **테스트:**
+  - `tests/animation-tests.html` (26개)
+  - `python tests/test_cardiac_cycle.py` (27개)
+  - 이동·Play를 건드렸으면 motion-tests(32), test_lesson(63)도 실행한다.
+  - Worker 파일을 바꾸면 `WORKER_VERSION`을 올린다(현재 04b-1).
+
 ## STEP 04 방향
 1. (완료: STEP 03-A~D) 해부학 모델, 레지스트리, Anchor, 이동 엔진, 학습 게임
 2. (진행: STEP 04-A) 내강 중심선 경로(GEOMETRY_CHECKED 9개), 폐·조직 모세혈관 개념 장면을 만들었다. 남은 것은 전공자 경로 검토와 나머지 폐정맥·대동맥 가지다. 세부 요구사항은 `references/nursing/analysis/STEP_04_REQUIREMENTS.md`에 있다(로컬 전용).
-3. 생리적 형태 변화(심장 박동, 판막 개폐)는 라이선스가 확인된 모델이나 자체 제작 애니메이션으로 한다. 끝나지 않는 연출은 parallel 이벤트로 둔다.
+3. (진행: STEP 04-B) 범용 애니메이션 엔진과 심장주기 개념 모델을 만들었다. 실제 모델의 판막 개폐·심실 변형은 라이선스가 확인된 리깅 모델이 생길 때까지 하지 않는다. 다음은 04-C(연속 생리 변수·인과·피드백)다.
 4. 다른 계통 콘텐츠(소화, 호흡, 비뇨, 림프)를 같은 형식으로 추가한다.

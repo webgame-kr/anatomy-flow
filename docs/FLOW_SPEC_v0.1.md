@@ -280,3 +280,93 @@ v0.1 형식은 그대로 쓸 수 있다(`version` 생략 = 1). `"version": 2`이
   - 노드는 VERIFIED인데 경로는 검증되지 않음
 - 규칙 검증(Python `content_loader`): 시작 노드, 정답, 완료 조건, 순환 경고, 지원하지 않는 이벤트·전환·검증 상태·버전
 - 오류가 하나라도 있으면 그 콘텐츠는 시작하지 않는다. 엔진과 다른 콘텐츠는 계속 쓸 수 있다.
+
+## 7. 애니메이션 데이터 (STEP 04-B)
+파일은 `content/animations/*.json`이다. JS `js/animation/animation-kit.js`가 불러온다. 학습 콘텐츠는 `scene.animations`(파일 경로)와 `scene.start_scale`(시작 장면)로 연결한다.
+
+### 단위
+- 시간은 ms다. `keyframes[].time`은 재생시간에 대한 비율(0~1)이다.
+- 위치는 m, 회전은 도(°), Morph 가중치는 0~1, 관 반지름은 배율(1 = 기준)이다.
+- 개념 모델의 시간·크기·배율은 교육용 값이다. 실제 생리 수치가 아니며, 파일의 `notes`·`verification_status`에 그렇게 적는다.
+
+### 최상위
+| 키 | 설명 |
+|---|---|
+| groups | 개념·시험 모델 정의 (`concept-model-builder.js`): `{group_id, origin, backdrop, verification_status, objects: [{id, shape: ellipsoid\|sphere\|leaflets\|tube\|box, morphs, logical_id, …}]}` |
+| animations | 애니메이션 정의 (아래) |
+| structures | 구조 상태 정의 (판막·혈관 등) |
+| timelines | 타임라인 정의 |
+| transitions | 모델 전환 정의 `{logical_id, variants: {상태: 객체 ID}, initial}` |
+| phases | (선택) 단계 표시 정보: 이름, 심방·심실 상태, 판막, 혈액 이동, 압력 관계, 심음, 강의 근거 쪽, `visual_state`, `end_state` |
+| motion | (선택) 이 장면의 경로·Actor (MOTION_DATA_SPEC 형식) |
+| scale_scene | (선택) 스케일 장면 등록 정보 (Play에서 `start_scale`로 전환) |
+
+### animations[]
+```json
+{ "animation_id": "cc.lv.contract", "target_id": "cc.lv", "animation_type": "morph", "morph_target": "contract",
+  "duration_ms": 700, "loop": false, "playback_rate": 1, "easing": "ease_in_out",
+  "keyframes": [{ "time": 0, "value": 0 }, { "time": 1, "value": 1 }],
+  "initial_state": null, "final_state": null, "restore_on_cancel": true,
+  "verification_status": "CONCEPTUAL", "source": "", "notes": "" }
+```
+| animation_type | value 형식 | 대상 |
+|---|---|---|
+| transform | `{position:[m], rotation:[도], scale:배 또는 [x,y,z]}` | 레지스트리 객체 |
+| morph | 숫자(`morph_target` 가중치) 또는 `{이름: 가중치}`(혼합) | Morph Target이 있는 Mesh |
+| clip | (없음) `clip_name`의 GLB AnimationClip 시간을 직접 맞춘다 | GLB 모델 루트 ID |
+| material | `{color:'#rrggbb', opacity, highlight}` | material-controller 상태 층 |
+| visibility | `{opacity, visible}` | 등장·사라짐 |
+| deform | 숫자(관 반지름 배율) | deformation-controller 관 |
+| procedural | `procedure`: `pulse`(크기 맥동), `morph_cycle`, `deform_cycle`. `params.period_ms` 등 | 반복 장식 |
+
+- `loop`: `false` 또는 0이면 한 번만, 숫자면 그만큼 더 반복, `true`면 끝없이 반복한다.
+- 같은 animation_id를 다시 재생하면 이전 재생은 `cancelled(replaced)`로 끝난다. 그래서 반복이 쌓이지 않는다.
+- `restore_on_cancel`(기본 true): 취소·정지하면 시작 전 상태(Transform, Morph, 재질 상태 층, 반지름)로 되돌린다.
+- 대상 객체가 사라지면 그 재생은 `failed`가 된다.
+
+### structures[] (구조 상태)
+```json
+{ "structure_id": "valve.mitral", "states": ["CLOSED", "OPENING", "OPEN", "CLOSING"], "initial": "CLOSED",
+  "transitions": { "CLOSED->OPEN": { "via": "OPENING", "animation": "valve.mitral.open" } },
+  "indicators": [{ "target": "cv.valve.mitral", "state_colors": { "OPEN": "#3cb371", "CLOSED": "#8a8f9c" } }] }
+```
+- 전환 중에는 `via` 상태(예: OPENING)를 보여 준다. 애니메이션이 끝나면 목표 상태가 된다.
+- 전환이 취소되면 이전 상태로 돌아간다.
+- `indicators`는 상태를 색으로 표시한다. 실제 모델(BodyParts3D 판막)은 움직일 수 없어 이 표시만 한다. 이 색을 판막이 실제로 움직이는 모습이라고 설명하지 않는다.
+
+### timelines[]
+| 단계 type | 필드 | 뜻 |
+|---|---|---|
+| animation | animation_id, wait(기본 true), speed, loop | 애니메이션 재생. `wait:false`면 기다리지 않는다(Non-blocking 장식) |
+| state | set: {구조ID: 상태}, wait, instant | 구조 상태 바꾸기 |
+| command | command, wait, through: [구조ID] | 명령 실행(Actor 이동 등). `through`의 구조가 하나라도 OPEN이 아니면 실행하지 않고 실패한다(닫힌 판막 통과 방지) |
+| delay | ms | 지연 |
+| parallel / sequence | steps | 동시에 / 순서대로 |
+| repeat | count, steps | 반복 |
+| if | when {structure, equals} 또는 {phase, equals}, then, else | 보이는 상태 조건. 학습 규칙 조건은 Python edge condition을 쓴다 |
+| marker | name, phase, label | 중간 이벤트(화면 표시) |
+
+- `blocking: true` 타임라인은 끝까지 기다린다. 실패·취소되면 결과가 그대로 돌아간다.
+- `restore_on_cancel`(기본 true): 실패·취소되면 시작 전 구조 상태로 되돌린다.
+- 일시정지(`pauseAll`) 중에는 지연과 애니메이션이 모두 멈춘다. `cancelAll` 뒤에는 남은 단계를 실행하지 않는다(session).
+
+### 학습 콘텐츠와 연결
+- **Edge `timeline_id`**
+  - 정답이면 motion_link가 이동 명령 뒤에 `{action: 'timeline_play', target, wait: true}`를 붙인다.
+  - JS는 타임라인이 끝나야 `lesson.arrived('completed')`를 부른다.
+  - 실패하거나 취소되면 진행하지 않는다. 다음 단계는 재시도(`retry`)나 복구(`recover`)다.
+- **Node `visual_state`**: `{구조ID: 상태}`. `lesson.recover`가 이 값을 돌려주고, JS는 그 단계의 모양(판막·형태·Actor 위치)으로 즉시 맞춘다.
+- **최상위 `initial_visual_state`, `variable_labels`**: 시작·재시작 때의 구조 상태, 화면 변수 이름
+- **Non-blocking 장식**
+  - 노드 이벤트 `{type:'scene', mode:'parallel', command:{action:'animation_play', …}}`를 쓰거나, 타임라인 안에서 `wait:false`로 넣는다.
+  - 끝나지 않아도 학습은 진행된다.
+
+### 애니메이션 명령 (Python `scene_commands.ANIMATION`, JS `animation-commands.js`)
+- 명령 목록: `animation_play|pause|resume|stop|seek|set_speed|set_loop|set_weight`, `morph_set_value`, `morph_transition`, `timeline_play|pause|resume|cancel`, `set_biological_visual_state`, `model_transition`
+- Python은 `set_animations()`로 받은 ID 목록을 보고 검사한다. JS도 실행 전에 다시 검사한다.
+- 잘못된 명령은 실패 결과만 남긴다. 다음 명령은 계속 실행한다.
+
+### 변형과 경로·Anchor
+- Object-local Anchor와 `object_local` 경로 점은 객체 Transform만 따라간다. Morph로 바뀐 Mesh 모양은 따라가지 않는다.
+- 변형을 따라가야 하는 점은 `{space:'mesh_vertex', object_id, vertex_index}`로 적는다. Morph 가중치가 바뀌면 곡선을 다시 계산한다.
+- 혈관 수축·확장(deform)은 중심선을 유지하고 반지름만 바꾼다. 같은 중심선 위의 경로와 Actor는 그대로다.

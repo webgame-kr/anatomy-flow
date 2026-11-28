@@ -43,6 +43,30 @@ MOTION = {
 LEVELS = ('BODY', 'ORGAN', 'TISSUE', 'CELL', 'MOLECULAR')
 UNTIL = ('end', 'next_stop')
 
+# STEP 04-B 애니메이션 명령 -> 대상 종류 (animation: 애니메이션 ID, timeline: 타임라인 ID, object: Morph 객체, none: 대상 없음, logical: 논리 ID)
+ANIMATION = {
+    'animation_play': 'animation',
+    'animation_pause': 'animation',
+    'animation_resume': 'animation',
+    'animation_stop': 'animation',
+    'animation_seek': 'animation',
+    'animation_set_speed': 'animation',
+    'animation_set_loop': 'animation',
+    'animation_set_weight': 'animation',
+    'morph_set_value': 'object',
+    'morph_transition': 'object',
+    'timeline_play': 'timeline',
+    'timeline_pause': 'timeline',
+    'timeline_resume': 'timeline',
+    'timeline_cancel': 'timeline',
+    'set_biological_visual_state': 'none',
+    'model_transition': 'logical',
+}
+animations = {}     # 애니메이션 ID -> 종류
+timelines = []      # 타임라인 ID
+structures = {}     # 구조 ID -> 상태 목록
+morph_objects = []  # Morph Target이 있는 객체 ID
+
 snapshot = {}       # 객체 ID -> {'type', 'visible', 'parent'}
 scene_ids = []      # 전환할 수 있는 장면 ID
 current_scene = ''
@@ -73,6 +97,74 @@ def set_paths(path_list):
             checkpoints[cp_id] = item['id']
         paths[item['id']] = cp_ids
     return {'ok': True, 'paths': len(paths), 'checkpoints': len(checkpoints)}
+
+
+def set_animations(info):
+    # JS 애니메이션 kit이 보낸 ID 목록을 저장한다 (키프레임 값·좌표는 받지 않는다)
+    animations.clear()
+    timelines.clear()
+    structures.clear()
+    morph_objects.clear()
+    for item in info.get('animations', []):
+        animations[item['id']] = item.get('type', '')
+    for tid in info.get('timelines', []):
+        timelines.append(tid)
+    for item in info.get('structures', []):
+        structures[item['id']] = list(item.get('states', []))
+    for oid in info.get('morph_objects', []):
+        morph_objects.append(oid)
+    return {'ok': True, 'animations': len(animations), 'timelines': len(timelines), 'structures': len(structures)}
+
+
+def check_animation(command):
+    # 애니메이션 명령 검사. 문제가 없으면 빈 문자열
+    action = command['action']
+    kind = ANIMATION[action]
+    target = command.get('target')
+    if kind == 'animation' and target not in animations:
+        return '없는 애니메이션: {}'.format(target)
+    if kind == 'timeline' and target not in timelines:
+        return '없는 타임라인: {}'.format(target)
+    if kind == 'object' and target not in morph_objects:
+        return 'Morph Target이 없는 객체: {}'.format(target)
+    if action == 'animation_play':
+        if 'speed' in command and (not is_number(command['speed']) or command['speed'] <= 0):
+            return 'speed는 0보다 큰 숫자'
+        if 'loop' in command and type(command['loop']) != bool:
+            if type(command['loop']) != int or command['loop'] < 0:
+                return 'loop는 true/false 또는 0 이상 정수'
+    if action == 'animation_seek' or action == 'animation_set_speed' or action == 'animation_set_weight':
+        value = command.get('value')
+        if not is_number(value) or value < 0:
+            return 'value는 0 이상 숫자'
+        if action == 'animation_set_speed' and value == 0:
+            return '속도는 0보다 커야 합니다'
+        if action == 'animation_set_weight' and value > 1:
+            return '가중치는 0~1'
+    if action == 'morph_set_value' or action == 'morph_transition':
+        value = command.get('value')
+        if not is_number(value) or value < 0 or value > 1:
+            return 'Morph 값은 0~1'
+        if type(command.get('morph')) != str or command.get('morph') == '':
+            return 'morph(이름)가 필요합니다'
+        if action == 'morph_transition':
+            if not is_number(command.get('duration')) or command.get('duration') <= 0:
+                return 'duration은 0보다 큰 숫자(ms)'
+    if action == 'set_biological_visual_state':
+        value = command.get('value')
+        if type(value) != dict or len(value) == 0:
+            return 'value는 {구조ID: 상태}'
+        for sid in value:
+            if sid not in structures:
+                return '없는 구조: {}'.format(sid)
+            if value[sid] not in structures[sid]:
+                return '{}: 알 수 없는 상태 {}'.format(sid, value[sid])
+    if action == 'model_transition':
+        if type(target) != str or target == '':
+            return '논리 ID(target)가 필요합니다'
+        if type(command.get('value')) != str:
+            return 'value는 상태 이름'
+    return ''
 
 
 def is_actor(obj_id):
@@ -215,6 +307,8 @@ def validate(command):
     action = command.get('action')
     if action in MOTION:
         return check_motion(command)
+    if action in ANIMATION:
+        return check_animation(command)
     if action not in ACTIONS:
         return '지원하지 않는 명령: {}'.format(action)
     if action not in NO_TARGET:

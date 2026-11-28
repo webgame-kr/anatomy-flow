@@ -221,6 +221,28 @@ commands = [
 - 검증은 두 번 합니다. Python(`scene_commands.validate`)과 JavaScript(`command-runner`)가 각각 명령 종류, 대상 ID, 값을 검사합니다.
 - 잘못된 명령은 로그에 남기고 건너뛰며, 나머지 명령은 계속 실행합니다.
 
+## STEP 04-B 애니메이션 엔진
+
+- **Play 「심장주기: 판막과 심실의 다섯 단계」** (`play.html?lesson=cv.cardiac_cycle`)
+  - 강의자료(HA6 p5 그림, 교재 p614)의 5단계를 차례로 입력한다. 정답이면 그 단계의 애니메이션이 끝난 뒤 다음 문제로 간다.
+  - 애니메이션: 판막 개폐, 심방·심실 수축, 혈액 이동
+  - 모델은 직접 만든 개념 모델(CONCEPTUAL)이다. 단계 시간과 모양은 교육용 값이며 압력·혈류 계산이 아니다.
+- **생리 단계 패널**
+  - 현재 단계, 심방·심실, 방실판막·반월판막, 혈액 이동 방향, 압력 관계, 심음, 강의 근거 쪽을 보여 준다.
+  - 자유 관찰: 자동 재생, 이전·다음, 일시정지, 속도, 실제 모델 보기. 학습 기록과 진행은 바뀌지 않는다.
+  - 실제 모델 보기에서는 BodyParts3D 판막을 색으로만 상태를 표시한다. 리깅이 없어 움직이지 않는다.
+- **Sandbox 시험 장면**
+  - AA: Transform Keyframe, GLB 클립 Spin·Inflate·Flap
+  - AB: Morph 혼합, 모델 전환, 변형을 따라가는 경로 점
+  - AC: 타임라인 순차·병렬·반복, Blocking과 Non-blocking
+  - AD: 심장주기 개념 모델
+  - AE: 혈관 수축·확장
+  - 오른쪽 "Animation" 패널이 경량 편집기다. Keyframe 편집, 미리보기, 타임라인 JSON, 가져오기·내보내기를 할 수 있다.
+- **문서·테스트**
+  - 데이터 형식: `docs/FLOW_SPEC_v0.1.md` 7장
+  - 테스트: `tests/animation-tests.html`, `python tests/test_cardiac_cycle.py`
+  - 보고서: `docs/development/STEP_04B_REPORT.md`
+
 ## STEP 04-A 해부학 경로·다중 스케일
 
 - **경로:** 심혈관 경로 9개를 BodyParts3D 혈관 메시의 단면 중심선과 판막 전후 Waypoint로 다시 만들었습니다(`content/anatomy/cardiovascular/paths.json`). 모두 기하 검사(메시 밖 0%)를 통과한 `GEOMETRY_CHECKED`이며 해부학 전문가 검토는 받지 않았습니다. 이전 경로는 `paths.v1-approx.json`에 있습니다.
